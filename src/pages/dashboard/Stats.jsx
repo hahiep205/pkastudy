@@ -1,0 +1,114 @@
+const streakLeaders = [
+    { rank: 1, name: 'Linh Tran', score: 42, accent: 'orange' },
+    { rank: 2, name: 'Minh Khoa', score: 37, accent: 'blue' },
+    { rank: 3, name: 'Thu An', score: 33, accent: 'green' },
+    { rank: 4, name: 'Gia Huy', score: 29, accent: 'slate' },
+    { rank: 5, name: 'Bao Ngoc', score: 24, accent: 'slate' },
+];
+
+const expLeaders = [
+    { rank: 1, name: 'Ngoc Mai', score: 12840, accent: 'blue' },
+    { rank: 2, name: 'Quang Huy', score: 11920, accent: 'orange' },
+    { rank: 3, name: 'Hoai Thu', score: 11310, accent: 'green' },
+    { rank: 4, name: 'Tuan Anh', score: 10540, accent: 'slate' },
+    { rank: 5, name: 'Diep Chi', score: 9840, accent: 'slate' },
+];
+
+function getInitial(name) {
+    return name.charAt(0).toUpperCase();
+}
+
+function getHandle(name) {
+    return `@${name.toLowerCase().replace(/\s+/g, '')}`;
+}
+
+function LeaderboardCard({ title, subtitle, unit, leaders, tone }) {
+    return (
+        <section className={`stats2-board stats2-board-${tone} reveal`}>
+            <header className="stats2-board-header">
+                <div className="stats2-board-copy">
+                    <h2>{title}</h2>
+                    <p>{subtitle}</p>
+                </div>
+            </header>
+
+            <div className="stats2-history">
+                {leaders.map((entry) => (
+                    <article key={`${title}-${entry.rank}-${entry.name}`} className="stats2-history-item">
+                        <div className="stats2-leader-main">
+                            <div className="stats2-list-rank">#{entry.rank}</div>
+                            <div className={`stats2-avatar-badge accent-${entry.accent}`}>
+                                <div className="stats2-avatar-glyph">{getInitial(entry.name)}</div>
+                            </div>
+                            <div className="stats2-leader-copy">
+                                <strong>{entry.name}</strong>
+                                <small>{getHandle(entry.name)} · {unit === 'ngày' ? 'Học đều mỗi ngày' : 'Tổng điểm tích lũy'}</small>
+                            </div>
+                        </div>
+                        <div className="stats2-history-values">
+                            <span>
+                                {unit === 'ngày'
+                                    ? `Chuỗi ${entry.score.toLocaleString('vi-VN')} Streak`
+                                    : `${entry.score.toLocaleString('vi-VN')} ${unit}`}
+                            </span>
+                        </div>
+                    </article>
+                ))}
+            </div>
+        </section>
+    );
+}
+
+export default function Stats() {
+    return (
+        <main className="dash-main stats-page stats2-page" id="page-stats">
+            <section className="stats2-hero reveal" data-reveal-order="0">
+                <div className="stats2-hero-copy">
+                    <div className="stats2-kicker">Bảng xếp hạng</div>
+                    <h1>Theo dõi những người học nổi bật nhất tuần này.</h1>
+                    <p>Xem nhanh thứ hạng streak và EXP trong một giao diện ngắn gọn, dễ đọc.</p>
+                </div>
+
+                <div className="stats2-hero-panel">
+                    <article className="stats2-metric">
+                        <span>Dẫn đầu streak</span>
+                        <strong>Chuỗi 42 Streak</strong>
+                        <small>Linh Tran đang giữ chuỗi học dài nhất.</small>
+                    </article>
+                    <article className="stats2-metric">
+                        <span>Dẫn đầu EXP</span>
+                        <strong>12,840</strong>
+                        <small>Ngoc Mai đang đứng đầu tổng EXP.</small>
+                    </article>
+                    <article className="stats2-metric">
+                        <span>Tổng người nổi bật</span>
+                        <strong>10</strong>
+                        <small>Gồm 5 người ở mỗi bảng xếp hạng.</small>
+                    </article>
+                    <article className="stats2-metric">
+                        <span>Cập nhật</span>
+                        <strong>Hôm nay</strong>
+                        <small>Dữ liệu mẫu dùng để hiển thị giao diện leaderboard.</small>
+                    </article>
+                </div>
+            </section>
+
+            <div className="stats2-grid">
+                <LeaderboardCard
+                    title="Bảng Xếp Hạng Streak"
+                    subtitle="Chuỗi ngày học liên tiếp cao nhất"
+                    unit="ngày"
+                    leaders={streakLeaders}
+                    tone="streak"
+                />
+                <LeaderboardCard
+                    title="Bảng Xếp Hạng EXP"
+                    subtitle="Tổng EXP tích lũy cao nhất"
+                    unit="EXP"
+                    leaders={expLeaders}
+                    tone="exp"
+                />
+            </div>
+        </main>
+    );
+}

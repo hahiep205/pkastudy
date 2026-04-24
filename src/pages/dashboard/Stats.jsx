@@ -68,29 +68,6 @@ export default function Stats() {
                     <h1>Theo dõi những người học nổi bật nhất tuần này.</h1>
                     <p>Xem nhanh thứ hạng streak và EXP trong một giao diện ngắn gọn, dễ đọc.</p>
                 </div>
-
-                <div className="stats2-hero-panel">
-                    <article className="stats2-metric">
-                        <span>Dẫn đầu streak</span>
-                        <strong>Chuỗi 42 Streak</strong>
-                        <small>Linh Tran đang giữ chuỗi học dài nhất.</small>
-                    </article>
-                    <article className="stats2-metric">
-                        <span>Dẫn đầu EXP</span>
-                        <strong>12,840</strong>
-                        <small>Ngoc Mai đang đứng đầu tổng EXP.</small>
-                    </article>
-                    <article className="stats2-metric">
-                        <span>Tổng người nổi bật</span>
-                        <strong>10</strong>
-                        <small>Gồm 5 người ở mỗi bảng xếp hạng.</small>
-                    </article>
-                    <article className="stats2-metric">
-                        <span>Cập nhật</span>
-                        <strong>Hôm nay</strong>
-                        <small>Dữ liệu mẫu dùng để hiển thị giao diện leaderboard.</small>
-                    </article>
-                </div>
             </section>
 
             <div className="stats2-grid">

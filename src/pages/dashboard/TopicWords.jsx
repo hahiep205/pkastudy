@@ -7,6 +7,8 @@ import WordModal from '../../components/WordModal';
 import AIGenModal from '../../components/AIGenModal';
 import WordDetailOverlay from '../../components/WordDetailOverlay';
 import TopicPickerModal from '../../components/TopicPickerModal';
+import Flashcard from '../../components/Flashcard';
+import { recordFlashcardSessionProgress } from '../../utils/dashboardProgress';
 
 const SVG_ICONS = {
     VOICE_SM: (
@@ -38,28 +40,28 @@ const SVG_ICONS = {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
             <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" />
         </svg>
-    )
+    ),
 };
 
 const LANG_VOICE_MAP = {
-    'en': 'en-US',
-    'ko': 'ko-KR',
-    'ja': 'ja-JP',
-    'zh': 'zh-CN',
-    'fr': 'fr-FR'
+    en: 'en-US',
+    ko: 'ko-KR',
+    ja: 'ja-JP',
+    zh: 'zh-CN',
+    fr: 'fr-FR',
 };
 
 const MODES = [
-    { mode: 'flashcard', icon: '🃏', name: 'Flashcard', desc: 'Lật thẻ, nhớ từ nhanh' },
-    { mode: 'quiz', icon: '❓', name: 'Quiz', desc: '4 đáp án, chọn đúng' },
-    { mode: 'typing', icon: '⌨️', name: 'Typing', desc: 'Gõ từ vựng chính xác' },
-    { mode: 'listen', icon: '🎧', name: 'Listening', desc: 'Luyện kỹ năng nghe' },
-    { mode: 'match', icon: '🔗', name: 'Match', desc: 'Nối từ với nghĩa đúng' },
+    { mode: 'flashcard', name: 'Flashcard', desc: 'Lật thẻ, nhớ từ nhanh' },
+    { mode: 'quiz', name: 'Quiz', desc: '4 đáp án, chọn đúng' },
+    { mode: 'typing', name: 'Typing', desc: 'Gõ từ vựng chính xác' },
+    { mode: 'listen', name: 'Listening', desc: 'Luyện kỹ năng nghe' },
+    { mode: 'match', name: 'Match', desc: 'Nối từ với nghĩa đúng' },
 ];
 
 export default function TopicWords() {
     const { courseId: rawCourseId, topicId } = useParams();
-    const { remembered, toggleWord } = useCourseProgress();
+    const { remembered, toggleWord, replaceRememberedInTopic } = useCourseProgress();
     const { customCourses, addWordToTopic, updateWordInTopic, deleteWordFromTopic, addManyWordsToTopic, createTopic } = useCustomCourses();
 
     const [isWordModalOpen, setWordModalOpen] = useState(false);
@@ -68,9 +70,8 @@ export default function TopicWords() {
     const [isDetailOpen, setDetailOpen] = useState(false);
     const [selectedWord, setSelectedWord] = useState(null);
     const [pickerWord, setPickerWord] = useState(null);
-    const [activeMode, setActiveMode] = useState(null); // which mode card is active
+    const [activeMode, setActiveMode] = useState(null);
 
-    // courseId can be undefined when using /custom/topic/:topicId route
     const courseId = rawCourseId || 'custom';
     const isCustom = courseId === 'custom';
 
@@ -81,26 +82,23 @@ export default function TopicWords() {
 
     if (isCustom) {
         courseTitle = 'Tài liệu của bạn';
-        const topic = customCourses.find(t => t.id === topicId);
+        const topic = customCourses.find((item) => item.id === topicId);
         if (!topic) return <div>Chủ đề không tồn tại</div>;
         topicTitle = topic.title;
         topicLang = topic.lang || 'en';
         words = topic.words;
     } else {
         const course = coursesData[courseId];
-        if (!course) return <div>Khóa học không tồn tại</div>;
+        if (!course) return <div>Khoa học không tồn tại</div>;
         courseTitle = course.title;
-        const topic = course.topics.find(t => t.id === topicId);
+        const topic = course.topics.find((item) => item.id === topicId);
         if (!topic) return <div>Chủ đề không tồn tại</div>;
         topicTitle = topic.title;
         topicLang = course.lang || 'en';
         words = topic.words;
     }
 
-    // Back URL: custom → Courses page with custom tab; regular → CourseTopics
-    const backUrl = isCustom
-        ? '/dashboard/courses?tab=custom'
-        : `/dashboard/courses/${courseId}`;
+    const backUrl = isCustom ? '/dashboard/courses?tab=custom' : `/dashboard/courses/${courseId}`;
 
     const handleSaveWord = (wordData) => {
         if (editingWord) {
@@ -130,6 +128,12 @@ export default function TopicWords() {
     };
 
     const handleModeClick = (modeName) => {
+        if (modeName === 'flashcard') {
+            setActiveMode('flashcard');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
         if (activeMode === modeName) {
             setActiveMode(null);
         } else {
@@ -140,183 +144,187 @@ export default function TopicWords() {
         }
     };
 
-    const doneCount = words.filter(w => remembered[w.id]).length;
+    const handleSaveFlashcard = (selectedWordIds) => {
+        replaceRememberedInTopic(words.map((word) => word.id), selectedWordIds);
+        recordFlashcardSessionProgress();
+    };
+
+    const doneCount = words.filter((word) => remembered[word.id]).length;
 
     return (
         <main className={`dash-main cv-subview${isCustom ? ' cv-custom-mode' : ''}`} id="cv-words-view">
-            {/* ── BREADCRUMB HEADER ── */}
             <div className="cv-subview-header">
                 <Link className="cv-breadcrumb-btn" to={backUrl}>
                     {SVG_ICONS.BACK}
                     <span id="cv-back-course-label">{courseTitle}</span>
                 </Link>
-                <span className="cv-breadcrumb-sep">›</span>
+                <span className="cv-breadcrumb-sep">&gt;</span>
                 <span className="cv-breadcrumb-current" id="cv-topic-title">{topicTitle}</span>
             </div>
 
-            {/* ── CUSTOM TOOLBAR (only visible in custom mode) ── */}
-            {isCustom && (
+            {isCustom && activeMode !== 'flashcard' && (
                 <div id="cv-custom-toolbar" className="cv-custom-toolbar">
                     <button className="btn btn-primary btn-small" id="cv-add-word-btn" onClick={() => openWordModal(null)}>+ Thêm từ vựng</button>
-                    <button className="cv-btn-ai" id="cv-ai-gen-btn" onClick={() => setAIModalOpen(true)}>✨ AI tạo từ hàng loạt</button>
+                    <button className="cv-btn-ai" id="cv-ai-gen-btn" onClick={() => setAIModalOpen(true)}>AI tạo từ hàng loạt</button>
                 </div>
             )}
 
-            {/* ── 5 LEARNING MODES ── */}
-            <section className="cv-modes-section">
-                <h3 className="cv-section-title">🎯 Chọn cách học</h3>
-                <div className="cv-modes-grid" id="cv-modes-grid">
-                    {MODES.map(({ mode, icon, name, desc }) => (
-                        <button
-                            key={mode}
-                            className={`cv-mode-card${activeMode === mode ? ' active' : ''}`}
-                            data-mode={mode}
-                            onClick={() => handleModeClick(mode)}
-                        >
-                            <div className="cv-mode-card-icon">{icon}</div>
-                            <div className="cv-mode-card-name">{name}</div>
-                            <div className="cv-mode-card-desc">{desc}</div>
-                            <span className="cv-soon-badge">Sắp có</span>
-                        </button>
-                    ))}
-                </div>
-            </section>
-
-            {/* ── MODE AREA (coming soon panel) ── */}
-            <div id="cv-mode-area" className={activeMode ? '' : 'cv-hidden'}>
-                {activeMode && (
-                    <div className="cv-coming-soon">
-                        <div className="cv-cs-icon">🚀</div>
-                        <h3>Đang phát triển</h3>
-                        <p>Chế độ <strong>{MODES.find(m => m.mode === activeMode)?.name}</strong> sẽ sớm ra mắt!<br />Theo dõi các cập nhật của PKA Study nhé 😊</p>
-                    </div>
-                )}
-            </div>
-
-            {/* ── STATS BAR ── */}
-            <div className="cv-stats-bar">
-                <span className="cv-stat"><span className="cv-stat-dot dot-total"></span>Tổng: <strong id="cv-total">{words.length}</strong> từ</span>
-                <span className="cv-stat"><span className="cv-stat-dot dot-done"></span>Đã thuộc: <strong id="cv-done">{doneCount}</strong></span>
-                <span className="cv-stat"><span className="cv-stat-dot dot-left"></span>Chưa thuộc: <strong id="cv-left">{words.length - doneCount}</strong></span>
-            </div>
-
-            {/* ── VOCABULARY TABLE ── */}
-            <section className="cv-vocab-section">
-                <h3 className="cv-section-title" id="cv-vocab-title">📖 Danh sách từ vựng</h3>
-                <div className="cv-word-table">
-                    <div className="cv-word-table-head">
-                        <span>Từ vựng</span>
-                        <span>Phiên âm</span>
-                        <span>Nghĩa</span>
-                        <span>Loại từ</span>
-                        <span>Ví dụ</span>
-                        <span>Đã thuộc</span>
-                        <span className="cv-col-actions">Hành động</span>
-                    </div>
-
-                    <div id="cv-word-rows">
-                        {words.map((w) => {
-                            const isDone = !!remembered[w.id];
-                            return (
-                                <div
-                                    key={w.id}
-                                    className={`cv-word-row${isDone ? ' cv-word-remembered' : ''}`}
-                                    id={`cv-row-${w.id}`}
-                                    onClick={(e) => {
-                                        if (e.target.closest('button, label, input, a')) return;
-                                        setSelectedWord(w);
-                                        setDetailOpen(true);
-                                    }}
+            {activeMode === 'flashcard' ? (
+                <Flashcard
+                    topicName={topicTitle}
+                    topicLang={topicLang}
+                    words={words}
+                    initialLearnedWordIds={words.filter((word) => remembered[word.id]).map((word) => word.id)}
+                    onSaveLearnedWords={handleSaveFlashcard}
+                    onExit={() => setActiveMode(null)}
+                    onBackToTopic={() => setActiveMode(null)}
+                />
+            ) : (
+                <>
+                    <section className="cv-modes-section">
+                        <h3 className="cv-section-title">Chọn cách học</h3>
+                        <div className="cv-modes-grid" id="cv-modes-grid">
+                            {MODES.map(({ mode, icon, name, desc }) => (
+                                <button
+                                    key={mode}
+                                    className={`cv-mode-card${activeMode === mode ? ' active' : ''}`}
+                                    data-mode={mode}
+                                    onClick={() => handleModeClick(mode)}
                                 >
-                                    {/* Col 1: Word */}
-                                    <div className="cv-cell cv-cell-word">
-                                        <div className="cv-word-main">
-                                            <strong className="cv-word-text">{w.word}</strong>
-                                            <span className="cv-row-chevron" aria-hidden="true">{SVG_ICONS.CHEVRON}</span>
-                                        </div>
-                                        <div className="cv-mobile-sub">
-                                            <button className="cv-voice-btn" title="Nghe phát âm" onClick={(e) => { e.stopPropagation(); speakWord(w.word, w.language || topicLang); }}>
-                                                {SVG_ICONS.VOICE_SM}
-                                            </button>
-                                            <span className="cv-trans">{w.transcription || ''}</span>
-                                        </div>
-                                    </div>
+                                    <div className="cv-mode-card-icon">{icon}</div>
+                                    <div className="cv-mode-card-name">{name}</div>
+                                    <div className="cv-mode-card-desc">{desc}</div>
+                                    {mode !== 'flashcard' ? <span className="cv-soon-badge">Sắp có</span> : null}
+                                </button>
+                            ))}
+                        </div>
+                    </section>
 
-                                    {/* Col 2: Transcription (desktop) */}
-                                    <div className="cv-cell cv-cell-trans cv-cell-trans-desktop">
-                                        <span className="cv-trans">{w.transcription || ''}</span>
-                                        <button className="cv-voice-btn cv-voice-desktop" title="Nghe phát âm" onClick={(e) => { e.stopPropagation(); speakWord(w.word, w.language || topicLang); }}>
-                                            {SVG_ICONS.VOICE_MD}
-                                        </button>
-                                    </div>
+                    <div id="cv-mode-area" className={activeMode ? '' : 'cv-hidden'}>
+                        {activeMode && (
+                            <div className="cv-coming-soon">
+                                <div className="cv-cs-icon">SOON</div>
+                                <h3>Đang phát triển</h3>
+                                <p>Chế độ <strong>{MODES.find((item) => item.mode === activeMode)?.name}</strong> sẽ sớm ra mắt.<br />Theo dõi các cập nhật của PKA Study nhé.</p>
+                            </div>
+                        )}
+                    </div>
 
-                                    {/* Col 3: Meaning */}
-                                    <div className="cv-cell cv-cell-mean">
-                                        <span className="cv-mean">{w.mean || ''}</span>
-                                    </div>
+                    <div className="cv-stats-bar">
+                        <span className="cv-stat"><span className="cv-stat-dot dot-total"></span>Tổng: <strong id="cv-total">{words.length}</strong> từ</span>
+                        <span className="cv-stat"><span className="cv-stat-dot dot-done"></span>Đã thuộc: <strong id="cv-done">{doneCount}</strong></span>
+                        <span className="cv-stat"><span className="cv-stat-dot dot-left"></span>Chưa thuộc: <strong id="cv-left">{words.length - doneCount}</strong></span>
+                    </div>
 
-                                    {/* Col 4: Word type */}
-                                    <div className="cv-cell cv-cell-type">
-                                        <span className="cv-type-badge">{w.wordtype || ''}</span>
-                                    </div>
+                    <section className="cv-vocab-section">
+                        <h3 className="cv-section-title" id="cv-vocab-title">Danh sách từ vựng</h3>
+                        <div className="cv-word-table">
+                            <div className="cv-word-table-head">
+                                <span>Từ vựng</span>
+                                <span>Phiên âm</span>
+                                <span>Nghĩa</span>
+                                <span>Loại từ</span>
+                                <span>Ví dụ</span>
+                                <span>Đã thuộc</span>
+                                <span className="cv-col-actions">Hành động</span>
+                            </div>
 
-                                    {/* Col 5: Example */}
-                                    <div className="cv-cell cv-cell-example">
-                                        <span className="cv-example">{w.example || ''}</span>
-                                    </div>
+                            <div id="cv-word-rows">
+                                {words.map((w) => {
+                                    const isDone = !!remembered[w.id];
+                                    return (
+                                        <div
+                                            key={w.id}
+                                            className={`cv-word-row${isDone ? ' cv-word-remembered' : ''}`}
+                                            id={`cv-row-${w.id}`}
+                                            onClick={(event) => {
+                                                if (event.target.closest('button, label, input, a')) return;
+                                                setSelectedWord(w);
+                                                setDetailOpen(true);
+                                            }}
+                                        >
+                                            <div className="cv-cell cv-cell-word">
+                                                <div className="cv-word-main">
+                                                    <strong className="cv-word-text">{w.word}</strong>
+                                                    <span className="cv-row-chevron" aria-hidden="true">{SVG_ICONS.CHEVRON}</span>
+                                                </div>
+                                                <div className="cv-mobile-sub">
+                                                    <button className="cv-voice-btn" title="Nghe phat am" onClick={(event) => { event.stopPropagation(); speakWord(w.word, w.language || topicLang); }}>
+                                                        {SVG_ICONS.VOICE_SM}
+                                                    </button>
+                                                    <span className="cv-trans">{w.transcription || ''}</span>
+                                                </div>
+                                            </div>
 
-                                    {/* Col 6: Đã thuộc — switch (always visible for both modes) */}
-                                    <div className="cv-cell cv-cell-remember">
-                                        <label className="cv-switch" title={isDone ? 'Đã thuộc' : 'Chưa thuộc'}>
-                                            <input
-                                                type="checkbox"
-                                                className="cv-switch-chk"
-                                                checked={isDone}
-                                                onChange={() => toggleWord(w.id)}
-                                            />
-                                            <span className="cv-switch-track"><span className="cv-switch-thumb"></span></span>
-                                        </label>
-                                    </div>
+                                            <div className="cv-cell cv-cell-trans cv-cell-trans-desktop">
+                                                <span className="cv-trans">{w.transcription || ''}</span>
+                                                <button className="cv-voice-btn cv-voice-desktop" title="Nghe phat am" onClick={(event) => { event.stopPropagation(); speakWord(w.word, w.language || topicLang); }}>
+                                                    {SVG_ICONS.VOICE_MD}
+                                                </button>
+                                            </div>
 
-                                    {/* Col 7: Hành động — only for custom mode */}
-                                    <div className="cv-cell cv-cell-actions">
-                                        {isCustom ? (
-                                            <>
-                                                <label className="cv-switch cv-actions-switch" title={isDone ? 'Đã thuộc' : 'Chưa thuộc'}>
+                                            <div className="cv-cell cv-cell-mean">
+                                                <span className="cv-mean">{w.mean || ''}</span>
+                                            </div>
+
+                                            <div className="cv-cell cv-cell-type">
+                                                <span className="cv-type-badge">{w.wordtype || ''}</span>
+                                            </div>
+
+                                            <div className="cv-cell cv-cell-example">
+                                                <span className="cv-example">{w.example || ''}</span>
+                                            </div>
+
+                                            <div className="cv-cell cv-cell-remember">
+                                                <label className="cv-switch" title={isDone ? 'Da thuoc' : 'Chua thuoc'}>
                                                     <input
                                                         type="checkbox"
-                                                        className="cv-switch-chk cv-switch-chk-extra"
+                                                        className="cv-switch-chk"
                                                         checked={isDone}
                                                         onChange={() => toggleWord(w.id)}
                                                     />
                                                     <span className="cv-switch-track"><span className="cv-switch-thumb"></span></span>
                                                 </label>
-                                                <button className="cv-action-btn cv-action-edit" title="Sửa từ" onClick={(e) => { e.stopPropagation(); openWordModal(w); }}>
-                                                    {SVG_ICONS.EDIT}
-                                                </button>
-                                                <button className="cv-action-btn cv-action-delete" title="Xóa từ" onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    if (window.confirm(`Xóa từ "${w.word}"?`)) deleteWordFromTopic(topicId, w.id);
-                                                }}>
-                                                    {SVG_ICONS.DELETE}
-                                                </button>
-                                            </>
-                                        ) : null}
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                            </div>
 
-                    {/* Empty state */}
-                    <div id="cv-empty-words" className={`cv-words-empty${words.length > 0 ? ' cv-hidden' : ''}`}>
-                        <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>📝</div>
-                        <p>Chưa có từ vựng nào.<br />Hãy thêm từ thủ công hoặc dùng AI tạo từ hàng loạt!</p>
-                    </div>
-                </div>
-            </section>
+                                            <div className="cv-cell cv-cell-actions">
+                                                {isCustom ? (
+                                                    <>
+                                                        <label className="cv-switch cv-actions-switch" title={isDone ? 'Da thuoc' : 'Chua thuoc'}>
+                                                            <input
+                                                                type="checkbox"
+                                                                className="cv-switch-chk cv-switch-chk-extra"
+                                                                checked={isDone}
+                                                                onChange={() => toggleWord(w.id)}
+                                                            />
+                                                            <span className="cv-switch-track"><span className="cv-switch-thumb"></span></span>
+                                                        </label>
+                                                        <button className="cv-action-btn cv-action-edit" title="Sua tu" onClick={(event) => { event.stopPropagation(); openWordModal(w); }}>
+                                                            {SVG_ICONS.EDIT}
+                                                        </button>
+                                                        <button className="cv-action-btn cv-action-delete" title="Xoa tu" onClick={(event) => {
+                                                            event.stopPropagation();
+                                                            if (window.confirm(`Xoa tu \"${w.word}\"?`)) deleteWordFromTopic(topicId, w.id);
+                                                        }}>
+                                                            {SVG_ICONS.DELETE}
+                                                        </button>
+                                                    </>
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
 
-            {/* ── MODALS ── */}
+                            <div id="cv-empty-words" className={`cv-words-empty${words.length > 0 ? ' cv-hidden' : ''}`}>
+                                <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>EMPTY</div>
+                                <p>Chua co tu vung nao.<br />Hay them tu thu cong hoac dung AI tao tu hang loat.</p>
+                            </div>
+                        </div>
+                    </section>
+                </>
+            )}
+
             <WordModal
                 key={`${editingWord?.id || 'new'}-${isWordModalOpen ? 'open' : 'closed'}`}
                 isOpen={isWordModalOpen}
@@ -336,19 +344,19 @@ export default function TopicWords() {
                 word={selectedWord}
                 topicLang={topicLang}
                 showAddBtn={!isCustom}
-                onAdd={(w) => {
+                onAdd={(word) => {
                     setDetailOpen(false);
-                    setPickerWord(w);
+                    setPickerWord(word);
                 }}
-                onAskAI={(w) => {
+                onAskAI={(word) => {
                     setDetailOpen(false);
                     const parts = [];
-                    parts.push(`Hãy giải thích chi tiết cho tôi về từ "${w.word}"`);
-                    if (w.transcription) parts.push(`(phiên âm: ${w.transcription})`);
-                    if (w.mean) parts.push(`— nghĩa: "${w.mean}"`);
-                    if (w.wordtype) parts.push(`— loại từ: ${w.wordtype}`);
-                    if (w.example) parts.push(`— ví dụ: "${w.example}"`);
-                    parts.push(`. Bao gồm: cách dùng chi tiết, các nghĩa khác (nếu có), thêm ví dụ thực tế, từ đồng nghĩa/trái nghĩa, và mẹo ghi nhớ.`);
+                    parts.push(`Hay giai thich chi tiet cho toi ve tu \"${word.word}\"`);
+                    if (word.transcription) parts.push(`(phien am: ${word.transcription})`);
+                    if (word.mean) parts.push(`- nghia: \"${word.mean}\"`);
+                    if (word.wordtype) parts.push(`- loai tu: ${word.wordtype}`);
+                    if (word.example) parts.push(`- vi du: \"${word.example}\"`);
+                    parts.push('. Bao gom: cach dung chi tiet, cac nghia khac (neu co), them vi du thuc te, tu dong nghia/trai nghia, va meo ghi nho.');
                     window.dispatchEvent(new CustomEvent('pkaAskAI', { detail: { message: parts.join(' ') } }));
                 }}
             />
@@ -360,7 +368,7 @@ export default function TopicWords() {
                     customCourses={customCourses}
                     onAdd={(targetTopicId, newWordObj) => {
                         addWordToTopic(targetTopicId, newWordObj);
-                        alert(`Đã thêm "${newWordObj.word}" vào danh sách!`);
+                        alert(`Da them \"${newWordObj.word}\" vao danh sach!`);
                         setPickerWord(null);
                     }}
                     onCreateTopic={(topicData) => {

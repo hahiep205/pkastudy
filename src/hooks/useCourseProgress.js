@@ -14,7 +14,6 @@ function getInitialRememberedWords() {
 export function useCourseProgress() {
     const [remembered, setRemembered] = useState(getInitialRememberedWords);
 
-    // Sync to localStorage
     const saveRemembered = (newMap) => {
         const previousMap = remembered;
         setRemembered(newMap);
@@ -42,9 +41,25 @@ export function useCourseProgress() {
         saveRemembered(newMap);
     };
 
+    const replaceRememberedInTopic = (topicWordIds, selectedWordIds) => {
+        const newMap = { ...remembered };
+        const selectedSet = new Set(selectedWordIds);
+
+        topicWordIds.forEach((wordId) => {
+            if (selectedSet.has(wordId)) {
+                newMap[wordId] = true;
+            } else {
+                delete newMap[wordId];
+            }
+        });
+
+        saveRemembered(newMap);
+    };
+
     return {
         remembered,
         toggleWord,
-        markWordRemembered
+        markWordRemembered,
+        replaceRememberedInTopic,
     };
 }

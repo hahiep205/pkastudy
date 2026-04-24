@@ -66,6 +66,15 @@ export default function Overview() {
             };
         }
 
+        if (task.id === 'game-session') {
+            const currentCount = Number.isFinite(task.currentCount) ? task.currentCount : 0;
+            const targetCount = Number.isFinite(task.targetCount) && task.targetCount > 0 ? task.targetCount : 5;
+            return {
+                ...task,
+                desc: `${currentCount}/${targetCount} lần chơi Flashcard hôm nay · +25 EXP`,
+            };
+        }
+
         return task;
     });
 

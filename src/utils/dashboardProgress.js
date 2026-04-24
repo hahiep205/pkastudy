@@ -24,11 +24,14 @@ const TASK_TEMPLATES = [
     },
     {
         id: 'game-session',
-        title: 'Chơi 1 game luyện tập',
-        desc: 'Flashcard hoặc game phản xạ · +25 EXP',
+        title: 'Hoàn thành 5 lần chơi Flashcard',
+        desc: '0/5 lần chơi Flashcard hôm nay · +25 EXP',
         btnText: 'Làm ngay',
-        page: 'games',
+        page: 'courses',
         exp: 25,
+        targetCount: 5,
+        currentCount: 0,
+        autoComplete: true,
     },
 ];
 
@@ -48,6 +51,8 @@ export function getDashboardUserKey(user) {
 function createDailyTasks() {
     return TASK_TEMPLATES.map((task) => ({
         ...task,
+        currentCount: Number.isFinite(task.currentCount) ? task.currentCount : 0,
+        targetCount: Number.isFinite(task.targetCount) ? task.targetCount : 0,
         isDone: false,
         completedAt: null,
     }));
@@ -92,6 +97,12 @@ function normalizeProgress(progress) {
                 const existing = safe.tasks.find((task) => task.id === template.id);
                 return {
                     ...template,
+                    currentCount: Number.isFinite(existing?.currentCount)
+                        ? existing.currentCount
+                        : (Number.isFinite(template.currentCount) ? template.currentCount : 0),
+                    targetCount: Number.isFinite(existing?.targetCount)
+                        ? existing.targetCount
+                        : (Number.isFinite(template.targetCount) ? template.targetCount : 0),
                     isDone: Boolean(existing?.isDone),
                     completedAt: existing?.completedAt ?? null,
                 };
@@ -221,6 +232,54 @@ function finalizeTaskProgress(userKey, nextProgress) {
     return {
         progress: savedProgress,
         learnedWordsCount: savedProgress.learnedWordIdsToday.length,
+    };
+}
+
+export function recordFlashcardSessionProgress() {
+    const userKey = getCurrentDashboardUserKey();
+    const current = readDashboardProgress(userKey);
+    const flashcardTask = current.tasks.find((task) => task.id === 'game-session');
+
+    if (!flashcardTask) {
+        return {
+            ...finalizeTaskProgress(userKey, current),
+            expGained: 0,
+            streakGained: false,
+        };
+    }
+
+    const targetCount = Number.isFinite(flashcardTask.targetCount) && flashcardTask.targetCount > 0
+        ? flashcardTask.targetCount
+        : 5;
+
+    let nextProgress = {
+        ...current,
+        tasks: current.tasks.map((task) => {
+            if (task.id !== 'game-session') return task;
+            const nextCount = Math.min((task.currentCount || 0) + 1, targetCount);
+            return {
+                ...task,
+                currentCount: nextCount,
+                targetCount,
+            };
+        }),
+    };
+
+    let expGained = 0;
+    let streakGained = false;
+    const updatedTask = nextProgress.tasks.find((task) => task.id === 'game-session');
+
+    if (updatedTask && !updatedTask.isDone && updatedTask.currentCount >= targetCount) {
+        const completed = applyDashboardTaskCompletion(nextProgress, 'game-session');
+        nextProgress = completed.nextProgress;
+        expGained = completed.expGained;
+        streakGained = completed.streakGained;
+    }
+
+    return {
+        ...finalizeTaskProgress(userKey, nextProgress),
+        expGained,
+        streakGained,
     };
 }
 

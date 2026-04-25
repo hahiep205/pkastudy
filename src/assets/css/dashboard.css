@@ -2602,6 +2602,10 @@ button {
     /* Kế thừa hoàn toàn style của .dash-main */
 }
 
+main#cv-words-view {
+    padding-bottom: 0;
+}
+
 
 /* ══════════════════════════════════════════
    COURSES BANNER

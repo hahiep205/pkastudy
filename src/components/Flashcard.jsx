@@ -182,6 +182,20 @@ export default function Flashcard({
         );
     }
 
+    let tuTieng = '';
+
+    if (currentWord.language === 'en') {
+        tuTieng = 'Tiếng Anh';
+    } else if (currentWord.language === 'ko') {
+        tuTieng = 'Tiếng Hàn';
+    } else if (currentWord.language === 'ja') {
+        tuTieng = 'Tiếng Nhật';
+    } else if (currentWord.language === 'zh') {
+        tuTieng = 'Tiếng Trung';
+    } else if (currentWord.language === 'fr') {
+        tuTieng = 'Tiếng Pháp';
+    }
+
     return (
         <section className="flashcard-shell">
             <div className="flashcard-header-meta">
@@ -212,7 +226,7 @@ export default function Flashcard({
                                 onKeyDown={handleCardKeyDown}
                             >
                                 <div className="flashcard-face flashcard-face-front" style={{ background: currentTheme.front }}>
-                                    <div className="flashcard-face-topline">Từ tiếng Anh</div>
+                                    <div className="flashcard-face-topline">Từ {tuTieng}</div>
                                     <div className="flashcard-face-center">
                                         <strong className="flashcard-word">{currentWord.word}</strong>
                                         <span className="flashcard-wordtype flashcard-wordtype-front">{currentWord.wordtype || 'VOCABULARY'}</span>

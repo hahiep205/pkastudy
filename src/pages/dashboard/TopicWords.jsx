@@ -249,7 +249,7 @@ export default function TopicWords() {
                                                     <span className="cv-row-chevron" aria-hidden="true">{SVG_ICONS.CHEVRON}</span>
                                                 </div>
                                                 <div className="cv-mobile-sub">
-                                                    <button className="cv-voice-btn" title="Nghe phat am" onClick={(event) => { event.stopPropagation(); speakWord(w.word, w.language || topicLang); }}>
+                                                    <button className="cv-voice-btn" title="Nghe phát âm" onClick={(event) => { event.stopPropagation(); speakWord(w.word, w.language || topicLang); }}>
                                                         {SVG_ICONS.VOICE_SM}
                                                     </button>
                                                     <span className="cv-trans">{w.transcription || ''}</span>
@@ -258,7 +258,7 @@ export default function TopicWords() {
 
                                             <div className="cv-cell cv-cell-trans cv-cell-trans-desktop">
                                                 <span className="cv-trans">{w.transcription || ''}</span>
-                                                <button className="cv-voice-btn cv-voice-desktop" title="Nghe phat am" onClick={(event) => { event.stopPropagation(); speakWord(w.word, w.language || topicLang); }}>
+                                                <button className="cv-voice-btn cv-voice-desktop" title="Nghe phát âm" onClick={(event) => { event.stopPropagation(); speakWord(w.word, w.language || topicLang); }}>
                                                     {SVG_ICONS.VOICE_MD}
                                                 </button>
                                             </div>
@@ -276,7 +276,7 @@ export default function TopicWords() {
                                             </div>
 
                                             <div className="cv-cell cv-cell-remember">
-                                                <label className="cv-switch" title={isDone ? 'Da thuoc' : 'Chua thuoc'}>
+                                                <label className="cv-switch" title={isDone ? 'Đã thuộc' : 'Chưa thuộc'}>
                                                     <input
                                                         type="checkbox"
                                                         className="cv-switch-chk"
@@ -290,7 +290,7 @@ export default function TopicWords() {
                                             <div className="cv-cell cv-cell-actions">
                                                 {isCustom ? (
                                                     <>
-                                                        <label className="cv-switch cv-actions-switch" title={isDone ? 'Da thuoc' : 'Chua thuoc'}>
+                                                        <label className="cv-switch cv-actions-switch" title={isDone ? 'Đã thuộc' : 'Chưa thuộc'}>
                                                             <input
                                                                 type="checkbox"
                                                                 className="cv-switch-chk cv-switch-chk-extra"
@@ -304,7 +304,7 @@ export default function TopicWords() {
                                                         </button>
                                                         <button className="cv-action-btn cv-action-delete" title="Xoa tu" onClick={(event) => {
                                                             event.stopPropagation();
-                                                            if (window.confirm(`Xoa tu \"${w.word}\"?`)) deleteWordFromTopic(topicId, w.id);
+                                                            if (window.confirm(`Xóa từ \"${w.word}\"?`)) deleteWordFromTopic(topicId, w.id);
                                                         }}>
                                                             {SVG_ICONS.DELETE}
                                                         </button>
@@ -318,7 +318,7 @@ export default function TopicWords() {
 
                             <div id="cv-empty-words" className={`cv-words-empty${words.length > 0 ? ' cv-hidden' : ''}`}>
                                 <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>EMPTY</div>
-                                <p>Chua co tu vung nao.<br />Hay them tu thu cong hoac dung AI tao tu hang loat.</p>
+                                <p>Chưa có từ vựng nào.<br />Hãy thêm từ thủ công hoặc dùng AI tạo từ hàng loạt.</p>
                             </div>
                         </div>
                     </section>
@@ -351,12 +351,12 @@ export default function TopicWords() {
                 onAskAI={(word) => {
                     setDetailOpen(false);
                     const parts = [];
-                    parts.push(`Hay giai thich chi tiet cho toi ve tu \"${word.word}\"`);
-                    if (word.transcription) parts.push(`(phien am: ${word.transcription})`);
-                    if (word.mean) parts.push(`- nghia: \"${word.mean}\"`);
-                    if (word.wordtype) parts.push(`- loai tu: ${word.wordtype}`);
-                    if (word.example) parts.push(`- vi du: \"${word.example}\"`);
-                    parts.push('. Bao gom: cach dung chi tiet, cac nghia khac (neu co), them vi du thuc te, tu dong nghia/trai nghia, va meo ghi nho.');
+                    parts.push(`Hãy giải thích chi tiết cho tôi về từ \"${word.word}\"`);
+                    if (word.transcription) parts.push(`(phiên âm: ${word.transcription})`);
+                    if (word.mean) parts.push(`- nghĩa: \"${word.mean}\"`);
+                    if (word.wordtype) parts.push(`- loại từ: ${word.wordtype}`);
+                    if (word.example) parts.push(`- ví dụ: \"${word.example}\"`);
+                    parts.push('. Bao gồm: cách dùng chi tiết, các nghĩa khác (nếu có), thêm ví dụ thực tế, từ đồng nghĩa/trái nghĩa, và mẹo ghi nhớ.');
                     window.dispatchEvent(new CustomEvent('pkaAskAI', { detail: { message: parts.join(' ') } }));
                 }}
             />
@@ -368,7 +368,7 @@ export default function TopicWords() {
                     customCourses={customCourses}
                     onAdd={(targetTopicId, newWordObj) => {
                         addWordToTopic(targetTopicId, newWordObj);
-                        alert(`Da them \"${newWordObj.word}\" vao danh sach!`);
+                        alert(`Đã thêm \"${newWordObj.word}\" vào danh sách!`);
                         setPickerWord(null);
                     }}
                     onCreateTopic={(topicData) => {

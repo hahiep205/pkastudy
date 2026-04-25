@@ -222,8 +222,9 @@ button {
 
 /* PRIMARY = blue, matching index.html */
 .btn-primary {
-    background: var(--blue);
+    background: #ffffff;
     color: #fff;
+    border: 2px solid var(--border-color);
     box-shadow: 0 4px 0 var(--blue-shadow);
 }
 
@@ -510,7 +511,7 @@ button {
     transform: translateY(-50%);
     width: 3px;
     height: 60%;
-    background: var(--blue);
+    background: #ffffff;
     border-radius: 0 3px 3px 0;
 }
 
@@ -528,7 +529,7 @@ button {
 }
 
 .new-badge {
-    background: var(--blue);
+    background: #ffffff;
 }
 
 .sidebar-divider {
@@ -1567,7 +1568,7 @@ button {
     left: 20%;
     right: 20%;
     height: 3px;
-    background: var(--blue);
+    background: #ffffff;
     border-radius: 0 0 3px 3px;
 } */
 
@@ -1575,7 +1576,7 @@ button {
     position: absolute;
     top: 5px;
     right: calc(50% - 18px);
-    background: var(--blue);
+    background: #ffffff;
     color: #fff;
     font-size: 10px;
     font-weight: 800;
@@ -2314,7 +2315,7 @@ button {
 
 .dashboard-msg-user span {
     display: inline-block;
-    background: var(--blue);
+    background: #ffffff;
     color: #fff;
     border-bottom-right-radius: 4px;
 }
@@ -3792,6 +3793,7 @@ button {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     overflow: hidden;
+    transition: background 0.45s ease, filter 0.2s ease;
 }
 
 .flashcard-face-front {
@@ -3805,6 +3807,35 @@ button {
     background: linear-gradient(135deg, #44b7b7 0%, #4d98e6 100%);
     color: #ffffff;
 }
+
+@media (min-width: 769px) {
+    #cv-words-view>.cv-subview-header+.flashcard-shell {
+        margin-top: 24px;
+        gap: 24px;
+    }
+
+    #cv-words-view .flashcard-card {
+        width: 100%;
+        max-width: 615px;
+        min-height: 450px;
+        margin-top: 0;
+    }
+
+    #cv-words-view .flashcard-card-inner {
+        min-height: 450px;
+    }
+
+    #cv-words-view .flashcard-actions {
+        width: min(100%, 615px);
+        margin: 0 auto;
+    }
+
+    #cv-words-view .flashcard-action-btn,
+    #cv-words-view .flashcard-action-switch {
+        min-height: 56px;
+    }
+}
+
 
 .flashcard-face-topline {
     text-align: center;
@@ -3886,7 +3917,7 @@ button {
     font-size: clamp(2.1rem, 4.4vw, 3.4rem);
     font-weight: 800;
     line-height: 1.05;
-    color: #0f172a;
+    color: inherit;
 }
 
 .flashcard-detail-row {
@@ -3946,14 +3977,25 @@ button {
     min-width: 96px;
     min-height: 48px;
     padding: 0 18px;
-    border: 0;
+    border: 2px solid var(--border-color);
     border-radius: 999px;
-    background: #53c700;
-    color: #ffffff;
+    background: #ffffff;
+    color: var(--blue);
     font: inherit;
     font-weight: 800;
-    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 0 var(--border-color);
     cursor: pointer;
+    transition: background .1s, filter .1s, transform .1s, box-shadow .1s;
+}
+
+.flashcard-voice-btn:hover {
+    background: #ffffff;
+    filter: brightness(1.03);
+}
+
+.flashcard-voice-btn:active {
+    transform: translateY(3px);
+    box-shadow: none;
 }
 
 .flashcard-face-hint,
@@ -3985,6 +4027,7 @@ button {
     min-height: 48px;
     padding: 0 18px;
     gap: 10px;
+    border: 0;
     box-shadow: 0 4px 0 var(--blue-shadow);
 }
 
@@ -4033,7 +4076,7 @@ button {
 }
 
 .flashcard-action-switch .cv-switch-chk:checked+.cv-switch-track {
-    background: var(--blue);
+    background: #ffffff;
 }
 
 .flashcard-action-switch-label {
@@ -4172,7 +4215,7 @@ button {
 @media (max-width: 768px) {
     .flashcard-header-meta {
         width: 100%;
-        align-items: center;
+        align-items: stretch;
         gap: 8px;
     }
 
@@ -4180,7 +4223,7 @@ button {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         margin-left: auto;
     }
 
@@ -4215,31 +4258,21 @@ button {
 
     .flashcard-header-btn {
         width: auto;
-        min-width: 96px;
-        max-width: none;
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-
-    .flashcard-summary-pill {
-        width: 100%;
-        text-align: center;
-    }
-
-    .flashcard-header-btn {
         min-width: 0;
+        max-width: none;
         padding-left: 8px;
         padding-right: 8px;
     }
 
     .flashcard-card,
     .flashcard-card-inner {
-        min-height: 470px;
+        min-height: 410px;
     }
 
     .flashcard-face {
-        padding: 20px 18px;
-        border-radius: 22px;
+        padding: 16px 14px;
+        gap: 12px;
+        border-radius: 18px;
     }
 
     .flashcard-back-layout {
@@ -4255,44 +4288,26 @@ button {
     .flashcard-meaning,
     .flashcard-meaning-hero {
         max-width: 100%;
-        font-size: clamp(1.8rem, 7vw, 2.8rem);
+        font-size: clamp(1.45rem, 7.8vw, 2.1rem);
     }
 
     .flashcard-actions {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 8px;
+        gap: 6px;
         margin-bottom: 24px;
     }
 
     .flashcard-action-btn,
     .flashcard-action-switch {
-        min-height: 40px;
-        padding: 0 10px;
-        font-size: 0.82rem;
-        gap: 6px;
+        min-height: 36px;
+        padding: 0 6px;
+        font-size: 0.72rem;
+        gap: 4px;
+        border-radius: 10px;
     }
 
     .flashcard-completion-actions {
         grid-template-columns: 1fr;
-    }
-
-    .flashcard-card,
-    .flashcard-card-inner {
-        min-height: 410px;
-    }
-
-    .flashcard-face {
-        padding: 16px 14px;
-        gap: 12px;
-        border-radius: 18px;
-    }
-
-    .flashcard-header-meta {
-        align-items: stretch;
-    }
-
-    .flashcard-header-actions {
-        gap: 6px;
     }
 
     .flashcard-progress,
@@ -4302,11 +4317,6 @@ button {
 
     .flashcard-word {
         font-size: clamp(2rem, 9vw, 2.8rem);
-    }
-
-    .flashcard-meaning,
-    .flashcard-meaning-hero {
-        font-size: clamp(1.45rem, 7.8vw, 2.1rem);
     }
 
     .flashcard-detail-row {
@@ -4333,20 +4343,6 @@ button {
 
     .flashcard-example-pill {
         padding: 12px;
-    }
-
-    .flashcard-actions {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 6px;
-    }
-
-    .flashcard-action-btn,
-    .flashcard-action-switch {
-        min-height: 36px;
-        padding: 0 6px;
-        font-size: 0.72rem;
-        gap: 4px;
-        border-radius: 10px;
     }
 
     .flashcard-nav-icon svg,

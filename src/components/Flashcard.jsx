@@ -31,18 +31,32 @@ const SPEAKER_ICON = (
 );
 
 
-const CHECK_ICON = (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m5 12 5 5L20 7" />
-    </svg>
-);
+const FLASHCARD_GRADIENTS = [
+    { front: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', back: 'linear-gradient(135deg, #2dd4bf 0%, #3b82f6 100%)' },
+    { front: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)', back: 'linear-gradient(135deg, #3b82f6 0%, #34d399 100%)' },
+    { front: 'linear-gradient(135deg, #fbbf24 0%, #ec4899 100%)', back: 'linear-gradient(135deg, #38bdf8 0%, #6366f1 100%)' },
+    { front: 'linear-gradient(135deg, #fb7185 0%, #a78bfa 100%)', back: 'linear-gradient(135deg, #34d399 0%, #3b82f6 100%)' },
+    { front: 'linear-gradient(135deg, #3b82f6 0%, #a78bfa 100%)', back: 'linear-gradient(135deg, #ec4899 0%, #fbbf24 100%)' },
+    { front: 'linear-gradient(135deg, #22c55e 0%, #3b82f6 100%)', back: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)' },
+    { front: 'linear-gradient(135deg, #ec4899 0%, #f97316 100%)', back: 'linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%)' },
+    { front: 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)', back: 'linear-gradient(135deg, #fbbf24 0%, #3b82f6 100%)' },
+    { front: 'linear-gradient(135deg, #38bdf8 0%, #a3e635 100%)', back: 'linear-gradient(135deg, #d946ef 0%, #f59e0b 100%)' },
+    { front: 'linear-gradient(135deg, #f87171 0%, #8b5cf6 100%)', back: 'linear-gradient(135deg, #2dd4bf 0%, #3b82f6 100%)' },
+];
+
+function getCardTheme(word, index) {
+    if (!word) return FLASHCARD_GRADIENTS[0];
+
+    const source = `${word.id ?? ''}-${word.word ?? ''}-${index}`;
+    const hash = Array.from(source).reduce((total, char) => total + char.charCodeAt(0), 0);
+    return FLASHCARD_GRADIENTS[hash % FLASHCARD_GRADIENTS.length];
+}
 
 function getInitialSelection() {
     return [];
 }
 
 export default function Flashcard({
-    topicName,
     topicLang = 'en',
     words,
     initialLearnedWordIds = [],
@@ -88,6 +102,7 @@ export default function Flashcard({
     const isLastCard = currentIndex === totalCards - 1;
     const progressLabel = totalCards ? `${currentIndex + 1}/${totalCards}` : '0/0';
     const currentWordRemembered = currentWord ? selectedWordIds.includes(currentWord.id) : false;
+    const currentTheme = getCardTheme(currentWord, currentIndex);
 
     const toggleSelectedWord = (wordId) => {
         setSelectedWordIds((prev) => (
@@ -196,17 +211,17 @@ export default function Flashcard({
                                 onClick={toggleFlip}
                                 onKeyDown={handleCardKeyDown}
                             >
-                                <div className="flashcard-face flashcard-face-front">
+                                <div className="flashcard-face flashcard-face-front" style={{ background: currentTheme.front }}>
                                     <div className="flashcard-face-topline">Từ tiếng Anh</div>
                                     <div className="flashcard-face-center">
                                         <strong className="flashcard-word">{currentWord.word}</strong>
                                         <span className="flashcard-wordtype flashcard-wordtype-front">{currentWord.wordtype || 'VOCABULARY'}</span>
                                         <span className="flashcard-transcription">{currentWord.transcription || '/dang-cap-nhat/'}</span>
                                     </div>
-                                    <div className="flashcard-face-hint">Nhấn Space hoặc click để lật lại</div>
+                                    <div className="flashcard-face-hint" style={{ margin: '10px 0 0' }}>Nhấn Space hoặc click để lật lại</div>
                                 </div>
 
-                                <div className="flashcard-face flashcard-face-back">
+                                <div className="flashcard-face flashcard-face-back" style={{ background: currentTheme.back }}>
                                     <div className="flashcard-back-layout">
                                         <div className="flashcard-face-topline">Nghĩa tiếng việt</div>
                                         <div className="flashcard-back-center">
@@ -218,7 +233,7 @@ export default function Flashcard({
                                                 </div>
                                                 <button
                                                     type="button"
-                                                    className="flashcard-voice-btn"
+                                                    className="btn btn-secondary flashcard-voice-btn"
                                                     onClick={(event) => {
                                                         event.stopPropagation();
                                                         speakCurrentWord();
@@ -332,5 +347,12 @@ export default function Flashcard({
         </section>
     );
 }
+
+
+
+
+
+
+
 
 

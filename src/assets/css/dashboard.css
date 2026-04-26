@@ -1793,6 +1793,7 @@ button {
     .dash-main {
         padding: 12px 12px 86px;
         gap: 14px;
+        margin-bottom: 70px;
     }
 
     .welcome-banner {
@@ -4101,6 +4102,7 @@ main#cv-words-view {
     flex-direction: column;
     gap: 18px;
     padding: 24px;
+    margin-bottom: 72px;
 }
 
 .flashcard-completion-head {

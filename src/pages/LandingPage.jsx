@@ -68,15 +68,14 @@ function useCounterAnimation() {
 // ── Data ────────────────────────────────────────────────────────────────────
 const FEATURES = [
     {
-        icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="56" height="56" color="currentColor" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
-            <path d="M19 16V14C19 11.1716 19 9.75736 18.1213 8.87868C17.2426 8 15.8284 8 13 8H11C8.17157 8 6.75736 8 5.87868 8.87868C5 9.75736 5 11.1716 5 14V16C5 18.8284 5 20.2426 5.87868 21.1213C6.75736 22 8.17157 22 11 22H13C15.8284 22 17.2426 22 18.1213 21.1213C19 20.2426 19 18.8284 19 16Z" />
-            <path d="M19 18C20.4142 18 21.1213 18 21.5607 17.5607C22 17.1213 22 16.4142 22 15C22 13.5858 22 12.8787 21.5607 12.4393C21.1213 12 20.4142 12 19 12" />
-            <path d="M5 18C3.58579 18 2.87868 18 2.43934 17.5607C2 17.1213 2 16.4142 2 15C2 13.5858 2 12.8787 2.43934 12.4393C2.87868 12 3.58579 12 5 12" />
+        icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="56" height="56" color="currentColor" fill="none" stroke="#141B34" stroke-width="1.5" stroke-linejoin="round">
+            <path d="M11 8H13C15.8284 8 17.2426 8 18.1213 8.87868C19 9.75736 19 11.1716 19 14C19 16.8284 19 18.2426 18.1213 19.1213C17.2426 20 15.8284 20 13 20H12C12 20 11.5 22 8 22C8 22 9 20.9913 9 19.9827C7.44655 19.9359 6.51998 19.7626 5.87868 19.1213C5 18.2426 5 16.8284 5 14C5 11.1716 5 9.75736 5.87868 8.87868C6.75736 8 8.17157 8 11 8Z" />
+            <path d="M19 11.5H19.5C20.4346 11.5 20.9019 11.5 21.25 11.701C21.478 11.8326 21.6674 12.022 21.799 12.25C22 12.5981 22 13.0654 22 14C22 14.9346 22 15.4019 21.799 15.75C21.6674 15.978 21.478 16.1674 21.25 16.299C20.9019 16.5 20.4346 16.5 19.5 16.5H19" />
+            <path d="M5 11.5H4.5C3.56538 11.5 3.09808 11.5 2.75 11.701C2.52197 11.8326 2.33261 12.022 2.20096 12.25C2 12.5981 2 13.0654 2 14C2 14.9346 2 15.4019 2.20096 15.75C2.33261 15.978 2.52197 16.1674 2.75 16.299C3.09808 16.5 3.56538 16.5 4.5 16.5H5" />
             <path d="M13.5 3.5C13.5 4.32843 12.8284 5 12 5C11.1716 5 10.5 4.32843 10.5 3.5C10.5 2.67157 11.1716 2 12 2C12.8284 2 13.5 2.67157 13.5 3.5Z" />
             <path d="M12 5V8" />
-            <path d="M9 13V14" />
-            <path d="M15 13V14" />
-            <path d="M10 17.5C10 17.5 10.6667 18 12 18C13.3333 18 14 17.5 14 17.5" />
+            <path d="M9 12V13M15 12V13" />
+            <path d="M10 16.5C10 16.5 10.6667 17 12 17C13.3333 17 14 16.5 14 16.5" />
         </svg>,
         tone: 'no',
         badge: 'AI Powered',
@@ -137,9 +136,9 @@ export default function LandingPage() {
             {/* ── HERO (existing, kept intact) ── */}
             <header className="hero">
                 <div className="hero-left">
-                    <div class="lp-eyebrow lp-eyebrow-blue" style={{ marginTop: '7%' }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" color="currentColor" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
-                        <path d="M11.5143 2.09327C11.8265 1.96891 12.1735 1.96891 12.4857 2.09327C13.4921 2.49406 13.6887 4.03744 14.8762 4.12336C15.7124 4.18386 16.533 3.48677 17.3721 3.69574C17.7105 3.78003 18.0028 3.99579 18.186 4.29657C18.7472 5.21824 18.0229 6.57292 18.9383 7.33768C19.5743 7.86877 20.6251 7.80004 21.178 8.4511C21.4108 8.72534 21.5252 9.08303 21.4953 9.4437C21.4068 10.5166 20.0389 11.1876 20.3395 12.3439C20.5475 13.1443 21.4253 13.707 21.4953 14.5563C21.5252 14.917 21.4108 15.2747 21.178 15.5489C20.4832 16.3669 18.9808 16.0975 18.5476 17.2062C18.2434 17.9844 18.634 18.9677 18.186 19.7034C18.0028 20.0042 17.7105 20.22 17.3721 20.3043C16.3302 20.5637 15.2727 19.4445 14.2701 20.0758C13.5543 20.5264 13.2978 21.5835 12.4857 21.9067C12.1735 22.0311 11.8265 22.0311 11.5143 21.9067C10.7022 21.5835 10.4457 20.5264 9.72989 20.0758C8.73971 19.4524 7.65213 20.5593 6.62791 20.3043C6.28947 20.22 5.9972 20.0042 5.81405 19.7034C5.25286 18.7818 5.97704 17.427 5.0617 16.6623C4.42582 16.1312 3.37494 16.2 2.82204 15.5489C2.58921 15.2747 2.47484 14.917 2.50465 14.5563C2.57485 13.707 3.4524 13.1443 3.6605 12.3439C3.95808 11.1997 2.59204 10.5009 2.50465 9.4437C2.47484 9.08303 2.58921 8.72534 2.82204 8.4511C3.51676 7.63284 5.01899 7.90253 5.45238 6.79383C5.75662 6.0156 5.36608 5.03227 5.81405 4.29657C5.9972 3.99579 6.28947 3.78003 6.62791 3.69574C7.46705 3.48677 8.28757 4.18387 9.12378 4.12336C10.3113 4.03746 10.5079 2.49406 11.5143 2.09327Z" />
-                        <path d="M9 13.3333C9 13.3333 9.875 13.3333 10.75 15C10.75 15 13.5294 10.8333 16 10" />
+                    <div class="lp-eyebrow lp-eyebrow-blue" style={{ marginTop: '7%', color: 'var(--blue)' }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#1877F2" stroke="none">
+                        <path d="M18.9905 19H19M18.9905 19C18.3678 19.6175 17.2393 19.4637 16.4479 19.4637C15.4765 19.4637 15.0087 19.6537 14.3154 20.347C13.7251 20.9374 12.9337 22 12 22C11.0663 22 10.2749 20.9374 9.68457 20.347C8.99128 19.6537 8.52349 19.4637 7.55206 19.4637C6.76068 19.4637 5.63218 19.6175 5.00949 19C4.38181 18.3776 4.53628 17.2444 4.53628 16.4479C4.53628 15.4414 4.31616 14.9786 3.59938 14.2618C2.53314 13.1956 2.00002 12.6624 2 12C2.00001 11.3375 2.53312 10.8044 3.59935 9.73817C4.2392 9.09832 4.53628 8.46428 4.53628 7.55206C4.53628 6.76065 4.38249 5.63214 5 5.00944C5.62243 4.38178 6.7556 4.53626 7.55208 4.53626C8.46427 4.53626 9.09832 4.2392 9.73815 3.59937C10.8044 2.53312 11.3375 2 12 2C12.6625 2 13.1956 2.53312 14.2618 3.59937C14.9015 4.23907 15.5355 4.53626 16.4479 4.53626C17.2393 4.53626 18.3679 4.38247 18.9906 5C19.6182 5.62243 19.4637 6.75559 19.4637 7.55206C19.4637 8.55858 19.6839 9.02137 20.4006 9.73817C21.4669 10.8044 22 11.3375 22 12C22 12.6624 21.4669 13.1956 20.4006 14.2618C19.6838 14.9786 19.4637 15.4414 19.4637 16.4479C19.4637 17.2444 19.6182 18.3776 18.9905 19Z" fill="#1877F2" stroke="#1877F2" stroke-width="1" />
+                        <path d="M9 12.8929L10.8 14.5L15 9.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
                     </svg> Học thử miễn phí ngay!</div>
                     <h1>Learn and retain vocabulary effectively with <span style={{
                         display: 'inline-block',
@@ -155,7 +154,7 @@ export default function LandingPage() {
                         backgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                         color: 'transparent',
-                    }}>pkastudy</span></h1>
+                    }}>pkastudy</span> now!</h1>
                     <p>
                         Nền tảng học Vocabulary tiếng Anh - Hàn toàn diện với từ vựng phong phú,
                         phát âm chuẩn, luyện nghe hiệu quả, flashcard sinh động và trợ lý AI thông minh.
@@ -170,26 +169,6 @@ export default function LandingPage() {
                     </div>
                 </div>
 
-                {/* <div className="hero-right">
-                    <div className="lp-stats-strip lp-reveal" style={{ transitionDelay: '160ms' }}>
-                        <div className="lp-stat-item">
-                            <span className="lp-stat-num" data-count="800" data-suffix="+">0</span>
-                            <span className="lp-stat-label">Từ vựng</span>
-                        </div>
-                        <div className="lp-stat-item">
-                            <span className="lp-stat-num" data-count="35" data-suffix="+">0</span>
-                            <span className="lp-stat-label">Chủ đề học</span>
-                        </div>
-                        <div className="lp-stat-item">
-                            <span className="lp-stat-num" data-count="2" data-suffix=" language">0</span>
-                            <span className="lp-stat-label">Tiếng Anh &amp; Hàn</span>
-                        </div>
-                        <div className="lp-stat-item">
-                            <span className="lp-stat-num" data-count="100" data-suffix="% free">0</span>
-                            <span className="lp-stat-label">Không mất phí</span>
-                        </div>
-                    </div>
-                </div> */}
             </header>
 
             {/* ══════════════════════════════════════════
@@ -199,7 +178,10 @@ export default function LandingPage() {
                 <div className="lp-container">
                     <div className="lp-features-header lp-reveal">
                         <div className="lp-eyebrow lp-eyebrow-blue">
-                            Giới thiệu
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" color="currentColor" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+                                <path d="M2 12C2 7.52166 2 5.28249 3.39124 3.89124C4.78249 2.5 7.02166 2.5 11.5 2.5C15.9783 2.5 18.2175 2.5 19.6088 3.89124C21 5.28249 21 7.52166 21 12C21 16.4783 21 18.7175 19.6088 20.1088C18.2175 21.5 15.9783 21.5 11.5 21.5C7.02166 21.5 4.78249 21.5 3.39124 20.1088C2 18.7175 2 16.4783 2 12Z" />
+                                <path d="M12.3638 7.72209L13.2437 9.49644C13.3637 9.74344 13.6837 9.98035 13.9536 10.0257L15.5485 10.2929C16.5684 10.4643 16.8083 11.2103 16.0734 11.9462L14.8335 13.1964C14.6236 13.4081 14.5086 13.8164 14.5736 14.1087L14.9285 15.6562C15.2085 16.8812 14.5636 17.355 13.4887 16.7148L11.9939 15.8226C11.7239 15.6613 11.2789 15.6613 11.004 15.8226L9.50913 16.7148C8.43925 17.355 7.78932 16.8761 8.06929 15.6562L8.42425 14.1087C8.48925 13.8164 8.37426 13.4081 8.16428 13.1964L6.92442 11.9462C6.1945 11.2103 6.42947 10.4643 7.44936 10.2929L9.04419 10.0257C9.30916 9.98035 9.62912 9.74344 9.74911 9.49644L10.629 7.72209C11.109 6.7593 11.8889 6.7593 12.3638 7.72209Z" />
+                            </svg> Giới thiệu về pkastudy
                         </div>
                         <h2 className="lp-heading">Các tính năng chính</h2>
                         <p className="lp-subheading">
@@ -238,7 +220,10 @@ export default function LandingPage() {
                         <div className="lp-courses-text lp-reveal">
                             <div>
                                 <div className="lp-eyebrow lp-eyebrow-blue">
-                                    Tài liệu
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" color="#189cd8" fill="none" stroke="#189cd8" stroke-width="1.5" stroke-linecap="round">
+                                        <path d="M12.8809 7.01656L17.6538 8.28825M11.8578 10.8134L14.2442 11.4492M11.9765 17.9664L12.9311 18.2208C15.631 18.9401 16.981 19.2998 18.0445 18.6893C19.108 18.0787 19.4698 16.7363 20.1932 14.0516L21.2163 10.2548C21.9398 7.57005 22.3015 6.22768 21.6875 5.17016C21.0735 4.11264 19.7235 3.75295 17.0235 3.03358L16.0689 2.77924C13.369 2.05986 12.019 1.70018 10.9555 2.31074C9.89196 2.9213 9.53023 4.26367 8.80678 6.94841L7.78366 10.7452C7.0602 13.4299 6.69848 14.7723 7.3125 15.8298C7.92652 16.8874 9.27651 17.2471 11.9765 17.9664Z" />
+                                        <path d="M12 20.9462L11.0477 21.2055C8.35403 21.939 7.00722 22.3057 5.94619 21.6832C4.88517 21.0607 4.52429 19.692 3.80253 16.9546L2.78182 13.0833C2.06006 10.3459 1.69918 8.97718 2.31177 7.89892C2.84167 6.96619 4 7.00015 5.5 7.00003" />
+                                    </svg> Danh sách tài liệu
                                 </div>
                                 <h2 className="lp-heading">Build vocabulary that sticks with <span style={{
                                     display: 'inline-block',
@@ -254,7 +239,7 @@ export default function LandingPage() {
                                     backgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent',
                                     color: 'transparent',
-                                }}>pkastudy</span>!</h2>
+                                }}>pkastudy.</span></h2>
                                 <p className="lp-subheading">
                                     Hai bộ từ vựng chuẩn quốc tế được biên soạn bám sát đề thi thực tế,
                                     kèm phiên âm và ví dụ giúp bạn học đúng từ đầu.
@@ -280,15 +265,7 @@ export default function LandingPage() {
                                     gap: '6px'
                                 }}
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    width="20"
-                                    height="20"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="1.5"
-                                >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" color="currentColor" fill="none" stroke="currentColor" stroke-width="1.5">
                                     <path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" />
                                     <path d="M8 12.5L10.5 15L16 9" />
                                 </svg>
@@ -361,7 +338,7 @@ export default function LandingPage() {
                                             display: 'flex',
                                             alignItems: 'center',
                                             gap: '8px'
-                                        }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" color="currentColor" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M3.49977 18.9853V20.5H5.01449C6.24074 20.5 6.85387 20.5 7.40518 20.2716C7.9565 20.0433 8.39004 19.6097 9.25713 18.7426L19.1211 8.87868C20.0037 7.99612 20.4449 7.55483 20.4937 7.01325C20.5018 6.92372 20.5018 6.83364 20.4937 6.74411C20.4449 6.20253 20.0037 5.76124 19.1211 4.87868C18.2385 3.99612 17.7972 3.55483 17.2557 3.50605C17.1661 3.49798 17.0761 3.49798 16.9865 3.50605C16.4449 3.55483 16.0037 3.99612 15.1211 4.87868L5.25713 14.7426C4.39004 15.6097 3.9565 16.0433 3.72813 16.5946C3.49977 17.1459 3.49977 17.759 3.49977 18.9853Z" />
                                                 <path d="M13.5 6.5L17.5 10.5" />
                                             </svg> Tạo bộ từ vựng của riêng bạn</h3>

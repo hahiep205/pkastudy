@@ -274,7 +274,6 @@
 ════════════════════════════════════════════ */
 .lp-courses {
     background: var(--bg-page);
-    border-bottom: 2px solid var(--border-color);
 }
 
 .lp-courses-layout {

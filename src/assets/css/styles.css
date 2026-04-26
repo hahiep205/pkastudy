@@ -1018,7 +1018,7 @@ img {
 /* Mobile (Điện thoại) */
 @media (max-width: 600px) {
     .hero {
-        padding: 40px 20px 116px;
+        padding: 40px 20px 124px;
     }
 
     .hero h1 {

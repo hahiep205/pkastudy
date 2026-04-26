@@ -124,28 +124,28 @@ img {
 }
 
 .hero {
-    text-align: center;
-    /* Gradient từ xanh nhạt sang trắng */
     background: linear-gradient(180deg, rgba(28, 176, 246, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
-    padding: 56px 40px 40px;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
+    padding: 0px 20px 0px;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .hero h1 {
     font-family: 'Feather Bold', var(--font-stack);
-    font-size: 52px;
-    color: var(--blue);
-    text-transform: lowercase;
+    font-size: 75px;
+    color: var(--dark-blue);
     margin-bottom: 16px;
     line-height: 1.2;
 }
 
 .hero p {
-    font-size: 17px;
+    font-size: 20px;
     color: var(--gray-light);
-    max-width: 520px;
+    max-width: 600px;
     line-height: 1.5;
     margin-bottom: 32px;
 }
@@ -950,6 +950,36 @@ img {
    5. RESPONSIVE (TƯƠNG THÍCH MÀN HÌNH NHỎ)
    ========================================================================== */
 
+@media (min-width: 1024px) {
+    .hero {
+        flex-direction: row;
+        justify-content: center;
+        align-items: stretch;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .hero-left {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-bottom: 12%;
+    }
+
+    .hero-left {
+        padding-left: 20%;
+        padding-right: 20%;
+        align-items: center;
+    }
+
+}
+
+@media (min-width: 1024px) {
+    .hero-buttons {
+        justify-content: flex-start;
+    }
+}
+
 /* Tablet & Màn hình vừa */
 @media (max-width: 900px) {
     .grid {
@@ -962,7 +992,7 @@ img {
     }
 
     .hero h1 {
-        font-size: 36px;
+        font-size: 50px;
     }
 
     .nav-links {
@@ -988,11 +1018,16 @@ img {
 /* Mobile (Điện thoại) */
 @media (max-width: 600px) {
     .hero {
-        padding: 40px 20px 32px;
+        padding: 40px 20px 116px;
     }
 
     .hero h1 {
-        font-size: 28px;
+        font-size: 42px;
+        text-align: center;
+    }
+
+    .hero p {
+        font-size: 15px;
     }
 
     .panel {

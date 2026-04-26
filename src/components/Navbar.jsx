@@ -34,8 +34,8 @@ export default function Navbar() {
                 <Link to="/"><img src={logo2} style={{ width: '179px', height: 'auto' }} alt="pkastudy Logo" className="nav-logo" /></Link>
             </div>
 
-            <button 
-                className={`mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''}`} 
+            <button
+                className={`mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''}`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label="Menu"
             >
@@ -44,8 +44,8 @@ export default function Navbar() {
                 <span></span>
             </button>
 
-            <div 
-                className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`} 
+            <div
+                className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}
                 onClick={closeMenu}
             ></div>
 
@@ -63,10 +63,8 @@ export default function Navbar() {
                 <nav className="mobile-menu-nav">
                     <Link to="/" className="mobile-nav-link" onClick={closeMenu}>Trang chủ</Link>
                     <Link to="#" className="mobile-nav-link" onClick={closeMenu}>Giới thiệu</Link>
-                    <Link to="/dashboard/courses" className="mobile-nav-link" onClick={closeMenu}>Khóa học</Link>
-                    <Link to="#" className="mobile-nav-link" onClick={closeMenu}>Lộ trình học</Link>
+                    <Link to="/dashboard/courses" className="mobile-nav-link" onClick={closeMenu}>Tài liệu</Link>
                     <Link to="#" className="mobile-nav-link" onClick={closeMenu}>Chatbot AI</Link>
-                    <Link to="#" className="mobile-nav-link" onClick={closeMenu}>Từ điển</Link>
                 </nav>
 
                 <div className="mobile-menu-actions">
@@ -78,10 +76,8 @@ export default function Navbar() {
             <div className="nav-links">
                 <Link to="/" className="nav-link">Trang chủ</Link>
                 <Link to="#" className="nav-link">Giới thiệu</Link>
-                <Link to="/dashboard/courses" className="nav-link">Khóa học</Link>
-                <Link to="#" className="nav-link">Lộ trình học</Link>
+                <Link to="/dashboard/courses" className="nav-link">Tài liệu</Link>
                 <Link to="#" className="nav-link">Chatbot AI</Link>
-                <Link to="#" className="nav-link">Từ điển</Link>
             </div>
 
             <div className="nav-right">

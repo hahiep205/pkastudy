@@ -3556,7 +3556,7 @@ main#cv-words-view {
 }
 
 .cv-switch-chk:checked+.cv-switch-track {
-    background: #22c55e;
+    background: var(--blue);
 }
 
 .cv-switch-thumb {
@@ -4080,7 +4080,7 @@ main#cv-words-view {
 }
 
 .flashcard-action-switch .cv-switch-chk:checked+.cv-switch-track {
-    background: #ffffff;
+    background: var(--blue);
 }
 
 .flashcard-action-switch-label {

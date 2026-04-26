@@ -19,8 +19,8 @@ export default function Footer() {
                     <ul className="footer-list">
                         <li><Link to="/" className="footer-link">Trang chủ</Link></li>
                         <li><Link to="#" className="footer-link">Giới thiệu</Link></li>
-                        <li><Link to="/dashboard/courses" className="footer-link">Khóa học</Link></li>
-                        <li><Link to="#" className="footer-link">Lộ trình học</Link></li>
+                        <li><Link to="/dashboard/courses" className="footer-link">Tài liệu</Link></li>
+                        <li><Link to="#" className="footer-link">Chatbot AI</Link></li>
                     </ul>
                 </div>
 
@@ -29,8 +29,7 @@ export default function Footer() {
                     <ul className="footer-list">
                         <li><Link to="#" className="footer-link">Học Tiếng Anh</Link></li>
                         <li><Link to="#" className="footer-link">Học Tiếng Hàn</Link></li>
-                        <li><Link to="#" className="footer-link">Chatbot AI</Link></li>
-                        <li><Link to="#" className="footer-link">Từ Điển</Link></li>
+                        <li><Link to="#" className="footer-link">Tạo bộ từ của bạn</Link></li>
                         <li><Link to="/dashboard" className="footer-link">Học Thử</Link></li>
                     </ul>
                 </div>
@@ -40,8 +39,8 @@ export default function Footer() {
                     <div className="map-wrapper">
                         <iframe
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3541.401605565887!2d105.7461114750295!3d20.962611180670255!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313452efff394ce3%3A0x391a39d4325be464!2zVHLGsOG7nW5nIMSQ4bqhaSBI4buNYyBQaGVuaWthYQ!5e1!3m2!1svi!2s!4v1776373716545!5m2!1svi!2s"
-                            style={{ border: 0 }} 
-                            allowFullScreen="" 
+                            style={{ border: 0 }}
+                            allowFullScreen=""
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
                             title="Location Map"

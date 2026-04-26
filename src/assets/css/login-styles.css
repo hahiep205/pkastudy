@@ -659,6 +659,6 @@ body.mobile-menu-open {
 
 @media (max-width: 480px) {
     .mobile-menu {
-        width: 80%;
+        width: 62%;
     }
 }

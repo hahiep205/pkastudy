@@ -1,0 +1,607 @@
+/* ═══════════════════════════════════════════════
+   PKA Study — LandingPage.css
+   Synced design system: Nunito, Feather Bold
+   Colors: --blue, --dark-blue, --green, --golden
+═══════════════════════════════════════════════ */
+
+/* ── CSS Variables (mirror dashboard.css) ── */
+:root {
+    --green: rgb(88, 204, 2);
+    --green-shadow: #61B800;
+    --blue: rgb(28, 176, 246);
+    --blue-shadow: #189CD8;
+    --dark-blue: rgb(16, 15, 62);
+    --gray-text: rgb(75, 75, 75);
+    --gray-light: rgb(119, 119, 119);
+    --border-color: rgb(229, 229, 229);
+    --nav-text: rgb(175, 175, 175);
+    --red: #FF4B4B;
+    --orange: #FF9600;
+    --golden: #FFC800;
+    --bg-page: #f6f7fb;
+    --font-stack: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, .07);
+    --shadow-hover: 0 12px 40px rgba(0, 0, 0, .13);
+}
+
+/* ── Section shared base ── */
+.lp-section {
+    width: 100%;
+    padding: 80px 40px;
+}
+
+.lp-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.lp-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.lp-eyebrow-blue {
+    background: rgba(28, 176, 246, .12);
+    color: var(--blue);
+}
+
+.lp-eyebrow-green {
+    background: rgba(88, 204, 2, .12);
+    color: var(--green);
+}
+
+.lp-eyebrow-gold {
+    background: rgba(255, 200, 0, .14);
+    color: #b8920f;
+}
+
+.lp-heading {
+    font-family: 'Feather Bold', var(--font-stack);
+    font-size: clamp(28px, 4vw, 42px);
+    color: var(--dark-blue);
+    line-height: 1.15;
+    margin-bottom: 14px;
+    font-size: 54px;
+}
+
+.lp-subheading {
+    font-size: 16px;
+    color: var(--gray-light);
+    line-height: 1.7;
+    max-width: 560px;
+    font-weight: 600;
+}
+
+/* ── Animate on scroll ── */
+.lp-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .6s ease, transform .7s cubic-bezier(.22, 1, .36, 1);
+}
+
+.lp-reveal.lp-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ════════════════════════════════════════════
+   HERO — existing + divider wave
+════════════════════════════════════════════ */
+.hero-wave {
+    width: 100%;
+    line-height: 0;
+    margin-top: -2px;
+}
+
+/* ════════════════════════════════════════════
+   SECTION 1: GIỚI THIỆU (Features)
+════════════════════════════════════════════ */
+.lp-features {
+    background: #fff;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.lp-features-header {
+    text-align: center;
+    margin-bottom: 56px;
+}
+
+.lp-features-header .lp-subheading {
+    margin: 0 auto;
+}
+
+.lp-features-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+/* Feature card */
+.lp-feat-card {
+    background: var(--bg-page);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform .25s, box-shadow .25s, border-color .2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.lp-feat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    opacity: 0;
+    transition: opacity .25s;
+}
+
+.lp-feat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--blue);
+}
+
+.lp-feat-card:hover::before {
+    opacity: 1;
+}
+
+.lp-feat-card--blue:hover {
+    border-color: rgba(28, 176, 246, .25);
+}
+
+.lp-feat-card--green:hover {
+    border-color: rgba(28, 176, 246, .25);
+}
+
+.lp-feat-card--orange:hover {
+    border-color: rgba(28, 176, 246, .25);
+}
+
+.lp-feat-card--gold:hover {
+    border-color: rgba(28, 176, 246, .25);
+}
+
+.lp-feat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 26px;
+    transition: transform .25s;
+    margin: 0 auto;
+}
+
+.lp-feat-card:hover .lp-feat-icon {
+    transform: scale(1.1) rotate(-3deg);
+}
+
+.lp-feat-icon--blue {
+    background: rgba(28, 176, 246, .12);
+}
+
+.lp-feat-icon--green {
+    background: rgba(28, 176, 246, .12);
+}
+
+.lp-feat-icon--orange {
+    background: rgba(28, 176, 246, .12);
+}
+
+.lp-feat-icon--gold {
+    background: rgba(28, 176, 246, .12);
+}
+
+.lp-feat-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--dark-blue);
+    line-height: 1.3;
+}
+
+.lp-feat-desc {
+    font-size: 14px;
+    color: var(--gray-light);
+    line-height: 1.65;
+    font-weight: 600;
+    flex: 1;
+}
+
+.lp-feat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    align-self: flex-start;
+}
+
+.lp-feat-badge--blue {
+    color: var(--blue);
+    background: rgba(28, 176, 246, .10);
+}
+
+.lp-feat-badge--green {
+    color: var(--blue);
+    background: rgba(28, 176, 246, .10);
+}
+
+.lp-feat-badge--orange {
+    color: var(--blue);
+    background: rgba(28, 176, 246, .10);
+}
+
+.lp-feat-badge--gold {
+    color: var(--blue);
+    background: rgba(28, 176, 246, .10);
+}
+
+/* Stats strip under features */
+.lp-stats-strip {
+    margin-top: 64px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #fff;
+}
+
+/* ════════════════════════════════════════════
+   SECTION 2: KHÓA HỌC (Courses preview)
+════════════════════════════════════════════ */
+.lp-courses {
+    background: var(--bg-page);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.lp-courses-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 56px;
+    align-items: start;
+}
+
+.lp-courses-text {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 80px;
+}
+
+.lp-courses-text .lp-subheading {
+    max-width: 420px;
+}
+
+.lp-courses-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+/* Course cards stack */
+.lp-courses-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.lp-course-card {
+    background: #fff;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 0;
+    overflow: hidden;
+    transition: transform .25s, box-shadow .25s;
+    display: flex;
+    flex-direction: column;
+}
+
+.lp-course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.lp-course-banner {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 14px;
+}
+
+.lp-course-flag {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.lp-course-banner-label {
+    font-size: 18px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(16, 15, 62, .5);
+}
+
+.lp-course-body {
+    padding: 20px 24px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.lp-course-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.lp-course-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--dark-blue);
+    margin-bottom: 14px;
+}
+
+.lp-course-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.lp-course-tag {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+.lp-course-tag--blue {
+    color: var(--blue);
+    background: rgba(28, 176, 246, .10);
+}
+
+.lp-course-tag--pink {
+    color: #e0578a;
+    background: rgba(255, 75, 150, .10);
+}
+
+.lp-course-tag--yellow {
+    color: var(--golden);
+    background: rgba(255, 200, 0, .14);
+}
+
+.lp-course-desc {
+    font-size: 13px;
+    color: var(--gray-light);
+    line-height: 1.55;
+    font-weight: 600;
+}
+
+.lp-course-progress-bar {
+    height: 5px;
+    background: var(--border-color);
+    border-radius: 99px;
+    margin-top: 12px;
+    overflow: hidden;
+}
+
+.lp-course-progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--blue), var(--green));
+    width: 0;
+    transition: width 1.2s cubic-bezier(.22, 1, .36, 1) .3s;
+}
+
+.lp-course-card.lp-visible .lp-course-progress-fill {
+    width: var(--fill-width, 60%);
+}
+
+
+/* ════════════════════════════════════════════
+   BUTTONS (reuse from styles.css patterns)
+════════════════════════════════════════════ */
+.lp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 24px;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    font-family: var(--font-stack);
+    letter-spacing: .3px;
+    transition: filter .1s, transform .1s;
+    white-space: nowrap;
+}
+
+.lp-btn:active {
+    transform: translateY(3px);
+    box-shadow: none !important;
+}
+
+.lp-btn--primary {
+    background: var(--blue);
+    color: #fff;
+    box-shadow: 0 4px 0 var(--blue-shadow);
+}
+
+.lp-btn--primary:hover {
+    filter: brightness(1.06);
+}
+
+.lp-btn--green {
+    background: var(--green);
+    color: #fff;
+    box-shadow: 0 4px 0 var(--green-shadow);
+}
+
+.lp-btn--green:hover {
+    filter: brightness(1.06);
+}
+
+.lp-btn--secondary {
+    background: #fff;
+    color: var(--blue);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 4px 0 var(--border-color);
+}
+
+.lp-btn--secondary:hover {
+    background: var(--bg-page);
+}
+
+.lp-btn--ghost-white {
+    background: rgba(255, 255, 255, .1);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, .2);
+}
+
+.lp-btn--ghost-white:hover {
+    background: rgba(255, 255, 255, .18);
+}
+
+
+
+/* ════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .lp-steps {
+        grid-template-columns: 1fr 1fr 1fr;
+        row-gap: 40px;
+    }
+
+    .lp-steps::before {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .lp-section {
+        padding: 60px 24px;
+    }
+
+    .lp-courses-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .lp-courses-text .lp-subheading {
+        max-width: none;
+    }
+
+    .lp-steps {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .lp-section {
+        padding: 48px 20px;
+    }
+
+    .lp-features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lp-stats-strip {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .lp-steps {
+        grid-template-columns: 1fr;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+
+    .lp-heading {
+        font-size: 34px;
+    }
+
+    .lp-courses-text {
+        padding-bottom: 24px;
+    }
+
+    .lp-courses-cta {
+        flex-direction: row;
+    }
+
+    .lp-courses-cta .lp-btn {
+        width: 48%;
+        justify-content: center;
+    }
+
+    .lp-courses-text {
+        position: static;
+    }
+
+    .lp-feat-title {
+        margin: 0 auto;
+    }
+
+    .lp-feat-card {
+        height: 80%;
+        aspect-ratio: 1 / 1;
+        margin: 0 auto;
+    }
+
+    .lp-features-grid {
+        gap: 0px;
+    }
+
+    .hero {
+        min-height: unset;
+    }
+
+    .hero-left {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .lp-course-body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

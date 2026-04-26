@@ -171,11 +171,10 @@ export default function Flashcard({
         return (
             <section className="flashcard-shell">
                 <div className="flashcard-empty">
-                    <div className="flashcard-empty-icon">FC</div>
-                    <h3>Topic nay chua co tu vung</h3>
-                    <p>Hay them tu vung truoc khi bat dau flashcard.</p>
+                    <h3>Topic này chưa có từ vựng</h3>
+                    <p>Hay thêm từ vựng trước khi bắt đầu flashcard.</p>
                     <button type="button" className="btn btn-secondary" onClick={onBackToTopic}>
-                        Quay lai
+                        Quay lại
                     </button>
                 </div>
             </section>
@@ -290,7 +289,7 @@ export default function Flashcard({
                         >
                             {SPEAKER_ICON} Nghe
                         </button>
-                        <label className="flashcard-action-switch" title={currentWordRemembered ? 'Da thuoc' : 'Chua thuoc'}>
+                        <label className="flashcard-action-switch" title={currentWordRemembered ? 'Đã thuộc' : 'Chưa thuộc'}>
                             <span className="flashcard-action-switch-label">THUỘC</span>
                             <input
                                 type="checkbox"

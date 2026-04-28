@@ -528,7 +528,7 @@ function SetupPanel({ langOptions, selectedLang, onPickLang, selectedBird, onPic
                     </div>
                 </div>
 
-                <div className="flappy-setup-footer">
+                <div className="flappy-setup-footer" style={{ paddingBottom: "36px" }}>
                     <button type="button" className="btn btn-primary" onClick={onStart} disabled={!selectedLang}>
                         Play Flappy Bird
                     </button>

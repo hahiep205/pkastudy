@@ -489,7 +489,7 @@ function SetupPanel({ langOptions, selectedLang, onPickLang, selectedBird, onPic
                                 Game khác
                             </button>
                         </div>
-                        <p>Mỗi ngôn ngữ cần thuộc tối thiểu 15 từ vựng để có thể bắt đầu ôn tập. Tất cả từ đã thuộc của bạn trong ngôn ngữ này sẽ được trộn lại để làm câu hỏi ôn tập ngẫu nhiên trong game.</p>
+                        <p>Tất cả từ đã thuộc của bạn trong ngôn ngữ này sẽ được trộn lại để làm câu hỏi ôn tập ngẫu nhiên trong game.</p>
                     </div>
                 </div>
 
@@ -511,7 +511,6 @@ function SetupPanel({ langOptions, selectedLang, onPickLang, selectedBird, onPic
                     <div className="flappy-selected-topic-copy">
                         <span className="flappy-selected-topic-label">Chọn Bird</span>
                         <strong>Chọn nhân vật bạn muốn dùng cho lượt chơi này.</strong>
-                        <p>Bạn có thể chọn một trong 3 con rồi bấm Play để bắt đầu chơi.</p>
                     </div>
                     <div className="flappy-bird-picker-grid">
                         {BIRD_OPTIONS.map((bird) => (

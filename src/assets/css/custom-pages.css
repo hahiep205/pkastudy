@@ -3848,6 +3848,14 @@ body.app-dark-mode .flappy-resume-overlay span {
         width: 100%;
     }
 
+    .flappy-lang-card strong {
+        font-size: 18px;
+    }
+
+    .flappy-lang-card small {
+        font-size: 14px;
+    }
+
     .flappy-challenge-marker {
         width: 38px;
         height: 38px;

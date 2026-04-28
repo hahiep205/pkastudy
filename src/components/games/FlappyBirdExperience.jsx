@@ -30,6 +30,7 @@ const RESUME_SLOW_FALL_MS = 900;
 const RESUME_SLOW_FALL_GRAVITY_MULTIPLIER = 0.58;
 const RESUME_SLOW_FALL_MAX_VELOCITY = 110;
 const RESUME_PIPE_SHIELD_MS = 3000;
+const FLAPPY_SETUP_LANGS = ['en', 'ko'];
 const GAME_ID = 'flappy-bird';
 const BIRD_OPTIONS = [
     { id: 'yellow', label: 'Vàng', image: birdYellowImage },
@@ -478,7 +479,7 @@ function GameOverModal({ isOpen, score, hearts, answered, correct, wrong, reason
 function SetupPanel({ langOptions, selectedLang, onPickLang, selectedBird, onPickBird, onStart, onBackGallery }) {
     return (
         <section className="flappy-setup-shell">
-            <div className="flappy-setup-panel" style={{ marginBottom: "24px" }}>
+            <div className="flappy-setup-panel" style={{ marginBottom: "50px" }}>
                 <div className="flappy-setup-header">
                     <div>
                         <div className="flappy-setup-eyebrow">Bắt đầu luyện tập</div>
@@ -568,9 +569,8 @@ export default function FlappyBirdExperience({ onBackGallery }) {
         [topicOptions, remembered],
     );
     const langOptions = useMemo(() => {
-        return Array.from(rememberedWordsByLang.entries())
-            .map(([code, words]) => ({ code, count: words.length }))
-            .filter((option) => option.count >= 1)
+        return FLAPPY_SETUP_LANGS
+            .map((code) => ({ code, count: (rememberedWordsByLang.get(code) || []).length }))
             .sort((first, second) => first.code.localeCompare(second.code));
     }, [rememberedWordsByLang]);
 
@@ -927,20 +927,6 @@ export default function FlappyBirdExperience({ onBackGallery }) {
             speakText(activeChallenge.listenText, activeChallenge.wordLanguage, activeTopic?.lang || 'en');
         }
     };
-
-    if (!langOptions.length) {
-        return (
-            <section className="flappy-setup-shell">
-                <div className="flappy-setup-panel flappy-empty-panel">
-                    <h2>Chưa có từ đã thuộc để chơi</h2>
-                    <p>Bạn cần đánh dấu ít nhất một từ là đã thuộc ở bất kỳ ngôn ngữ nào thì tab game mới có dữ liệu để chuẩn bị lượt chơi.</p>
-                    <button type="button" className="btn btn-secondary" onClick={onBackGallery}>
-                        Quay lại danh sách game
-                    </button>
-                </div>
-            </section>
-        );
-    }
 
     if (phase === 'setup') {
         return (

@@ -1722,6 +1722,10 @@ body.app-dark-mode .settings2-switch .cv-switch-thumb {
     gap: 20px;
 }
 
+.stats2-grid-triple {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .stats2-board {
     background: #fff;
     border: 1px solid rgba(15, 23, 42, .08);
@@ -1740,6 +1744,11 @@ body.app-dark-mode .settings2-switch .cv-switch-thumb {
     border-color: rgba(56, 189, 248, .16);
 }
 
+.stats2-board-games {
+    background: linear-gradient(180deg, #f7fff9, #ffffff);
+    border-color: rgba(34, 197, 94, .16);
+}
+
 .stats2-board-header {
     padding: 22px 22px 18px;
     border-bottom: 1px solid rgba(15, 23, 42, .06);
@@ -1753,6 +1762,11 @@ body.app-dark-mode .settings2-switch .cv-switch-thumb {
 .stats2-board-exp .stats2-board-header {
     background: linear-gradient(180deg, rgba(56, 189, 248, .08), rgba(255, 255, 255, 0));
     border-bottom-color: rgba(56, 189, 248, .12);
+}
+
+.stats2-board-games .stats2-board-header {
+    background: linear-gradient(180deg, rgba(34, 197, 94, .08), rgba(255, 255, 255, 0));
+    border-bottom-color: rgba(34, 197, 94, .12);
 }
 
 .stats2-board-copy h2 {
@@ -1902,6 +1916,10 @@ body.app-dark-mode .settings2-switch .cv-switch-thumb {
     background: linear-gradient(180deg, rgba(240, 249, 255, .92), rgba(255, 255, 255, .96));
 }
 
+.stats2-board-games .stats2-history-item {
+    background: linear-gradient(180deg, rgba(240, 253, 244, .92), rgba(255, 255, 255, .96));
+}
+
 .stats2-history-item strong {
     display: block;
     font-size: 14px;
@@ -2029,12 +2047,21 @@ body.app-dark-mode .stats2-board.stats2-board-exp {
     border-color: rgba(56, 189, 248, .2);
 }
 
+body.app-dark-mode .stats2-board.stats2-board-games {
+    background: linear-gradient(180deg, #253f35, #243047);
+    border-color: rgba(34, 197, 94, .2);
+}
+
 body.app-dark-mode .stats2-board.stats2-board-streak .stats2-board-header {
     background: linear-gradient(180deg, rgba(245, 158, 11, .12), rgba(255, 255, 255, 0));
 }
 
 body.app-dark-mode .stats2-board.stats2-board-exp .stats2-board-header {
     background: linear-gradient(180deg, rgba(56, 189, 248, .12), rgba(255, 255, 255, 0));
+}
+
+body.app-dark-mode .stats2-board.stats2-board-games .stats2-board-header {
+    background: linear-gradient(180deg, rgba(34, 197, 94, .12), rgba(255, 255, 255, 0));
 }
 
 body.app-dark-mode .stats2-history-item {

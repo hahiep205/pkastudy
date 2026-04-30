@@ -317,6 +317,11 @@
     margin-top: 8px;
 }
 
+.lp-cta-btn {
+    min-width: 168px;
+    justify-content: center;
+}
+
 /* Course cards stack */
 .lp-courses-cards {
     display: flex;

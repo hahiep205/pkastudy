@@ -3,11 +3,14 @@ import birdBrownImage from '../../assets/images/bird-brown.svg';
 import birdPinkImage from '../../assets/images/bird-pink.svg';
 import birdYellowImage from '../../assets/images/bird-yellow.svg';
 import { coursesData } from '../../data/coursesData';
+import { useAuth } from '../../contexts/useAuth';
 import { useCourseProgress } from '../../hooks/useCourseProgress';
 import { useCustomCourses } from '../../hooks/useCustomCourses';
+import { getDashboardUserKey } from '../../utils/dashboardProgress';
 import { playCorrectSound, playIncorrectSound } from '../../utils/feedbackAudio';
 import { languageLabels } from '../../utils/language';
 import { getSpeechLang } from '../../utils/studyModes';
+import { recordGamePlay } from '../../utils/userStats';
 
 const WORLD_WIDTH = 960;
 const WORLD_HEIGHT = 540;
@@ -538,6 +541,7 @@ function SetupPanel({ langOptions, selectedLang, onPickLang, selectedBird, onPic
 }
 
 export default function FlappyBirdExperience({ onBackGallery }) {
+    const { user } = useAuth();
     const { customCourses } = useCustomCourses();
     const { remembered } = useCourseProgress();
     const [phase, setPhase] = useState('setup');
@@ -646,6 +650,7 @@ export default function FlappyBirdExperience({ onBackGallery }) {
 
         setActiveTopic(selectedSummary);
         resetRun();
+        recordGamePlay(getDashboardUserKey(user));
         setPhase('playing');
     };
 

@@ -414,6 +414,9 @@ export default function Typing({
                                                 <div className="typing-example-copy">
                                                     {maskedExample || 'Chưa có ví dụ phù hợp để hiển thị.'}
                                                 </div>
+                                                <div className="typing-example-translation">
+                                                    {currentQuestion.word.example_vi || 'Chưa có nghĩa tiếng Việt cho ví dụ này.'}
+                                                </div>
                                             </div>
                                         ) : null}
                                     </div>

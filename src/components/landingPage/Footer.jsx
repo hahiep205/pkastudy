@@ -9,8 +9,8 @@ export default function Footer() {
                     <Link to="/">
                         <img src={logo2} style={{ width: '270px', height: 'auto' }} alt="pkastudy Logo" className="footer-logo" />
                     </Link>
-                    <p className="footer-desc">
-                        Nền tảng học Vocabulary tiếng Anh - Hàn toàn diện với từ vựng phong phú, phát âm chuẩn, luyện nghe hiệu quả, flashcard sinh động và trợ lý AI thông minh.
+                    <p className="footer-desc" style={{ color: 'var(--dark-blue)', fontWeight: 800, fontSize: '1.95rem' }}>
+                        <span className="name-logo">Study smarter. Remember longer.</span>
                     </p>
                 </div>
 

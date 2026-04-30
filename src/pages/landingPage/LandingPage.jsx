@@ -19,15 +19,15 @@ export default function LandingPage() {
                     <div class="lp-eyebrow lp-eyebrow-blue" style={{ marginTop: '7%', color: 'var(--blue)' }}>{SVGS[0].svg} Học thử miễn phí ngay!</div>
                     <h1>Learn and retain vocabulary effectively with <span class="name-logo">pkastudy</span> now!</h1>
                     <p>
-                        Nền tảng học Vocabulary tiếng Anh - Hàn toàn diện với từ vựng phong phú,
-                        phát âm chuẩn, luyện nghe hiệu quả, flashcard sinh động và trợ lý AI thông minh.
+                        Học từ vựng tiếng Anh và tiếng Hàn dễ hơn qua bộ từ theo chủ đề, phát âm chuẩn,
+                        luyện nghe thực tế, flashcard trực quan và trợ lý AI luôn sẵn sàng hỗ trợ khi bạn cần.
                     </p>
                     <div className="hero-buttons">
                         <Link to="/dashboard">
-                            <button className="btn btn-primary" id="btn-get-started">Bắt đầu ngay</button>
+                            <button className="btn btn-primary hero-btn" id="btn-get-started">Bắt đầu ngay</button>
                         </Link>
                         <Link to="/login">
-                            <button className="btn btn-secondary">Đã có tài khoản</button>
+                            <button className="btn btn-secondary hero-btn">Đã có tài khoản</button>
                         </Link>
                     </div>
                 </div>
@@ -45,7 +45,7 @@ export default function LandingPage() {
                         </div>
                         <h2 className="lp-heading">Các tính năng chính</h2>
                         <p className="lp-subheading">
-                            Học và ghi nhớ từ vựng lâu dài thông qua hệ thống tính năng đa dạng, kết hợp AI hỗ trợ hỏi đáp thông minh và cá nhân hóa bộ từ vựng của bạn.
+                            Khám phá 4 trải nghiệm nổi bật: hỏi đáp cùng AI, học bằng nhiều chế độ khác nhau, ôn luyện với kho từ vựng theo chủ đề và vừa chơi vừa học qua các hoạt động tương tác sinh động.
                         </p>
                     </div>
 
@@ -89,10 +89,10 @@ export default function LandingPage() {
                             </div>
 
                             <div className="lp-courses-cta">
-                                <Link to="/dashboard/courses" className="lp-btn lp-btn--primary">
+                                <Link to="/dashboard/courses" className="lp-btn lp-btn--primary lp-cta-btn">
                                     Xem tài liệu
                                 </Link>
-                                <Link to="/dashboard/courses?tab=custom" className="lp-btn lp-btn--secondary">
+                                <Link to="/dashboard/courses?tab=custom" className="lp-btn lp-btn--secondary lp-cta-btn">
                                     Bộ từ cá nhân
                                 </Link>
                             </div>

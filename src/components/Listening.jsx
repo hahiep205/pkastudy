@@ -404,6 +404,9 @@ export default function Listening({
                                                 <div className="listening-example-copy">
                                                     {maskedExample || 'Chưa có ví dụ phù hợp để hiển thị.'}
                                                 </div>
+                                                <div className="listening-example-translation">
+                                                    {currentQuestion.word.example_vi || 'Chưa có nghĩa tiếng Việt cho ví dụ này.'}
+                                                </div>
                                             </div>
                                         ) : null}
                                     </div>

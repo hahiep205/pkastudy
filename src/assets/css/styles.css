@@ -155,6 +155,11 @@ img {
     gap: 16px;
 }
 
+.hero-btn {
+    min-width: 172px;
+    justify-content: center;
+}
+
 /* Cấu trúc Grid cho Main Content */
 .main-wrapper {
     max-width: 1440px;

@@ -1,6 +1,7 @@
 const STATS_STORAGE_KEY = 'pka_user_stats_v1';
 const REMEMBERED_STORAGE_KEY = 'pka_remembered';
 const MAX_HISTORY_DAYS = 90;
+const USER_STORAGE_KEY = 'user';
 
 function pad(value) {
     return String(value).padStart(2, '0');
@@ -26,6 +27,35 @@ function saveStorageMap(data) {
     localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(data));
 }
 
+function getCurrentStoredUser() {
+    try {
+        return JSON.parse(localStorage.getItem(USER_STORAGE_KEY)) || { name: 'Guest User' };
+    } catch {
+        return { name: 'Guest User' };
+    }
+}
+
+function getDisplayNameFromUserKey(userKey = 'guest') {
+    if (userKey === 'guest') return 'Guest User';
+    if (!userKey.startsWith('user:')) return userKey;
+
+    return userKey
+        .slice(5)
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ');
+}
+
+function resolveProfileName(userKey = 'guest', profileName) {
+    if (typeof profileName === 'string' && profileName.trim()) return profileName.trim();
+
+    const currentUser = getCurrentStoredUser();
+    if (userKey === 'guest') return 'Guest User';
+    if (typeof currentUser?.name === 'string' && currentUser.name.trim()) return currentUser.name.trim();
+    return getDisplayNameFromUserKey(userKey);
+}
+
 function getRememberedCount() {
     try {
         const remembered = JSON.parse(localStorage.getItem(REMEMBERED_STORAGE_KEY)) || {};
@@ -38,6 +68,7 @@ function getRememberedCount() {
 function createEmptyStats() {
     return {
         days: {},
+        profileName: null,
         updatedAt: null,
     };
 }
@@ -46,6 +77,7 @@ function normalizeStats(stats) {
     const safe = stats && typeof stats === 'object' ? stats : {};
     return {
         days: safe.days && typeof safe.days === 'object' ? safe.days : {},
+        profileName: typeof safe.profileName === 'string' ? safe.profileName : null,
         updatedAt: typeof safe.updatedAt === 'string' ? safe.updatedAt : null,
     };
 }
@@ -72,6 +104,7 @@ function getDayStats(stats, dateKey) {
         rememberedTotal: 0,
         totalXp: 0,
         streak: 0,
+        gamesPlayed: 0,
         tasksCompleted: 0,
         taskTarget: 0,
         updatedAt: null,
@@ -99,6 +132,7 @@ export function recordUserStatsSnapshot(userKey = 'guest', progress, options = {
         rememberedTotal,
         totalXp: Number.isFinite(progress.totalXp) ? progress.totalXp : existingDay.totalXp,
         streak: Number.isFinite(progress.streak) ? progress.streak : existingDay.streak,
+        gamesPlayed: Number.isFinite(existingDay.gamesPlayed) ? existingDay.gamesPlayed : 0,
         tasksCompleted,
         taskTarget,
         updatedAt: new Date().toISOString(),
@@ -106,6 +140,7 @@ export function recordUserStatsSnapshot(userKey = 'guest', progress, options = {
 
     const nextStats = {
         ...currentStats,
+        profileName: resolveProfileName(userKey, options.profileName),
         days: pruneDays({
             ...currentStats.days,
             [dateKey]: nextDay,
@@ -125,6 +160,96 @@ export function readUserStats(userKey = 'guest') {
     map[userKey] = stats;
     saveStorageMap(map);
     return stats;
+}
+
+export function recordGamePlay(userKey = 'guest', count = 1) {
+    const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
+    const map = getStorageMap();
+    const currentStats = normalizeStats(map[userKey] || createEmptyStats());
+    const dateKey = getTodayKey();
+    const existingDay = getDayStats(currentStats, dateKey);
+    const nextDay = {
+        ...existingDay,
+        date: dateKey,
+        gamesPlayed: (existingDay.gamesPlayed || 0) + safeCount,
+        updatedAt: new Date().toISOString(),
+    };
+
+    const nextStats = {
+        ...currentStats,
+        profileName: resolveProfileName(userKey),
+        days: pruneDays({
+            ...currentStats.days,
+            [dateKey]: nextDay,
+        }),
+        updatedAt: nextDay.updatedAt,
+    };
+
+    map[userKey] = nextStats;
+    saveStorageMap(map);
+    return nextStats;
+}
+
+function getLeaderboardAccent(index) {
+    if (index === 0) return 'orange';
+    if (index === 1) return 'blue';
+    if (index === 2) return 'green';
+    return 'slate';
+}
+
+function getMetricScore(metric, stats) {
+    const days = getDaysArray(stats);
+    const latestDay = days[days.length - 1] || getDayStats(stats, getTodayKey());
+
+    if (metric === 'exp') {
+        return latestDay.totalXp || 0;
+    }
+
+    if (metric === 'games') {
+        return days.reduce((sum, day) => sum + (day.gamesPlayed || 0), 0);
+    }
+
+    return latestDay.streak || 0;
+}
+
+export function buildStatsLeaderboard(metric = 'streak', limit = 3, fallbackEntries = []) {
+    const map = getStorageMap();
+    const realEntries = Object.entries(map)
+        .map(([userKey, rawStats]) => {
+            const stats = normalizeStats(rawStats || createEmptyStats());
+            return {
+                name: stats.profileName || getDisplayNameFromUserKey(userKey),
+                score: getMetricScore(metric, stats),
+                updatedAt: stats.updatedAt || '',
+            };
+        })
+        .filter((entry) => entry.score > 0);
+
+    const mergedEntries = [...realEntries];
+    const usedNames = new Set(realEntries.map((entry) => entry.name.toLowerCase()));
+
+    fallbackEntries.forEach((entry) => {
+        const name = typeof entry?.name === 'string' ? entry.name.trim() : '';
+        if (!name || usedNames.has(name.toLowerCase())) return;
+        usedNames.add(name.toLowerCase());
+        mergedEntries.push({
+            name,
+            score: Number.isFinite(entry.score) ? entry.score : 0,
+            updatedAt: '',
+        });
+    });
+
+    return mergedEntries
+        .sort((first, second) => {
+            if (second.score !== first.score) return second.score - first.score;
+            return second.updatedAt.localeCompare(first.updatedAt);
+        })
+        .slice(0, limit)
+        .map((entry, index) => ({
+            ...entry,
+            rank: index + 1,
+            accent: getLeaderboardAccent(index),
+        }));
 }
 
 export function buildActivityChartData(userKey = 'guest', period = 'week') {
@@ -234,6 +359,7 @@ export function getStatsSummary(userKey = 'guest') {
         totalXp: todayStats.totalXp || 0,
         todayXp: todayStats.dailyXp || 0,
         todayLearnedWords: todayStats.learnedWords || 0,
+        totalGamesPlayed: days.reduce((sum, day) => sum + (day.gamesPlayed || 0), 0),
         rememberedTotal: todayStats.rememberedTotal || getRememberedCount(),
         tasksCompletedToday: todayStats.tasksCompleted || 0,
         taskTargetToday: todayStats.taskTarget || 0,

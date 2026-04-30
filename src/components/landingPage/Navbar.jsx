@@ -81,8 +81,8 @@ export default function Navbar() {
             </div>
 
             <div className="nav-right">
-                <Link to="/login"><button className="btn btn-nav btn-secondary" style={{ maxHeight: '38px', width: 'auto' }}>Đăng nhập</button></Link>
-                <Link to="/register"><button className="btn btn-nav btn-primary" style={{ maxHeight: '38px', width: 'auto' }}>Đăng ký</button></Link>
+                <Link to="/login"><button className="btn btn-nav btn-secondary" style={{ maxHeight: '38px' }}>Đăng nhập</button></Link>
+                <Link to="/register"><button className="btn btn-nav btn-primary" style={{ maxHeight: '38px' }}>Đăng ký</button></Link>
             </div>
         </nav>
     );

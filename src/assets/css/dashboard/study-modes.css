@@ -1453,6 +1453,13 @@
     word-break: break-word;
 }
 
+.listening-example-translation {
+    margin-top: 8px;
+    color: #475569;
+    line-height: 1.65;
+    word-break: break-word;
+}
+
 .listening-example-copy.is-muted {
     color: #64748b;
 }
@@ -2070,6 +2077,13 @@
 .typing-example-copy {
     color: #0f172a;
     line-height: 1.7;
+    word-break: break-word;
+}
+
+.typing-example-translation {
+    margin-top: 8px;
+    color: #475569;
+    line-height: 1.65;
     word-break: break-word;
 }
 

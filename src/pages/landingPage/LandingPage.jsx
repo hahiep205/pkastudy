@@ -16,8 +16,8 @@ export default function LandingPage() {
             {/* ── HERO (existing, kept intact) ── */}
             <header className="hero">
                 <div className="hero-left">
-                    <div class="lp-eyebrow lp-eyebrow-blue" style={{ color: 'var(--blue)' }}>{SVGS[0].svg} Học thử miễn phí ngay!</div>
-                    <h1 className="be-vietnam-pro-extrabold">Học và ghi nhớ từ vựng cùng <span class="name-logo">pkastudy</span> ngay hôm nay!</h1>
+                    <div class="lp-eyebrow lp-eyebrow-blue"><span style={{ backgroundColor: 'var(--blue)', color: '#fff', borderRadius: '10px', padding: '2px 7px', fontSize: '12px', fontWeight: 'bold' }}>New</span> Học thử miễn phí ngay!</div>
+                    <h1 className="be-vietnam-pro-extrabold">Học và ghi nhớ từ vựng lâu dài cùng <span class="name-logo">pkastudy</span> ngay hôm nay!</h1>
                     <p>
                         Học từ vựng tiếng Anh và tiếng Hàn dễ hơn qua bộ từ theo chủ đề, phát âm chuẩn,
                         luyện nghe thực tế, flashcard trực quan và trợ lý AI luôn sẵn sàng hỗ trợ.
@@ -32,18 +32,18 @@ export default function LandingPage() {
                     </div>
                 </div>
 
-            </header>
+            </header >
 
             {/* ══════════════════════════════════════════
                 SECTION 1: GIỚI THIỆU - Features
             ══════════════════════════════════════════ */}
-            <section className="lp-section lp-features" id="gioi-thieu">
+            < section className="lp-section lp-features" id="gioi-thieu" >
                 <div className="lp-container">
                     <div className="lp-features-header lp-reveal">
                         {/* <div className="lp-eyebrow lp-eyebrow-blue">
                             {SVGS[1].svg} Giới thiệu về pkastudy
                         </div> */}
-                        <h2 className="lp-heading be-vietnam-pro-extrabold">Các tính năng chính</h2>
+                        <h2 className="lp-heading be-vietnam-pro-extrabold">Các <span class="name-logo">tính năng</span> chính</h2>
                         <p className="lp-subheading">
                             Khám phá 4 trải nghiệm nổi bật: hỏi đáp cùng AI, học bằng nhiều chế độ khác nhau, ôn luyện với kho từ vựng theo chủ đề và vừa chơi vừa học qua các hoạt động tương tác sinh động.
                         </p>
@@ -66,12 +66,12 @@ export default function LandingPage() {
                     </div>
 
                 </div>
-            </section>
+            </section >
 
             {/* ══════════════════════════════════════════
                 SECTION 2: KHÓA HỌC - Courses preview
             ══════════════════════════════════════════ */}
-            <section className="lp-section lp-courses" id="khoa-hoc">
+            < section className="lp-section lp-courses" id="khoa-hoc" >
                 <div className="lp-container">
                     <div className="lp-courses-layout">
 
@@ -120,12 +120,12 @@ export default function LandingPage() {
 
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* ══════════════════════════════════════════
                 SECTION 3: Chatbot AI
             ══════════════════════════════════════════ */}
-            <section className="lp-section lp-ai" id="chatbot-ai">
+            < section className="lp-section lp-ai" id="chatbot-ai" >
                 <div className="lp-container">
                     <div className="lp-ai-shell">
                         <div className="lp-ai-copy lp-reveal">
@@ -138,7 +138,7 @@ export default function LandingPage() {
                                 </svg> Chatbot AI
                             </div> */}
                             <h2 className="lp-heading be-vietnam-pro-extrabold">
-                                Trợ lý AI giúp bạn tối ưu thời gian, học tập hiệu quả.
+                                <span class="name-logo">Trợ lý AI</span> giúp bạn tối ưu thời gian, học tập hiệu quả.
                             </h2>
                             <p className="lp-subheading">
                                 Từ hỏi đáp từ vựng, ngữ pháp và phát âm đến tạo bộ từ theo chủ đề, trợ lý AI trong
@@ -225,7 +225,7 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* ══════════════════════════════════════════
                 SECTION 4: FAQ

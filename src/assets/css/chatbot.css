@@ -226,6 +226,16 @@
     padding: 0;
     border-radius: 12px;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.float-send-btn svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex-shrink: 0;
 }
 
 body.app-dark-mode #floatChatWindow,

@@ -32,27 +32,6 @@ export default function Courses() {
         };
     }, []);
 
-    const englishDocCards = useMemo(() => {
-        const toeicBasic = coursesData['toeic-basic'];
-        const otherEnglishCourses = coursesConfig.en.filter((course) => course.id !== 'toeic-basic');
-
-        if (!toeicBasic) {
-            return coursesConfig.en;
-        }
-
-        return [
-            {
-                id: 'toeic-basic-lessons-1-50',
-                title: toeicBasic.title,
-                description: 'Tài liệu từ vựng trọng tâm cho kỳ thi TOEIC của Dr. Lin Lougheed, Barron’s. Nội dung giúp tăng điểm Reading và Listening, đồng thời xây nền từ vựng business và môi trường công việc quốc tế.',
-                tags: ['50 Topics', '600 Words'],
-                badge: 'TOEIC',
-                courseId: toeicBasic.id,
-            },
-            ...otherEnglishCourses,
-        ];
-    }, [coursesConfig.en]);
-
     const getTopicProgress = (topic) => {
         if (!topic.words?.length) {
             return { pct: 0, done: 0, total: 0 };
@@ -154,7 +133,7 @@ export default function Courses() {
                     </div>
 
                     <div className="doc-list">
-                        {englishDocCards.map((course, index) => (
+                        {coursesConfig.en.map((course, index) => (
                             <div className="doc-card reveal revealed" key={course.id}>
                                 <div className="doc-icon-wrap doc-icon-blue">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
@@ -163,24 +142,21 @@ export default function Courses() {
                                 </div>
                                 <div className="doc-info">
                                     <div className="doc-meta-row">
-                                        <span className="doc-type-badge type-pdf">{course.badge || 'TOEIC'}</span>
+                                        <span className="doc-type-badge type-pdf">TOEIC</span>
                                     </div>
                                     <h3 className="doc-name">
                                         {index + 1}. {course.title}
                                     </h3>
                                     <p className="doc-desc">
-                                        {course.description || 'Bộ 600 từ vựng cốt lõi được phân loại theo chủ đề: văn phòng, tài chính, du lịch, sức khỏe và hơn thế nữa.'}
+                                        Bộ 600 từ vựng cốt lõi được phân loại theo chủ đề: văn phòng, tài chính, du lịch, sức khỏe và hơn thế nữa.
                                     </p>
                                     <div className="doc-tags">
-                                        {(course.tags || ['Vocabulary', 'Words']).map((tag) => (
-                                            <span className="doc-tag" key={`${course.id}-${tag}`}>
-                                                {tag}
-                                            </span>
-                                        ))}
+                                        <span className="doc-tag">Vocabulary</span>
+                                        <span className="doc-tag">Words</span>
                                     </div>
                                 </div>
                                 <div className="doc-action">
-                                    <Link to={`/dashboard/courses/${course.courseId || course.id}`} className="btn btn-primary btn-small">
+                                    <Link to={`/dashboard/courses/${course.id}`} className="btn btn-primary btn-small">
                                         Học ngay
                                     </Link>
                                 </div>
@@ -215,12 +191,11 @@ export default function Courses() {
                                         {index + 1}. {course.title}
                                     </h3>
                                     <p className="doc-desc">
-                                        Bộ sách từ vựng tiếng Hàn của Key to Korean gồm 600 từ chia theo 30 chủ đề, phù hợp cho người mới bắt đầu đến trình độ nền tảng TOPIK I-II.
+                                        Từ vựng sơ cấp 1 và 2 bám sát đề thi TOPIK thực tế với đầy đủ phiên âm và ví dụ minh họa.
                                     </p>
                                     <div className="doc-tags">
-                                        <span className="doc-tag">TOPIK</span>
-                                        <span className="doc-tag">600 từ</span>
-                                        <span className="doc-tag">30 topics</span>
+                                        <span className="doc-tag">Cơ bản</span>
+                                        <span className="doc-tag">Mới bắt đầu</span>
                                     </div>
                                 </div>
                                 <div className="doc-action">
@@ -254,7 +229,7 @@ export default function Courses() {
                                 justifyContent: "center",
                                 alignItems: "center"
                             }}>
-                                <div className="cv-empty-icon"></div>
+                                <div className="cv-empty-icon">📚</div>
                                 <h3 className="cv-empty-title" style={{ marginTop: "8px" }}>
                                     Chưa có chủ đề nào
                                 </h3>
@@ -269,11 +244,11 @@ export default function Courses() {
                                 return (
                                     <div className="doc-card cv-custom-card reveal revealed" key={topic.id}>
                                         <div className="doc-icon-wrap cv-custom-icon-wrap">
-                                            <span className="cv-custom-card-emoji"></span>
+                                            <span className="cv-custom-card-emoji">📓</span>
                                         </div>
                                         <div className="doc-info">
                                             <div className="doc-meta-row">
-                                                <span className="doc-type-badge cv-custom-badge">Cá nhân</span>
+                                                <span className="doc-type-badge cv-custom-badge">CÁ NHÂN</span>
                                                 <span className="doc-level">
                                                     {languageLabels[topic.lang] || 'Ngôn ngữ'} · {progress.total} từ
                                                 </span>

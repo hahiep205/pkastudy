@@ -136,14 +136,14 @@ img {
 
 .hero h1 {
     font-family: 'Feather Bold', var(--font-stack);
-    font-size: 75px;
+    font-size: 54px;
     color: var(--dark-blue);
     margin-bottom: 16px;
     line-height: 1.2;
 }
 
 .hero p {
-    font-size: 20px;
+    font-size: 16px;
     color: var(--gray-light);
     max-width: 600px;
     line-height: 1.5;
@@ -1032,7 +1032,7 @@ img {
     }
 
     .hero p {
-        font-size: 15px;
+        font-size: 16px;
     }
 
     .panel {

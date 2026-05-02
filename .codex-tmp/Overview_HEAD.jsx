@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+﻿import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { coursesData } from '../../data/coursesData';
 import { useCourseProgress } from '../../hooks/useCourseProgress';
@@ -379,8 +379,8 @@ export default function Overview() {
                                     <h3 className="course-dash-name">{course.title}</h3>
                                     <p className="course-dash-desc">
                                         {course.id === 'toeic-basic'
-                                            ? 'Barron’s 600 Essential Words for the TOEIC của Dr. Lin Lougheed, tập trung vào từ vựng trọng tâm cho Reading, Listening và ngữ cảnh business.'
-                                            : 'Bộ 600 từ tiếng Hàn theo 30 chủ đề, phù hợp để xây nền từ vựng cho người mới bắt đầu và TOPIK I-II.'}
+                                            ? 'Bộ từ vựng cốt lõi cho kỳ thi TOEIC từ 0 - 500 điểm.'
+                                            : 'Hangul, giao tiếp hằng ngày và từ vựng TOPIK I.'}
                                     </p>
                                     <div className="course-dash-meta">
                                         <span className="cd-meta-words">{total} từ</span>

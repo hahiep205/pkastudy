@@ -14,10 +14,10 @@ export default function LandingPage() {
     return (
         <>
             {/* ── HERO (existing, kept intact) ── */}
-            <header className="hero">
+            <header className="hero" id="hero-section">
                 <div className="hero-left">
                     <div class="lp-eyebrow lp-eyebrow-blue"><span style={{ backgroundColor: 'var(--blue)', color: '#fff', borderRadius: '10px', padding: '2px 7px', fontSize: '12px', fontWeight: 'bold' }}>New</span> Học thử miễn phí ngay!</div>
-                    <h1 className="be-vietnam-pro-extrabold">Học và ghi nhớ từ vựng lâu dài cùng <span class="name-logo">pkastudy</span> ngay hôm nay!</h1>
+                    <h1 className="be-vietnam-pro-extrabold">Học và ghi nhớ từ vựng hiệu quả cùng <span class="name-logo">pkastudy</span> ngay hôm nay!</h1>
                     <p>
                         Học từ vựng tiếng Anh và tiếng Hàn dễ hơn qua bộ từ theo chủ đề, phát âm chuẩn,
                         luyện nghe thực tế, flashcard trực quan và trợ lý AI luôn sẵn sàng hỗ trợ.
@@ -40,9 +40,10 @@ export default function LandingPage() {
             < section className="lp-section lp-features" id="gioi-thieu" >
                 <div className="lp-container">
                     <div className="lp-features-header lp-reveal">
-                        {/* <div className="lp-eyebrow lp-eyebrow-blue">
-                            {SVGS[1].svg} Giới thiệu về pkastudy
-                        </div> */}
+                        <div className="lp-eyebrow lp-eyebrow-blue">
+                            {/* {SVGS[1].svg}  */}
+                            Giới thiệu tính năng
+                        </div>
                         <h2 className="lp-heading be-vietnam-pro-extrabold">Các <span class="name-logo">tính năng</span> chính</h2>
                         <p className="lp-subheading">
                             Khám phá 4 trải nghiệm nổi bật: hỏi đáp cùng AI, học bằng nhiều chế độ khác nhau, ôn luyện với kho từ vựng theo chủ đề và vừa chơi vừa học qua các hoạt động tương tác sinh động.
@@ -71,16 +72,17 @@ export default function LandingPage() {
             {/* ══════════════════════════════════════════
                 SECTION 2: KHÓA HỌC - Courses preview
             ══════════════════════════════════════════ */}
-            < section className="lp-section lp-courses" id="khoa-hoc" >
+            < section className="lp-section lp-courses" id="tai-lieu" >
                 <div className="lp-container">
                     <div className="lp-courses-layout">
 
                         {/* Left: text */}
                         <div className="lp-courses-text lp-reveal">
                             <div>
-                                {/* <div className="lp-eyebrow lp-eyebrow-blue">
-                                    {SVGS[2].svg} Danh sách tài liệu
-                                </div> */}
+                                <div className="lp-eyebrow lp-eyebrow-blue">
+                                    {/* {SVGS[2].svg}  */}
+                                    Danh sách tài liệu
+                                </div>
                                 <h2 className="lp-heading be-vietnam-pro-extrabold" >Xây dựng vốn từ, học đâu nhớ đó cùng <span class="name-logo">pkastudy.</span></h2>
                                 <p className="lp-subheading">
                                     Hai bộ từ vựng chuẩn quốc tế được biên soạn bám sát đề thi thực tế,
@@ -129,14 +131,15 @@ export default function LandingPage() {
                 <div className="lp-container">
                     <div className="lp-ai-shell">
                         <div className="lp-ai-copy lp-reveal">
-                            {/* <div className="lp-eyebrow lp-eyebrow-blue">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" color="currentColor" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                            <div className="lp-eyebrow lp-eyebrow-blue" style={{ width: 'fit-content' }}>
+                                {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" color="currentColor" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                                     <path d="M20.5 16.9286V10C20.5 6.22876 20.5 4.34315 19.3284 3.17157C18.1569 2 16.2712 2 12.5 2H11.5C7.72876 2 5.84315 2 4.67157 3.17157C3.5 4.34315 3.5 6.22876 3.5 10V19.5" />
                                     <path d="M20.5 17H6C4.61929 17 3.5 18.1193 3.5 19.5C3.5 20.8807 4.61929 22 6 22H20.5" />
                                     <path d="M20.5 22C19.1193 22 18 20.8807 18 19.5C18 18.1193 19.1193 17 20.5 17" />
                                     <path d="M12.3077 12L10.847 7.47891C10.7552 7.19466 10.4734 7 10.1538 7C9.83425 7 9.55249 7.19466 9.46066 7.47891L8 12M15 7V12M8.53846 10.5H11.7692" />
-                                </svg> Chatbot AI
-                            </div> */}
+                                </svg>  */}
+                                Hệ thống Chatbot AI
+                            </div>
                             <h2 className="lp-heading be-vietnam-pro-extrabold">
                                 <span class="name-logo">Trợ lý AI</span> giúp bạn tối ưu thời gian, học tập hiệu quả.
                             </h2>

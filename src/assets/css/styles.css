@@ -11,6 +11,18 @@
     font-style: normal;
 }
 
+#hero-section,
+#gioi-thieu,
+#tai-lieu,
+#chatbot-ai {
+    scroll-margin-top: 50px;
+}
+
+
+/* body {
+    zoom: 1.15;
+} */
+
 /* Khai báo các biến màu sắc dựa trên Style Guide để dễ dàng tái sử dụng */
 :root {
     --green: rgb(88, 204, 2);
@@ -136,7 +148,7 @@ img {
 
 .hero h1 {
     font-family: 'Feather Bold', var(--font-stack);
-    font-size: 54px;
+    font-size: 70px;
     color: var(--dark-blue);
     margin-bottom: 16px;
     line-height: 1.2;

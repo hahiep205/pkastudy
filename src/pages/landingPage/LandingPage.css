@@ -84,9 +84,9 @@ body {
     font-family: 'Feather Bold', var(--font-stack);
     font-size: clamp(28px, 4vw, 42px);
     color: var(--dark-blue);
-    line-height: 1.15;
+    line-height: 1.25;
     margin-bottom: 14px;
-    font-size: 54px;
+    font-size: 62px;
 }
 
 .name-logo {

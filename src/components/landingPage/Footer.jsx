@@ -9,15 +9,15 @@ export default function Footer() {
                     <Link to="/">
                         <img src={logo2} style={{ width: '270px', height: 'auto' }} alt="pkastudy Logo" className="footer-logo" />
                     </Link>
-                    <p className="footer-desc" style={{ color: 'var(--dark-blue)', fontWeight: 800, fontSize: '1.95rem' }}>
-                        <span className="name-logo">Study smarter. Remember longer.</span>
+                    <p className="footer-desc" style={{ color: 'var(--dark-blue)', fontWeight: 800, fontSize: '1.25rem' }}>
+                        <span class="name-logo">Study smarter, remember longer.</span>
                     </p>
                 </div>
 
                 <div className="footer-col col-links">
                     <h3 className="footer-heading">Danh mục</h3>
                     <ul className="footer-list">
-                        <li><Link to="/" className="footer-link">Trang chủ</Link></li>
+                        <li><Link to="/#hero-section" className="footer-link">Trang chủ</Link></li>
                         <li><Link to="#" className="footer-link">Giới thiệu</Link></li>
                         <li><Link to="/dashboard/courses" className="footer-link">Tài liệu</Link></li>
                         <li><Link to="#" className="footer-link">Chatbot AI</Link></li>

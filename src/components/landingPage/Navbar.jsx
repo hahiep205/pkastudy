@@ -31,7 +31,7 @@ export default function Navbar() {
     return (
         <nav className="navbar">
             <div className="nav-left">
-                <Link to="/"><img src={logo2} style={{ width: '179px', height: 'auto' }} alt="pkastudy Logo" className="nav-logo" /></Link>
+                <a href="/"><img src={logo2} style={{ width: '179px', height: 'auto' }} alt="pkastudy Logo" className="nav-logo" /></a>
             </div>
 
             <button
@@ -61,10 +61,10 @@ export default function Navbar() {
                 </div>
 
                 <nav className="mobile-menu-nav">
-                    <Link to="/" className="mobile-nav-link" onClick={closeMenu}>Trang chủ</Link>
-                    <Link to="#" className="mobile-nav-link" onClick={closeMenu}>Giới thiệu</Link>
-                    <Link to="/dashboard/courses" className="mobile-nav-link" onClick={closeMenu}>Tài liệu</Link>
-                    <Link to="#" className="mobile-nav-link" onClick={closeMenu}>Chatbot AI</Link>
+                    <a href="/#hero-section" className="mobile-nav-link" onClick={closeMenu}>Trang chủ</a>
+                    <a href="/#gioi-thieu" className="mobile-nav-link" onClick={closeMenu}>Giới thiệu</a>
+                    <a href="/#tai-lieu" className="mobile-nav-link" onClick={closeMenu}>Tài liệu</a>
+                    <a href="/#chatbot-ai" className="mobile-nav-link" onClick={closeMenu}>Chatbot AI</a>
                 </nav>
 
                 <div className="mobile-menu-actions">
@@ -74,10 +74,10 @@ export default function Navbar() {
             </div>
 
             <div className="nav-links">
-                <Link to="/" className="nav-link">Trang chủ</Link>
-                <Link to="#" className="nav-link">Giới thiệu</Link>
-                <Link to="/dashboard/courses" className="nav-link">Tài liệu</Link>
-                <Link to="#" className="nav-link">Chatbot AI</Link>
+                <a href="/#hero-section" className="nav-link">Trang chủ</a>
+                <a href="/#gioi-thieu" className="nav-link">Giới thiệu</a>
+                <a href="/#tai-lieu" className="nav-link">Tài liệu</a>
+                <a href="/#chatbot-ai" className="nav-link">Chatbot AI</a>
             </div>
 
             <div className="nav-right">

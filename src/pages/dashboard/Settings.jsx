@@ -50,10 +50,10 @@ const supportActions = [
     },
     {
         iconTone: 'blue',
-        title: 'Trung tâm hỗ trợ',
-        desc: 'Xem nhanh hướng dẫn dùng dashboard và lộ trình học.',
-        cta: 'Sắp có',
-        disabled: true,
+        title: 'Hướng dẫn nhanh',
+        desc: 'Xem lại cách sử dụng dashboard và lộ trình học.',
+        cta: 'Xem ngay',
+        link: '/dashboard/courses',
     },
 ];
 
@@ -185,11 +185,11 @@ export default function Settings() {
                             <button
                                 key={item.title}
                                 type="button"
-                                className={`settings2-action ${item.disabled ? 'is-disabled' : ''}`}
+                                className="settings2-action"
                                 onClick={() => {
-                                    if (!item.disabled && index === 0) setFeedbackOpen(true);
+                                    if (index === 0) setFeedbackOpen(true);
+                                    else if (item.link) navigate(item.link);
                                 }}
-                                disabled={item.disabled}
                             >
                                 <div className={`settings2-icon tone-${item.iconTone}`}>
                                     {index === 0 ? (
@@ -198,7 +198,7 @@ export default function Settings() {
                                         </svg>
                                     ) : (
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                            <path d="M12 2C6.48 2 2 5.58 2 10C2 12.52 3.46 14.76 5.74 16.22L5 22L9.98 18.86C10.63 18.95 11.31 19 12 19C17.52 19 22 15.42 22 11C22 6.58 17.52 2 12 2Z" />
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" />
                                         </svg>
                                     )}
                                 </div>

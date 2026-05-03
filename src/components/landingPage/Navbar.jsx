@@ -31,7 +31,7 @@ export default function Navbar() {
     return (
         <nav className="navbar">
             <div className="nav-left">
-                <a href="/"><img src={logo2} style={{ width: '179px', height: 'auto' }} alt="pkastudy Logo" className="nav-logo" /></a>
+                <Link to="/"><img src={logo2} style={{ width: '179px', height: 'auto' }} alt="pkastudy Logo" className="nav-logo" /></Link>
             </div>
 
             <button
@@ -61,9 +61,9 @@ export default function Navbar() {
                 </div>
 
                 <nav className="mobile-menu-nav">
-                    <a href="/#hero-section" className="mobile-nav-link" onClick={closeMenu}>Trang chủ</a>
+                    <Link to="/" className="mobile-nav-link" onClick={closeMenu}>Trang chủ</Link>
                     <a href="/#gioi-thieu" className="mobile-nav-link" onClick={closeMenu}>Giới thiệu</a>
-                    <a href="/#tai-lieu" className="mobile-nav-link" onClick={closeMenu}>Tài liệu</a>
+                    <Link to="/dashboard/courses" className="mobile-nav-link" onClick={closeMenu}>Tài liệu</Link>
                     <a href="/#chatbot-ai" className="mobile-nav-link" onClick={closeMenu}>Chatbot AI</a>
                 </nav>
 
@@ -74,15 +74,15 @@ export default function Navbar() {
             </div>
 
             <div className="nav-links">
-                <a href="/#hero-section" className="nav-link">Trang chủ</a>
+                <Link to="/" className="nav-link">Trang chủ</Link>
                 <a href="/#gioi-thieu" className="nav-link">Giới thiệu</a>
-                <a href="/#tai-lieu" className="nav-link">Tài liệu</a>
+                <Link to="/dashboard/courses" className="nav-link">Tài liệu</Link>
                 <a href="/#chatbot-ai" className="nav-link">Chatbot AI</a>
             </div>
 
             <div className="nav-right">
-                <Link to="/login"><button className="btn btn-nav btn-secondary" style={{ maxHeight: '38px' }}>Đăng nhập</button></Link>
-                <Link to="/register"><button className="btn btn-nav btn-primary" style={{ maxHeight: '38px' }}>Đăng ký</button></Link>
+                <Link to="/login"><button className="btn btn-nav btn-secondary" style={{ maxHeight: '38px', width: 'auto' }}>Đăng nhập</button></Link>
+                <Link to="/register"><button className="btn btn-nav btn-primary" style={{ maxHeight: '38px', width: 'auto' }}>Đăng ký</button></Link>
             </div>
         </nav>
     );

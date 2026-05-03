@@ -2024,6 +2024,178 @@ body.app-dark-mode .settings2-switch .cv-switch-thumb {
     line-height: 1.6;
 }
 
+/* ── Stats pills row ── */
+.stats2-pills {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.stats2-pill {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, .08);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, .04);
+}
+
+.stats2-pill-icon {
+    font-size: 26px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    flex-shrink: 0;
+}
+
+.stats2-pill-orange .stats2-pill-icon { background: rgba(245, 158, 11, .12); }
+.stats2-pill-blue .stats2-pill-icon   { background: rgba(56, 189, 248, .12); }
+.stats2-pill-green .stats2-pill-icon  { background: rgba(88, 204, 2, .12); }
+.stats2-pill-purple .stats2-pill-icon { background: rgba(139, 92, 246, .12); }
+
+.stats2-pill-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.stats2-pill-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--gray-light);
+}
+
+.stats2-pill-value {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--dark-blue);
+    line-height: 1.1;
+}
+
+/* ── Overall progress bar ── */
+.stats2-board-overview {
+    background: linear-gradient(180deg, #f0f9ff, #fff);
+    border-color: rgba(28, 176, 246, .12);
+}
+
+.stats2-board-overview .stats2-board-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(28, 176, 246, .06), transparent);
+    border-bottom-color: rgba(28, 176, 246, .10);
+}
+
+.stats2-pct-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--blue);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+    min-width: 60px;
+    box-shadow: 0 4px 0 var(--blue-shadow, #189CD8);
+}
+
+.stats2-overall-bar {
+    height: 12px;
+    margin: 0 22px 22px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, .06);
+    overflow: hidden;
+}
+
+.stats2-overall-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--blue), var(--green));
+    transition: width .8s cubic-bezier(.22, 1, .36, 1);
+    min-width: 4px;
+}
+
+/* ── Per-course progress bar ── */
+.stats2-course-bar-wrap {
+    padding: 0 22px;
+    margin-bottom: 10px;
+}
+
+.stats2-course-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, .06);
+    overflow: hidden;
+}
+
+.stats2-course-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--blue);
+    transition: width .6s ease;
+    min-width: 4px;
+}
+
+.stats2-board-green .stats2-course-fill {
+    background: var(--green);
+}
+
+.stats2-board-orange .stats2-course-fill {
+    background: var(--orange);
+}
+
+.stats2-board-green {
+    background: linear-gradient(180deg, #f0fdf4, #fff);
+    border-color: rgba(88, 204, 2, .14);
+}
+
+.stats2-board-green .stats2-board-header {
+    background: linear-gradient(180deg, rgba(88, 204, 2, .06), transparent);
+    border-bottom-color: rgba(88, 204, 2, .10);
+}
+
+.stats2-board-blue {
+    background: linear-gradient(180deg, #f0f9ff, #fff);
+    border-color: rgba(28, 176, 246, .14);
+}
+
+.stats2-board-blue .stats2-board-header {
+    background: linear-gradient(180deg, rgba(28, 176, 246, .06), transparent);
+    border-bottom-color: rgba(28, 176, 246, .10);
+}
+
+.stats2-board-orange {
+    background: linear-gradient(180deg, #fffdf8, #fff);
+    border-color: rgba(245, 158, 11, .14);
+}
+
+.stats2-board-orange .stats2-board-header {
+    background: linear-gradient(180deg, rgba(245, 158, 11, .06), transparent);
+    border-bottom-color: rgba(245, 158, 11, .10);
+}
+
+@media (max-width: 900px) {
+    .stats2-pills {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .stats2-pills {
+        grid-template-columns: 1fr;
+    }
+}
+
+
 .settings2-page {
     max-width: 1180px;
 }

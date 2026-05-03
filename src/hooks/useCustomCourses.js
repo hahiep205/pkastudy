@@ -39,8 +39,18 @@ export function useCustomCourses() {
         localStorage.setItem(CUSTOM_KEY, JSON.stringify(courses));
     };
 
+    // --- Helpers --- //
+    const isTopicNameTaken = (name, excludeId = null) => {
+        const courses = getLatestCourses();
+        const normalized = name.trim().toLowerCase();
+        return courses.some(t => t.title.trim().toLowerCase() === normalized && t.id !== excludeId);
+    };
+
     // --- TOPIC CRUD --- //
     const createTopic = ({ title, description, lang }) => {
+        if (isTopicNameTaken(title)) {
+            return { error: 'Tên chủ đề đã tồn tại. Vui lòng chọn tên khác.' };
+        }
         const courses = [...getLatestCourses()];
         const newTopic = {
             id: createId('custop'),
@@ -55,12 +65,16 @@ export function useCustomCourses() {
     };
 
     const updateTopic = (topicId, updates) => {
+        if (updates.title && isTopicNameTaken(updates.title, topicId)) {
+            return { error: 'Tên chủ đề đã tồn tại. Vui lòng chọn tên khác.' };
+        }
         const coursesCopy = cloneCourses(getLatestCourses());
         const topic = coursesCopy.find(t => t.id === topicId);
         if (topic) {
             Object.assign(topic, updates);
             saveCourses(coursesCopy);
         }
+        return topic;
     };
 
     const deleteTopic = (topicId) => {
@@ -73,6 +87,13 @@ export function useCustomCourses() {
         const coursesCopy = cloneCourses(getLatestCourses());
         const topic = coursesCopy.find(t => t.id === topicId);
         if (topic) {
+            // Check duplicate word in same topic
+            const exists = topic.words.some(
+                w => w.word && wordData.word && w.word.trim().toLowerCase() === wordData.word.trim().toLowerCase()
+            );
+            if (exists) {
+                return { error: `Từ "${wordData.word}" đã tồn tại trong chủ đề này.` };
+            }
             topic.words.push({
                 id: createId('cuswd'),
                 ...wordData,
@@ -80,6 +101,7 @@ export function useCustomCourses() {
             });
             saveCourses(coursesCopy);
         }
+        return {};
     };
 
     const updateWordInTopic = (topicId, wordId, updates) => {
@@ -106,16 +128,29 @@ export function useCustomCourses() {
     const addManyWordsToTopic = (topicId, wordArray) => {
         const coursesCopy = cloneCourses(getLatestCourses());
         const topic = coursesCopy.find(t => t.id === topicId);
-        if (topic) {
-            wordArray.forEach(wd => {
-                topic.words.push({
-                    id: createId('cuswd'),
-                    ...wd,
-                    language: wd.language || topic.lang || 'en'
-                });
+        if (!topic) return { added: 0, skipped: 0 };
+
+        const existingNorm = new Set(topic.words.map(w => (w.word || '').trim().toLowerCase()));
+        let added = 0;
+        let skipped = 0;
+
+        wordArray.forEach(wd => {
+            const norm = (wd.word || '').trim().toLowerCase();
+            if (!norm || existingNorm.has(norm)) {
+                skipped++;
+                return;
+            }
+            existingNorm.add(norm);
+            topic.words.push({
+                id: createId('cuswd'),
+                ...wd,
+                language: wd.language || topic.lang || 'en'
             });
-            saveCourses(coursesCopy);
-        }
+            added++;
+        });
+
+        saveCourses(coursesCopy);
+        return { added, skipped };
     };
 
     return {

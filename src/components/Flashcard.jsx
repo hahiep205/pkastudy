@@ -1,16 +1,6 @@
-﻿import { useEffect, useMemo, useRef, useState } from 'react';
-import StudyCompletionPanel from './studyModes/StudyCompletionPanel';
-import {
-    buildFlashcardDeck,
-    buildSessionQueue,
-    buildWordsMap,
-    createSessionStats,
-    getInitialRememberedSelection,
-    getSpeechLang,
-    resolveSessionQueueResult,
-} from '../utils/studyModes';
-
-const EXIT_CLICK_SELECTOR = '.topbar, .sidebar, .mobile-nav, .sidebar-overlay';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { buildFlashcardDeck, buildWordsMap, getSpeechLang } from '../utils/studyModes';
+import { xpFlashcardView, xpTopicComplete } from '../utils/xpSystem';
 
 const LANGUAGE_LABELS = {
     en: 'Tiếng Anh',
@@ -64,21 +54,16 @@ function getCardTheme(word, index) {
 export default function Flashcard({
     topicLang = 'en',
     words,
-    initialLearnedWordIds = [],
     onSaveLearnedWords,
     onExit,
     onBackToTopic,
-    learnUntilMastered = false,
+    onStartQuiz,
 }) {
-    const isQueueMode = learnUntilMastered;
     const [sessionWords, setSessionWords] = useState(() => buildFlashcardDeck(words));
-    const [activeQueue, setActiveQueue] = useState(() => buildSessionQueue(buildFlashcardDeck(words)));
-    const [sessionStatsByWordId, setSessionStatsByWordId] = useState(() => createSessionStats(words, initialLearnedWordIds));
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
-    const [selectedWordIds, setSelectedWordIds] = useState(() => getInitialRememberedSelection(words, initialLearnedWordIds));
+    const [hasFlippedOnce, setHasFlippedOnce] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
-    const [isSaved, setIsSaved] = useState(false);
     const sessionLockedRef = useRef(false);
 
     const wordsById = useMemo(() => buildWordsMap(words), [words]);
@@ -86,15 +71,11 @@ export default function Flashcard({
     useEffect(() => {
         const nextSessionWords = buildFlashcardDeck(words);
         setSessionWords(nextSessionWords);
-        setActiveQueue(buildSessionQueue(nextSessionWords));
-        setSessionStatsByWordId(createSessionStats(words, initialLearnedWordIds));
         setCurrentIndex(0);
         setIsFlipped(false);
-        setSelectedWordIds(getInitialRememberedSelection(words, initialLearnedWordIds));
         setIsCompleted(false);
-        setIsSaved(false);
         sessionLockedRef.current = false;
-    }, [words, initialLearnedWordIds]);
+    }, [words]);
 
     useEffect(() => {
         if (!words.length) return undefined;
@@ -116,91 +97,45 @@ export default function Flashcard({
     }, []);
 
     const totalCards = sessionWords.length;
-    const currentWord = isQueueMode ? wordsById[activeQueue[0]] : sessionWords[currentIndex];
-    const remainingCount = isQueueMode ? activeQueue.length : Math.max(totalCards - currentIndex - 1, 0);
-    const masteredCount = isQueueMode ? totalCards - activeQueue.length : currentIndex;
-    const isLastCard = isQueueMode ? remainingCount === 1 : currentIndex === totalCards - 1;
-    const progressLabel = totalCards
-        ? (isQueueMode ? `${masteredCount}/${totalCards}` : `${currentIndex + 1}/${totalCards}`)
-        : '0/0';
-    const currentWordRemembered = currentWord ? selectedWordIds.includes(currentWord.id) : false;
+    const currentWord = sessionWords[currentIndex];
+    const isLastCard = currentIndex === totalCards - 1;
+    const progressLabel = totalCards ? `${currentIndex + 1}/${totalCards}` : '0/0';
     const currentTheme = getCardTheme(currentWord, currentIndex);
     const languageLabel = LANGUAGE_LABELS[currentWord?.language || topicLang] || 'Từ vựng';
 
-    const toggleSelectedWord = (wordId) => {
-        setSelectedWordIds((prev) => (
-            prev.includes(wordId)
-                ? prev.filter((id) => id !== wordId)
-                : [...prev, wordId]
-        ));
-    };
-
-    const resolveQueueAdvance = (isMastered) => {
-        if (!currentWord) return;
-
-        const result = resolveSessionQueueResult(activeQueue, currentWord.id, isMastered, sessionStatsByWordId);
-        setActiveQueue(result.queue);
-        setSessionStatsByWordId(result.statsByWordId);
-
-        if (isMastered) {
-            setSelectedWordIds((prev) => (prev.includes(currentWord.id) ? prev : [...prev, currentWord.id]));
-        }
-
-        if (result.isCompleted) {
-            setIsCompleted(true);
-            setIsFlipped(false);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    };
-
     const handlePrevious = () => {
-        if (!totalCards || isQueueMode) return;
+        if (!totalCards) return;
         setCurrentIndex((prev) => Math.max(prev - 1, 0));
         setIsFlipped(false);
+        setHasFlippedOnce(false);
     };
 
     const handleNext = () => {
-        if (!totalCards) return;
-
-        if (isQueueMode) {
-            setIsFlipped(false);
-            resolveQueueAdvance(currentWordRemembered);
-            return;
-        }
-
+        if (!totalCards || !hasFlippedOnce) return;
         setCurrentIndex((prev) => Math.min(prev + 1, totalCards - 1));
         setIsFlipped(false);
+        setHasFlippedOnce(false);
     };
 
     const handleComplete = () => {
-        if (isQueueMode) {
-            setIsFlipped(false);
-            resolveQueueAdvance(currentWordRemembered);
-            return;
-        }
+        if (!hasFlippedOnce) return;
 
         setIsCompleted(true);
         setIsFlipped(false);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const handleSave = () => {
-        onSaveLearnedWords?.(selectedWordIds);
-        setIsSaved(true);
         sessionLockedRef.current = true;
-        onBackToTopic?.();
+        
+        xpTopicComplete(); // +50 XP hoàn thành chủ đề
+        onSaveLearnedWords?.(words.map((w) => w.id)); // Add all words to SRS
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handlePlayAgain = () => {
         const nextSessionWords = buildFlashcardDeck(words);
         setSessionWords(nextSessionWords);
-        setActiveQueue(buildSessionQueue(nextSessionWords));
-        setSessionStatsByWordId(createSessionStats(words, initialLearnedWordIds));
         setCurrentIndex(0);
         setIsFlipped(false);
-        setSelectedWordIds(getInitialRememberedSelection(words, initialLearnedWordIds));
         setIsCompleted(false);
-        setIsSaved(false);
         sessionLockedRef.current = false;
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -215,7 +150,13 @@ export default function Flashcard({
     };
 
     const toggleFlip = () => {
-        setIsFlipped((prev) => !prev);
+        setIsFlipped((prev) => {
+            if (!prev) {
+                setHasFlippedOnce(true);
+                xpFlashcardView(); // +5 XP mỗi lần lật thẻ
+            }
+            return !prev;
+        });
     };
 
     const handleCardKeyDown = (event) => {
@@ -242,7 +183,7 @@ export default function Flashcard({
         <section className="flashcard-shell">
             <div className="flashcard-header-meta">
                 <div className="flashcard-progress">
-                    <span>{isQueueMode ? 'Đã thuộc trong phiên:' : 'Tiến độ:'}</span>
+                    <span>Tiến độ:</span>
                     <strong>{isCompleted ? `${totalCards}/${totalCards}` : progressLabel}</strong>
                 </div>
                 <div className="flashcard-header-actions">
@@ -316,60 +257,50 @@ export default function Flashcard({
                         </div>
                     </div>
 
-                    <div className="flashcard-actions" style={{ marginBottom: '24px' }}>
-                        <button type="button" className="btn btn-primary flashcard-action-btn" onClick={handlePrevious} disabled={currentIndex === 0 || isQueueMode}>
+                    <div className="flashcard-actions" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
+                        <button type="button" className="btn btn-primary flashcard-action-btn" style={{ maxWidth: '180px' }} onClick={handlePrevious} disabled={currentIndex === 0}>
                             <span className="flashcard-nav-icon">{ARROW_LEFT_ICON}</span>
                             <span>TRƯỚC</span>
                         </button>
-                        <button
-                            type="button"
-                            className="btn btn-primary flashcard-action-btn flashcard-action-btn-icon"
-                            onClick={(event) => {
-                                event.stopPropagation();
-                                speakCurrentWord();
-                            }}
-                            aria-label="Nghe phát âm"
-                        >
-                            {SPEAKER_ICON} Nghe
-                        </button>
-                        <label className="flashcard-action-switch" title={currentWordRemembered ? 'Đã thuộc' : 'Chưa thuộc'}>
-                            <span className="flashcard-action-switch-label">THUỘC</span>
-                            <input
-                                type="checkbox"
-                                className="cv-switch-chk"
-                                checked={currentWordRemembered}
-                                onChange={() => toggleSelectedWord(currentWord.id)}
-                            />
-                            <span className="cv-switch-track"><span className="cv-switch-thumb"></span></span>
-                        </label>
-                        {isQueueMode ? (
-                            <button type="button" className="btn btn-primary flashcard-action-btn" onClick={handleNext}>
-                                <span>{currentWordRemembered ? 'Tiếp' : 'Quên'}</span>
+                        {!hasFlippedOnce && (
+                            <span className="flashcard-flip-hint-badge">Lật thẻ trước khi tiếp tục</span>
+                        )}
+
+                        {isLastCard ? (
+                            <button type="button" className={`btn btn-primary flashcard-action-btn${!hasFlippedOnce ? ' flashcard-btn-locked' : ''}`} style={{ maxWidth: '180px' }} onClick={handleComplete} disabled={!hasFlippedOnce}>
+                                <span>Hoàn thành</span>
                                 <span className="flashcard-nav-icon">{ARROW_RIGHT_ICON}</span>
                             </button>
-                        ) : isLastCard ? (
-                            <button type="button" className="btn btn-primary flashcard-action-btn" onClick={handleComplete}>
-                                <span>Xong</span>
-                            </button>
                         ) : (
-                            <button type="button" className="btn btn-primary flashcard-action-btn" onClick={handleNext}>
-                                <span>Tiếp</span>
+                            <button type="button" className={`btn btn-primary flashcard-action-btn${!hasFlippedOnce ? ' flashcard-btn-locked' : ''}`} style={{ maxWidth: '180px' }} onClick={handleNext} disabled={!hasFlippedOnce}>
+                                <span>TIẾP</span>
                                 <span className="flashcard-nav-icon">{ARROW_RIGHT_ICON}</span>
                             </button>
                         )}
                     </div>
                 </>
             ) : (
-                <StudyCompletionPanel
-                    summary={<><strong>Tổng kết:</strong> Bạn đã đánh dấu {selectedWordIds.length}/{totalCards} từ.</>}
-                    title="Chọn lại danh sách từ đã thuộc"
-                    words={words}
-                    selectedWordIds={selectedWordIds}
-                    onToggleWord={toggleSelectedWord}
-                    onPlayAgain={handlePlayAgain}
-                    onSave={handleSave}
-                    isSaved={isSaved}
-                />
+                <div className="flashcard-completion-view">
+                    <div className="flashcard-completion-content">
+                        <div className="flashcard-trophy">🏆</div>
+                        <h2>Chúc mừng bạn!</h2>
+                        <p>Bạn đã hoàn thành phiên học Flashcard.</p>
+                        <div className="flashcard-xp-reward">
+                            <span>+50 XP</span>
+                        </div>
+                        <p style={{ marginTop: '1rem', color: '#64748b', fontSize: '0.9rem' }}>
+                            Các từ vựng trong chủ đề này đã được tự động chuyển vào danh sách ôn tập thông minh (SRS).
+                        </p>
+                        <div className="flashcard-completion-actions">
+                            <button type="button" className="btn btn-secondary" onClick={() => onStartQuiz ? onStartQuiz() : handlePlayAgain()}>
+                                Luyện tập ngay
+                            </button>
+                            <button type="button" className="btn btn-primary" onClick={onBackToTopic}>
+                                Quay về chủ đề
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </section>
     );

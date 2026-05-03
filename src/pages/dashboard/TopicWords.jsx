@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ConfirmActionModal from '../../components/common/ConfirmActionModal';
 import { coursesData } from '../../data/coursesData';
@@ -15,6 +15,7 @@ import Typing from '../../components/Typing';
 import Match from '../../components/Match';
 import { recordFlashcardSessionProgress } from '../../utils/dashboardProgress';
 import { getSpeechLang } from '../../utils/studyModes';
+import { addToSrs, removeFromSrs, reviewItem } from '../../utils/srsStorage';
 
 const SVG_ICONS = {
     VOICE_SM: (
@@ -79,7 +80,7 @@ export default function TopicWords() {
     const [pickerWord, setPickerWord] = useState(null);
     const [pendingDeleteWord, setPendingDeleteWord] = useState(null);
     const [activeMode, setActiveMode] = useState(null);
-    const [learnUntilMastered, setLearnUntilMastered] = useState(false);
+    const [studyWordIds, setStudyWordIds] = useState(null);
     const [isLearnInfoOpen, setLearnInfoOpen] = useState(false);
 
     const courseId = rawCourseId || 'custom';
@@ -99,7 +100,7 @@ export default function TopicWords() {
         words = topic.words;
     } else {
         const course = coursesData[courseId];
-        if (!course) return <div>Khóa học không tồn tại</div>;
+        if (!course) return <div>Topic không tồn tại</div>;
         courseTitle = course.title;
         const topic = course.topics.find((item) => item.id === topicId);
         if (!topic) return <div>Chủ đề không tồn tại</div>;
@@ -141,7 +142,12 @@ export default function TopicWords() {
         window.speechSynthesis.speak(ut);
     };
 
+    const activeWords = useMemo(() => {
+        return studyWordIds ? words.filter(w => studyWordIds.includes(w.id)) : words;
+    }, [words, studyWordIds]);
+
     const handleModeClick = (modeName) => {
+        setStudyWordIds(null); // Reset word filter on new mode
         if (IMMERSIVE_MODES.has(modeName)) {
             setActiveMode(modeName);
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -158,33 +164,72 @@ export default function TopicWords() {
         }
     };
 
-    const saveRememberedWords = (selectedWordIds) => {
-        replaceRememberedInTopic(words.map((word) => word.id), selectedWordIds);
+    // ── SRS-aware toggle: add to SRS when learned, remove when un-marked ──
+    const handleToggleWord = (wordId) => {
+        const word = words.find((w) => w.id === wordId);
+        const wasRemembered = !!remembered[wordId];
+        toggleWord(wordId);
+        if (!wasRemembered && word) {
+            // Newly marked as known → enqueue in SRS
+            addToSrs(word, topicId, courseId);
+        } else {
+            // Un-marked → remove from SRS
+            removeFromSrs(wordId);
+        }
+    };
+
+    const saveRememberedWords = (selectedWordIds, targetWords = activeWords) => {
+        replaceRememberedInTopic(targetWords.map((word) => word.id), selectedWordIds);
     };
 
     const handleSaveFlashcard = (selectedWordIds) => {
+        const prevSet = new Set(activeWords.filter((w) => remembered[w.id]).map((w) => w.id));
+        const newSet  = new Set(selectedWordIds);
+        // Add newly learned words to SRS
+        activeWords.forEach((w) => {
+            if (newSet.has(w.id) && !prevSet.has(w.id)) addToSrs(w, topicId, courseId);
+            if (!newSet.has(w.id) && prevSet.has(w.id)) removeFromSrs(w.id);
+        });
         saveRememberedWords(selectedWordIds);
         recordFlashcardSessionProgress();
     };
 
-    const doneCount = words.filter((word) => remembered[word.id]).length;
-    const initialLearnedWordIds = words.filter((word) => remembered[word.id]).map((word) => word.id);
+    const handleQuizComplete = (correctWordIds, wrongWordIds) => {
+        activeWords.forEach(w => {
+            if (correctWordIds.includes(w.id)) {
+                addToSrs(w, topicId, courseId);
+                reviewItem(w.id, 'good'); // Boosts SRS interval if already exists
+            } else if (wrongWordIds.includes(w.id)) {
+                addToSrs(w, topicId, courseId);
+                reviewItem(w.id, 'forgot'); // Resets SRS interval to 1 day
+            }
+        });
+        saveRememberedWords(correctWordIds);
+    };
+
+    const initialLearnedWordIds = activeWords.filter((word) => remembered[word.id]).map((word) => word.id);
 
     const studyModeProps = {
         topicLang,
-        words,
+        words: activeWords,
+        allTopicWords: words, // For distractors
         initialLearnedWordIds,
-        onExit: () => setActiveMode(null),
-        onBackToTopic: () => setActiveMode(null),
-        learnUntilMastered,
+        onExit: () => { setActiveMode(null); setStudyWordIds(null); },
+        onBackToTopic: () => { setActiveMode(null); setStudyWordIds(null); },
+    };
+
+    const handleStudyWrongWords = (wrongWordIds) => {
+        setStudyWordIds(wrongWordIds);
+        setActiveMode('flashcard');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     let modeView = null;
 
     if (activeMode === 'flashcard') {
-        modeView = <Flashcard {...studyModeProps} onSaveLearnedWords={handleSaveFlashcard} />;
+        modeView = <Flashcard {...studyModeProps} onSaveLearnedWords={handleSaveFlashcard} onStartQuiz={() => { setActiveMode('quiz'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />;
     } else if (activeMode === 'quiz') {
-        modeView = <Quiz {...studyModeProps} onSaveLearnedWords={saveRememberedWords} />;
+        modeView = <Quiz {...studyModeProps} onSaveLearnedWords={handleQuizComplete} onStudyWrongWords={handleStudyWrongWords} />;
     } else if (activeMode === 'listen') {
         modeView = <Listening {...studyModeProps} onSaveLearnedWords={saveRememberedWords} />;
     } else if (activeMode === 'typing') {
@@ -218,33 +263,6 @@ export default function TopicWords() {
                     <section className="cv-modes-section">
                         <div className="cv-modes-header">
                             <h3 className="cv-section-title">Chọn cách học</h3>
-                            <div className="cv-modes-learn-toggle-wrap">
-                                <button
-                                    type="button"
-                                    className={`cv-modes-info-btn${isLearnInfoOpen ? ' is-open' : ''}`}
-                                    aria-label="Giải thích cơ chế học tới khi thuộc hết"
-                                    aria-expanded={isLearnInfoOpen}
-                                    onClick={() => setLearnInfoOpen((prev) => !prev)}
-                                >
-                                    {SVG_ICONS.INFO}
-                                </button>
-                                <label className="flashcard-action-switch cv-modes-learn-toggle" title={learnUntilMastered ? 'Đang bật học tới khi thuộc hết' : 'Đang tắt học tới khi thuộc hết'}>
-                                    <span className="flashcard-action-switch-label cv-modes-learn-label">
-                                        <span className="cv-modes-learn-label-text">Học thuộc hết</span>
-                                    </span>
-                                    <input
-                                        className="cv-switch-chk"
-                                        type="checkbox"
-                                        checked={learnUntilMastered}
-                                        onChange={() => setLearnUntilMastered((prev) => !prev)}
-                                    />
-                                    <span className="cv-switch-track"><span className="cv-switch-thumb"></span></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div className={`cv-modes-learn-info${isLearnInfoOpen ? ' is-open' : ''}`}>
-                            <strong>Học tới khi thuộc hết</strong>
-                            <p>Khi bật chế độ này thì bạn sẽ gặp lại những câu chưa trả lời đúng (những từ chưa được đánh dấu đã thuộc). Chỉ khi bạn trả lời đúng thì câu hỏi đó mới không bị lặp lại, nó sẽ không dừng cho tới khi bạn trả lời đúng hết các câu.</p>
                         </div>
                         <div className="cv-modes-grid" id="cv-modes-grid">
                             {MODES.map(({ mode, icon, name, desc }) => (
@@ -275,8 +293,6 @@ export default function TopicWords() {
 
                     <div className="cv-stats-bar">
                         <span className="cv-stat"><span className="cv-stat-dot dot-total"></span>Tổng: <strong id="cv-total">{words.length}</strong> từ</span>
-                        <span className="cv-stat"><span className="cv-stat-dot dot-done"></span>Đã thuộc: <strong id="cv-done">{doneCount}</strong></span>
-                        <span className="cv-stat"><span className="cv-stat-dot dot-left"></span>Chưa thuộc: <strong id="cv-left">{words.length - doneCount}</strong></span>
                     </div>
 
                     <section className="cv-vocab-section">
@@ -288,7 +304,6 @@ export default function TopicWords() {
                                 <span>Nghĩa</span>
                                 <span>Loại từ</span>
                                 <span>Ví dụ</span>
-                                <span>Đã thuộc</span>
                                 <span className="cv-col-actions">Hành động</span>
                             </div>
 
@@ -338,17 +353,7 @@ export default function TopicWords() {
                                                 <span className="cv-example">{w.example || ''}</span>
                                             </div>
 
-                                            <div className="cv-cell cv-cell-remember">
-                                                <label className="cv-switch" title={isDone ? 'Đã thuộc' : 'Chưa thuộc'}>
-                                                    <input
-                                                        type="checkbox"
-                                                        className="cv-switch-chk"
-                                                        checked={isDone}
-                                                        onChange={() => toggleWord(w.id)}
-                                                    />
-                                                    <span className="cv-switch-track"><span className="cv-switch-thumb"></span></span>
-                                                </label>
-                                            </div>
+
 
                                             <div className="cv-cell cv-cell-actions">
                                                 {isCustom ? (
@@ -358,7 +363,7 @@ export default function TopicWords() {
                                                                 type="checkbox"
                                                                 className="cv-switch-chk cv-switch-chk-extra"
                                                                 checked={isDone}
-                                                                onChange={() => toggleWord(w.id)}
+                                                                onChange={() => handleToggleWord(w.id)}
                                                             />
                                                             <span className="cv-switch-track"><span className="cv-switch-thumb"></span></span>
                                                         </label>

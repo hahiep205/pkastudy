@@ -743,9 +743,193 @@ body {
     background: rgba(255, 255, 255, .18);
 }
 
-
-
 /* ════════════════════════════════════════════
+   SECTION 3: AI Chatbot
+════════════════════════════════════════════ */
+.lp-ai-section {
+    background: #fff;
+    border-top: 2px solid var(--border-color);
+}
+
+.lp-ai-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 56px;
+    align-items: center;
+}
+
+.lp-ai-text {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.lp-ai-text .lp-subheading {
+    max-width: 480px;
+}
+
+/* AI mockup chat */
+.lp-ai-visual {
+    display: flex;
+    justify-content: center;
+}
+
+.lp-ai-mockup {
+    width: 100%;
+    max-width: 440px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-page);
+    box-shadow: var(--shadow-card);
+}
+
+.lp-ai-mockup-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-bottom: 2px solid var(--border-color);
+    background: #fff;
+}
+
+.lp-ai-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.lp-ai-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--dark-blue);
+}
+
+.lp-ai-mockup-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 320px;
+    overflow: hidden;
+}
+
+.lp-ai-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    font-weight: 600;
+    max-width: 90%;
+    animation: lpBubbleIn .5s ease both;
+}
+
+.lp-ai-bubble-user {
+    background: var(--blue);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.lp-ai-bubble-bot {
+    background: #fff;
+    color: var(--gray-text);
+    align-self: flex-start;
+    border: 1.5px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+}
+
+.lp-ai-bubble-bot strong {
+    color: var(--dark-blue);
+}
+
+.lp-ai-bubble-bot em {
+    color: var(--blue);
+}
+
+/* Typing indicator */
+.lp-ai-typing {
+    display: flex;
+    gap: 5px;
+    align-self: flex-start;
+    background: #fff;
+    border: 1.5px solid var(--border-color);
+    padding: 12px 18px;
+    border-radius: 16px;
+    border-bottom-left-radius: 4px;
+}
+
+.lp-ai-typing span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gray-light);
+    animation: lpTypingDot 1.4s infinite both;
+}
+
+.lp-ai-typing span:nth-child(2) {
+    animation-delay: .2s;
+}
+
+.lp-ai-typing span:nth-child(3) {
+    animation-delay: .4s;
+}
+
+@keyframes lpTypingDot {
+    0%, 80%, 100% { opacity: .3; transform: scale(.8); }
+    40% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes lpBubbleIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* AI feature items */
+.lp-ai-features {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.lp-ai-feat-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.lp-ai-feat-icon {
+    font-size: 24px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(28, 176, 246, .08);
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.lp-ai-feat-item div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.lp-ai-feat-item strong {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--dark-blue);
+}
+
+.lp-ai-feat-item span {
+    font-size: 13px;
+    color: var(--gray-light);
+    font-weight: 600;
+    line-height: 1.5;
+}/* ════════════════════════════════════════════
    RESPONSIVE
 ════════════════════════════════════════════ */
 @media (max-width: 1024px) {
@@ -772,6 +956,15 @@ body {
     .lp-courses-layout {
         grid-template-columns: 1fr;
         gap: 40px;
+    }
+
+    .lp-ai-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .lp-ai-visual {
+        order: -1;
     }
 
     .lp-courses-text .lp-subheading {

@@ -15,7 +15,7 @@ export default function MobileNav() {
                         <path d="M2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM12 5V19H20V5H12ZM13 7H19V9H13V7ZM13 10H19V12H13V10Z"></path>
                     </svg>
                 </span>
-                Khóa học
+                Topic
             </NavLink>
             <NavLink to="/dashboard/games" className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}>
                 <span>
@@ -25,13 +25,29 @@ export default function MobileNav() {
                 </span>
                 Trò chơi
             </NavLink>
+            <NavLink to="/dashboard/toeic" className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}>
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M20 2H4C2.89543 2 2 2.89543 2 4V20C2 21.1046 2.89543 22 4 22H20C21.1046 22 22 21.1046 22 20V4C22 2.89543 21.1046 2 20 2ZM8 17H6V10H8V17ZM13 17H11V7H13V17ZM18 17H16V13H18V17Z" />
+                    </svg>
+                </span>
+                TOEIC
+            </NavLink>
+            <NavLink to="/dashboard/review" className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}>
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </span>
+                Ôn tập
+            </NavLink>
             <NavLink to="/dashboard/stats" className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}>
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                         <path d="M12 7.00002C16.4183 7.00002 20 10.5817 20 15C20 19.4183 16.4183 23 12 23C7.58172 23 4 19.4183 4 15C4 10.5817 7.58172 7.00002 12 7.00002ZM12 10.5L10.6775 13.1797L7.72025 13.6094L9.86012 15.6953L9.35497 18.6406L12 17.25L14.645 18.6406L14.1399 15.6953L16.2798 13.6094L13.3225 13.1797L12 10.5ZM13 1.99902L18 2.00002V5.00002L16.6366 6.13758C15.5305 5.55773 14.3025 5.17887 13.0011 5.04951L13 1.99902ZM11 1.99902L10.9997 5.04943C9.6984 5.17866 8.47046 5.55738 7.36441 6.13706L6 5.00002V2.00002L11 1.99902Z"></path>
                     </svg>
                 </span>
-                Xếp hạng
+                Thống kê
             </NavLink>
             <NavLink to="/dashboard/settings" className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}>
                 <span>

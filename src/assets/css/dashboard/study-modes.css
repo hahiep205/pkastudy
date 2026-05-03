@@ -1453,13 +1453,6 @@
     word-break: break-word;
 }
 
-.listening-example-translation {
-    margin-top: 8px;
-    color: #475569;
-    line-height: 1.65;
-    word-break: break-word;
-}
-
 .listening-example-copy.is-muted {
     color: #64748b;
 }
@@ -2080,13 +2073,6 @@
     word-break: break-word;
 }
 
-.typing-example-translation {
-    margin-top: 8px;
-    color: #475569;
-    line-height: 1.65;
-    word-break: break-word;
-}
-
 .typing-example-copy.is-muted {
     color: #64748b;
 }
@@ -2247,3 +2233,118 @@
 
     }
 }
+
+/* ── Flashcard: must-flip-before-next hint ── */
+.flashcard-flip-hint-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(251, 191, 36, .12);
+    border: 1px solid rgba(251, 191, 36, .35);
+    color: #b45309;
+    font-size: .78rem;
+    font-weight: 700;
+    white-space: nowrap;
+    animation: flashcard-hint-pulse 2s ease-in-out infinite;
+}
+
+@keyframes flashcard-hint-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .6; }
+}
+
+.flashcard-btn-locked {
+    opacity: .4 !important;
+    cursor: not-allowed !important;
+    filter: grayscale(.4) !important;
+}
+
+body.app-dark-mode .flashcard-flip-hint-badge {
+    background: rgba(251, 191, 36, .1);
+    border-color: rgba(251, 191, 36, .25);
+    color: #fbbf24;
+}
+
+/* ───────────────────────────────────────────────────────────
+   FLASHCARD COMPLETION RESULT
+─────────────────────────────────────────────────────────── */
+.flashcard-completion-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    padding: 40px;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.flashcard-completion-content {
+    background: #fff;
+    border-radius: 20px;
+    padding: 48px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    max-width: 480px;
+    width: 100%;
+}
+
+body.app-dark-mode .flashcard-completion-content {
+    background: #1e293b;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.flashcard-trophy {
+    font-size: 80px;
+    line-height: 1;
+    margin-bottom: 24px;
+    animation: bounce 2s infinite cubic-bezier(0.28, 0.84, 0.42, 1);
+}
+
+.flashcard-completion-content h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 12px;
+}
+
+body.app-dark-mode .flashcard-completion-content h2 {
+    color: #f8fafc;
+}
+
+.flashcard-completion-content p {
+    color: #475569;
+    font-size: 16px;
+    margin: 0 0 32px;
+}
+
+body.app-dark-mode .flashcard-completion-content p {
+    color: #94a3b8;
+}
+
+.flashcard-xp-reward {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #fff;
+    font-size: 24px;
+    font-weight: 800;
+    padding: 12px 32px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+}
+
+.flashcard-completion-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.flashcard-completion-actions button {
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 12px;
+}

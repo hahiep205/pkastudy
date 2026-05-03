@@ -11,6 +11,8 @@ import {
     subscribeDashboardProgress,
 } from '../../utils/dashboardProgress';
 import { buildActivityChartData } from '../../utils/userStats';
+import { getLevelInfo, getXpData } from '../../utils/xpSystem';
+import { getDueCount, getSrsForecast, checkSrsDecayWarning } from '../../utils/srsStorage';
 
 export default function Overview() {
     const navigate = useNavigate();
@@ -24,6 +26,10 @@ export default function Overview() {
     const [dashboardProgress, setDashboardProgress] = useState(() => readDashboardProgress(userKey));
     const [stats, setStats] = useState({ streak: 0, words: 0, xp: 0 });
     const [chartPeriod, setChartPeriod] = useState('week');
+    const levelInfo = getLevelInfo(getXpData().totalXp);
+    const srsCount = getDueCount();
+    const decayCount = checkSrsDecayWarning();
+    const srsForecast = useMemo(() => getSrsForecast(), []);
 
     useEffect(() => {
         setDashboardProgress(readDashboardProgress(userKey));
@@ -247,7 +253,7 @@ export default function Overview() {
                             vựng tăng đều mỗi ngày.
                         </p>
                         <div className="welcome-actions">
-                            <Link to="/dashboard/courses"><button className="btn btn-primary btn-large" id="startStudyBtn">Khóa học</button></Link>
+                            <Link to="/dashboard/courses"><button className="btn btn-primary btn-large" id="startStudyBtn">Topic</button></Link>
                             <Link to="/dashboard/games"><button className="btn btn-secondary">Trò chơi</button></Link>
                         </div>
                     </div>
@@ -264,10 +270,79 @@ export default function Overview() {
                             </div>
                         </div>
 
+                        {/* Level Card */}
+                        <div className="welcome-focus-card" style={{background:'linear-gradient(135deg,rgba(139,92,246,0.08),rgba(59,130,246,0.08))',border:'1.5px solid rgba(139,92,246,0.2)'}}>
+                            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+                                <span style={{fontSize:'1.5rem'}}>{levelInfo.badge}</span>
+                                <div>
+                                    <strong style={{fontSize:15}}>Level {levelInfo.level} — {levelInfo.title}</strong>
+                                    <div style={{fontSize:12,color:'var(--gray-light)'}}>{levelInfo.totalXp} XP tổng cộng</div>
+                                </div>
+                            </div>
+                            <div style={{height:6,borderRadius:3,background:'rgba(139,92,246,0.15)',overflow:'hidden'}}>
+                                <div style={{width:`${Math.round(levelInfo.progress*100)}%`,height:'100%',borderRadius:3,background:'linear-gradient(90deg,#8b5cf6,#3b82f6)',transition:'width .5s ease'}} />
+                            </div>
+                            {levelInfo.nextLevel && <span style={{fontSize:11,color:'var(--gray-light)',marginTop:4,display:'block'}}>Còn {levelInfo.xpForNext - levelInfo.xpInLevel} XP đến Level {levelInfo.nextLevel.level}</span>}
+                        </div>
+
+                        {/* Decay Warning */}
+                        {decayCount > 0 && (
+                            <div className="welcome-focus-card" style={{background:'rgba(239,68,68,0.08)',border:'1.5px solid rgba(239,68,68,0.25)'}}>
+                                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                                    <span style={{fontSize:'1.3rem'}}>⚠️</span>
+                                    <div>
+                                        <strong style={{color:'#b91c1c'}}>Báo động đỏ!</strong>
+                                        <p style={{margin:0,fontSize:13,color:'var(--gray-light)'}}>Có <strong>{decayCount}</strong> từ vựng đang phai mờ khỏi ký ức vì bị bỏ quên. <Link to="/dashboard/games" style={{color:'#b91c1c',textDecoration:'underline',fontWeight:600}}>Cứu ngay!</Link></p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* SRS Reminder */}
+                        {srsCount > 0 && decayCount === 0 && (
+                            <div className="welcome-focus-card" style={{background:'rgba(245,158,11,0.08)',border:'1.5px solid rgba(245,158,11,0.25)'}}>
+                                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                                    <span style={{fontSize:'1.3rem'}}>📋</span>
+                                    <div>
+                                        <strong style={{color:'#b45309'}}>Ôn tập SRS</strong>
+                                        <p style={{margin:0,fontSize:13,color:'var(--gray-light)'}}>Bạn có <strong>{srsCount}</strong> từ cần ôn tập hôm nay</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* SRS Forecast Graph */}
                         <div className="welcome-focus-card">
-                            <span className="welcome-focus-label">Nhịp học hôm nay</span>
-                            <strong className="welcome-focus-value">{completedTasks}/{tasksView.length} task</strong>
-                            <p>Hôm nay bạn đã nhận <strong>{dashboardProgress.dailyXp} EXP</strong>. Chỉ khi hoàn thành đúng task thì trạng thái mới được cập nhật.</p>
+                            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
+                                <span className="welcome-focus-label" style={{margin:0}}>Dự báo ôn tập 7 ngày tới</span>
+                                <span style={{fontSize:'1.2rem'}}>📈</span>
+                            </div>
+                            <div style={{ display: 'flex', gap: '4px', height: '50px', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                                {srsForecast.map((count, i) => {
+                                    const maxCount = Math.max(...srsForecast, 10);
+                                    const heightPct = (count / maxCount) * 100;
+                                    const isToday = i === 0;
+                                    const dateObj = new Date();
+                                    dateObj.setDate(dateObj.getDate() + i);
+                                    const dayName = isToday ? 'Nay' : dateObj.toLocaleDateString('vi-VN', { weekday: 'short' }).replace('Th ', 'T');
+                                    
+                                    return (
+                                        <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '12%' }}>
+                                            <span style={{ fontSize: '10px', color: 'var(--gray-light)', marginBottom: '4px' }}>{count > 0 ? count : ''}</span>
+                                            <div style={{ 
+                                                width: '100%', 
+                                                height: `${Math.max(heightPct, 4)}%`, 
+                                                background: isToday ? 'var(--primary-color)' : 'rgba(99, 102, 241, 0.2)',
+                                                borderRadius: '3px 3px 0 0',
+                                                transition: 'height 0.5s ease'
+                                            }} />
+                                            <span style={{ fontSize: '10px', color: isToday ? 'var(--text-main)' : 'var(--gray-light)', marginTop: '4px', fontWeight: isToday ? 'bold' : 'normal' }}>
+                                                {dayName}
+                                            </span>
+                                        </div>
+                                    )
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -365,10 +440,8 @@ export default function Overview() {
                         });
 
                         const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-                        const langName = course.lang === 'en' ? 'Tiếng Anh' : course.lang === 'ko' ? 'Tiếng Hàn' : 'Ngoại ngữ';
-                        const bannerGradient = course.lang === 'en'
-                            ? 'linear-gradient(135deg,#eef2ff,#e0e7ff)'
-                            : 'linear-gradient(135deg,#f0fdf4,#dcfce7)';
+                        const langName = course.lang === 'en' ? 'Tiếng Anh' : 'Ngoại ngữ';
+                        const bannerGradient = 'linear-gradient(135deg,#eef2ff,#e0e7ff)';
 
                         return (
                             <div key={course.id} className="course-dash-card reveal" data-course-id={course.id}>
@@ -378,9 +451,7 @@ export default function Overview() {
                                 <div className="course-dash-body">
                                     <h3 className="course-dash-name">{course.title}</h3>
                                     <p className="course-dash-desc">
-                                        {course.id === 'toeic-basic'
-                                            ? 'Barron’s 600 Essential Words for the TOEIC của Dr. Lin Lougheed, tập trung vào từ vựng trọng tâm cho Reading, Listening và ngữ cảnh business.'
-                                            : 'Bộ 600 từ tiếng Hàn theo 30 chủ đề, phù hợp để xây nền từ vựng cho người mới bắt đầu và TOPIK I-II.'}
+
                                     </p>
                                     <div className="course-dash-meta">
                                         <span className="cd-meta-words">{total} từ</span>
@@ -406,7 +477,7 @@ export default function Overview() {
                                 </div>
                                 <div className="course-dash-footer">
                                     <Link
-                                        to={`/dashboard/courses?tab=${course.lang === 'en' ? 'english' : 'korean'}`}
+                                        to={`/dashboard/courses?tab=english`}
                                         className="btn btn-primary btn-small cd-view-btn"
                                     >
                                         Xem ngay

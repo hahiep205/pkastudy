@@ -3,9 +3,11 @@ import { Outlet, useLocation } from 'react-router-dom';
 import MobileNav from '../components/landingPage/MobileNav';
 import Sidebar from '../components/landingPage/Sidebar';
 import Topbar from '../components/landingPage/Topbar';
+import NotificationManager from '../components/NotificationManager';
 import '../assets/css/dashboard/index.css';
 import '../assets/css/custom-courses.css';
 import '../assets/css/custom-pages.css';
+import '../assets/css/toeic-review.css';
 
 export default function DashboardLayout() {
     const location = useLocation();
@@ -59,6 +61,7 @@ export default function DashboardLayout() {
                 <Outlet />
             </div>
             <MobileNav />
+            <NotificationManager />
         </>
     );
 }

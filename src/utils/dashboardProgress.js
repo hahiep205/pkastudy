@@ -1,4 +1,5 @@
 import { recordUserStatsSnapshot } from './userStats';
+import { xpStreakDaily } from './xpSystem';
 
 const STORAGE_KEY = 'pka_dashboard_progress_v1';
 const UPDATE_EVENT = 'pka-dashboard-progress-updated';
@@ -159,6 +160,7 @@ function applyDashboardTaskCompletion(current, taskId) {
         streak += 1;
         lastStreakDate = today;
         streakGained = true;
+        xpStreakDaily(); // +20 XP streak bonus
     }
 
     return {

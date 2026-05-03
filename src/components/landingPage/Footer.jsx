@@ -9,27 +9,27 @@ export default function Footer() {
                     <Link to="/">
                         <img src={logo2} style={{ width: '270px', height: 'auto' }} alt="pkastudy Logo" className="footer-logo" />
                     </Link>
-                    <p className="footer-desc" style={{ color: 'var(--dark-blue)', fontWeight: 800, fontSize: '1.25rem' }}>
-                        <span class="name-logo">Study smarter, remember longer.</span>
+                    <p className="footer-desc">
+                        Nền tảng học Vocabulary tiếng Anh - Hàn toàn diện với từ vựng phong phú, phát âm chuẩn, luyện nghe hiệu quả, flashcard sinh động và trợ lý AI thông minh.
                     </p>
                 </div>
 
                 <div className="footer-col col-links">
                     <h3 className="footer-heading">Danh mục</h3>
                     <ul className="footer-list">
-                        <li><Link to="/#hero-section" className="footer-link">Trang chủ</Link></li>
-                        <li><Link to="#" className="footer-link">Giới thiệu</Link></li>
+                        <li><Link to="/" className="footer-link">Trang chủ</Link></li>
+                        <li><a href="/#gioi-thieu" className="footer-link">Giới thiệu</a></li>
                         <li><Link to="/dashboard/courses" className="footer-link">Tài liệu</Link></li>
-                        <li><Link to="#" className="footer-link">Chatbot AI</Link></li>
+                        <li><Link to="/dashboard" className="footer-link">Chatbot AI</Link></li>
                     </ul>
                 </div>
 
                 <div className="footer-col col-links">
                     <h3 className="footer-heading">Dịch Vụ</h3>
                     <ul className="footer-list">
-                        <li><Link to="#" className="footer-link">Học Tiếng Anh</Link></li>
-                        <li><Link to="#" className="footer-link">Học Tiếng Hàn</Link></li>
-                        <li><Link to="#" className="footer-link">Tạo bộ từ của bạn</Link></li>
+                        <li><Link to="/dashboard/courses?tab=english" className="footer-link">Học Tiếng Anh</Link></li>
+                        <li><Link to="/dashboard/courses?tab=korean" className="footer-link">Học Tiếng Hàn</Link></li>
+                        <li><Link to="/dashboard/courses?tab=custom" className="footer-link">Tạo bộ từ của bạn</Link></li>
                         <li><Link to="/dashboard" className="footer-link">Học Thử</Link></li>
                     </ul>
                 </div>

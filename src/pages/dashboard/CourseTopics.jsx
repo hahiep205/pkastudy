@@ -40,10 +40,16 @@ export default function CourseTopics() {
             return;
         }
 
+        let result;
         if (editingTopic) {
-            updateTopic(editingTopic.id, topicForm);
+            result = updateTopic(editingTopic.id, topicForm);
         } else {
-            createTopic(topicForm);
+            result = createTopic(topicForm);
+        }
+
+        if (result?.error) {
+            setToastMessage(result.error);
+            return;
         }
 
         setModalOpen(false);
@@ -73,7 +79,7 @@ export default function CourseTopics() {
         if (!course) {
             return (
                 <div style={{ textAlign: 'center', padding: '50px' }}>
-                    <h2>⚠️ Khóa học không tồn tại hoặc đang phát triển.</h2>
+                    <h2>⚠️ Topic không tồn tại hoặc đang phát triển.</h2>
                     <br />
                     <button className="btn btn-secondary" onClick={() => navigate('/dashboard/courses')}>
                         Quay lại
@@ -112,7 +118,7 @@ export default function CourseTopics() {
             <div className="cv-topics-grid">
                 {topics.length === 0 && courseId === 'custom' && (
                     <div style={{ textAlign: 'center', padding: '40px', color: 'var(--gray-text)', gridColumn: '1 / -1' }}>
-                        Bạn chưa có tài liệu cá nhân nào. Hãy quay lại trang Khóa học và chuyển sang tab "Cá nhân" để thêm nhé!
+                        Bạn chưa có tài liệu cá nhân nào. Hãy quay lại trang Topic và chuyển sang tab "Cá nhân" để thêm nhé!
                     </div>
                 )}
                 {topics.map((topic) => {

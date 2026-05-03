@@ -1,4 +1,4 @@
-﻿export const SPEECH_LANG_MAP = {
+export const SPEECH_LANG_MAP = {
     en: 'en-US',
     ko: 'ko-KR',
     ja: 'ja-JP',
@@ -135,9 +135,9 @@ function getUniqueDistractors(currentWord, words, count = 3) {
     return distractors;
 }
 
-export function buildQuizQuestions(words = []) {
+export function buildQuizQuestions(words = [], allWords = words) {
     return shuffleArray(words).map((word) => {
-        const distractors = getUniqueDistractors(word, words, 3);
+        const distractors = getUniqueDistractors(word, allWords, 3);
         const choices = shuffleArray([
             {
                 id: `${word.id}-correct`,

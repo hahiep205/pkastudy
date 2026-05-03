@@ -8,6 +8,7 @@ import {
     readDashboardProgress,
     subscribeDashboardProgress,
 } from '../../utils/dashboardProgress';
+import { getXpData, getLevelInfo } from '../../utils/xpSystem';
 
 export default function Topbar({ onMenuClick }) {
     const { user } = useAuth();
@@ -15,15 +16,16 @@ export default function Topbar({ onMenuClick }) {
     const [streak, setStreak] = useState(() => readDashboardProgress(userKey).streak);
     const [animatingStreak, setAnimatingStreak] = useState(false);
     const previousStreakRef = useRef(streak);
+    const [levelInfo, setLevelInfo] = useState(() => getLevelInfo(getXpData().totalXp));
 
     useEffect(() => {
         const nextStreak = readDashboardProgress(userKey).streak;
         setStreak(nextStreak);
         previousStreakRef.current = nextStreak;
+        setLevelInfo(getLevelInfo(getXpData().totalXp));
 
         return subscribeDashboardProgress((payload) => {
             if (payload && payload.userKey && payload.userKey !== userKey) return;
-
             const latestStreak = readDashboardProgress(userKey).streak;
             if (latestStreak > previousStreakRef.current) {
                 setAnimatingStreak(false);
@@ -31,18 +33,24 @@ export default function Topbar({ onMenuClick }) {
             } else {
                 setAnimatingStreak(false);
             }
-
             previousStreakRef.current = latestStreak;
             setStreak(latestStreak);
+            setLevelInfo(getLevelInfo(getXpData().totalXp));
         });
     }, [userKey]);
+
+    // Poll XP changes (xpSystem writes to its own key)
+    useEffect(() => {
+        const refresh = () => setLevelInfo(getLevelInfo(getXpData().totalXp));
+        window.addEventListener('storage', refresh);
+        const id = setInterval(refresh, 3000);
+        return () => { window.removeEventListener('storage', refresh); clearInterval(id); };
+    }, []);
 
     return (
         <header className="topbar">
             <button className="topbar-hamburger" onClick={onMenuClick} aria-label="Open sidebar" type="button">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </button>
 
             <div className="topbar-logo" style={{ display: 'none' }}>
@@ -54,6 +62,20 @@ export default function Topbar({ onMenuClick }) {
             </div>
 
             <div className="topbar-actions">
+                {/* XP / Level badge */}
+                <div className="topbar-xp" title={`Level ${levelInfo.level} — ${levelInfo.title}\n${levelInfo.totalXp} XP`} style={{
+                    display:'flex', alignItems:'center', gap:6,
+                    padding:'4px 12px', borderRadius:20,
+                    background:'rgba(139,92,246,0.12)', border:'1.5px solid rgba(139,92,246,0.25)',
+                    fontSize:13, fontWeight:700, color:'#8b5cf6', cursor:'default',
+                }}>
+                    <span style={{fontSize:16}}>{levelInfo.badge}</span>
+                    <span>Lv.{levelInfo.level}</span>
+                    <div style={{width:40,height:4,borderRadius:2,background:'rgba(139,92,246,0.2)',overflow:'hidden'}}>
+                        <div style={{width:`${Math.round(levelInfo.progress*100)}%`,height:'100%',borderRadius:2,background:'#8b5cf6',transition:'width .5s ease'}} />
+                    </div>
+                </div>
+
                 <div className="topbar-streak" id="streakBtn" title="Streak hiện tại">
                     <span className="streak-icon">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -64,6 +86,7 @@ export default function Topbar({ onMenuClick }) {
                     <strong id="streakCount" style={{ animation: animatingStreak ? 'streakPop .4s ease' : 'none' }}>{streak}</strong>
                     <span className="streak-label">ngày</span>
                 </div>
+
                 <button className="topbar-chatbot" title="Mở trợ lý AI" onClick={() => window.dispatchEvent(new CustomEvent('toggleFloatChat'))}>
                     <img src={aiImg} alt="AI Chatbot" className="topbar-chatbot-img" />
                 </button>

@@ -10,6 +10,8 @@ import Overview from './pages/dashboard/Overview';
 import Settings from './pages/dashboard/Settings';
 import Stats from './pages/dashboard/Stats';
 import TopicWords from './pages/dashboard/TopicWords';
+import TOEIC from './pages/dashboard/TOEIC';
+import Review from './pages/dashboard/Review';
 import LandingPage from './pages/landingPage/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -38,6 +40,8 @@ function App() {
                         <Route path="custom/topic/:topicId" element={<TopicWords />} />
                     </Route>
                     <Route path="games" element={<Games />} />
+                    <Route path="toeic" element={<TOEIC />} />
+                    <Route path="review" element={<Review />} />
                     <Route path="stats" element={<Stats />} />
                     <Route path="settings" element={<Settings />} />
                 </Route>

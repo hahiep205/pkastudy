@@ -10,7 +10,7 @@ export const coursesData = {
     ══════════════════════════════════════ */
     'toeic-basic': {
         id: 'toeic-basic',
-        title: 'Bộ từ vựng TOEIC cơ bản từ 0 tới 500+',
+        title: '600 Essential Words for the TOEIC',
         lang: 'en',
         topics: [
 

@@ -488,9 +488,6 @@ function SetupPanel({ langOptions, selectedLang, onPickLang, selectedBird, onPic
                         <div className="flappy-setup-eyebrow">Bắt đầu luyện tập</div>
                         <div className="flappy-setup-title-row">
                             <h2>Flappy Bird</h2>
-                            <button type="button" className="btn btn-secondary btn-small" onClick={onBackGallery}>
-                                Game khác
-                            </button>
                         </div>
                         <p>Tất cả từ đã thuộc của bạn trong ngôn ngữ này sẽ được trộn lại để làm câu hỏi ôn tập ngẫu nhiên trong game.</p>
                     </div>

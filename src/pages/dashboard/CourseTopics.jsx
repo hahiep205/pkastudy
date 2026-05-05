@@ -5,6 +5,7 @@ import TopicFormModal from '../../components/customDocs/TopicFormModal';
 import { coursesData } from '../../data/coursesData';
 import { useCourseProgress } from '../../hooks/useCourseProgress';
 import { useCustomCourses } from '../../hooks/useCustomCourses';
+import { TOEIC_BASIC_LESSONS_1_TO_50 } from '../../data/toeicBasicLessons';
 
 export default function CourseTopics() {
     const { courseId } = useParams();
@@ -89,7 +90,9 @@ export default function CourseTopics() {
         }
 
         title = course.title;
-        topics = course.topics;
+        topics = courseId === 'toeic-basic'
+            ? TOEIC_BASIC_LESSONS_1_TO_50
+            : course.topics;
     }
 
     return (

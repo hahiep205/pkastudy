@@ -16,6 +16,7 @@ import Match from '../../components/Match';
 import { recordFlashcardSessionProgress } from '../../utils/dashboardProgress';
 import { getSpeechLang } from '../../utils/studyModes';
 import { addToSrs, removeFromSrs, reviewItem } from '../../utils/srsStorage';
+import { TOEIC_BASIC_LESSONS_1_TO_50 } from '../../data/toeicBasicLessons';
 
 const SVG_ICONS = {
     VOICE_SM: (
@@ -102,7 +103,11 @@ export default function TopicWords() {
         const course = coursesData[courseId];
         if (!course) return <div>Topic không tồn tại</div>;
         courseTitle = course.title;
-        const topic = course.topics.find((item) => item.id === topicId);
+        const topicList = courseId === 'toeic-basic'
+            ? TOEIC_BASIC_LESSONS_1_TO_50
+            : course.topics;
+
+        const topic = topicList.find((item) => item.id === topicId);
         if (!topic) return <div>Chủ đề không tồn tại</div>;
         topicTitle = topic.title;
         topicLang = course.lang || 'en';
@@ -184,7 +189,7 @@ export default function TopicWords() {
 
     const handleSaveFlashcard = (selectedWordIds) => {
         const prevSet = new Set(activeWords.filter((w) => remembered[w.id]).map((w) => w.id));
-        const newSet  = new Set(selectedWordIds);
+        const newSet = new Set(selectedWordIds);
         // Add newly learned words to SRS
         activeWords.forEach((w) => {
             if (newSet.has(w.id) && !prevSet.has(w.id)) addToSrs(w, topicId, courseId);

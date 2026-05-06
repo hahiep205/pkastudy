@@ -62,6 +62,24 @@ CREATE TABLE IF NOT EXISTS Flashcards (
   INDEX idx_flashcards_topic_id (topic_id)
 );
 
+CREATE TABLE IF NOT EXISTS SRS_Reviews (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  flashcard_id INT NOT NULL,
+  interval_days INT NOT NULL DEFAULT 1,
+  ef DECIMAL(4,2) NOT NULL DEFAULT 2.50,
+  repetition INT NOT NULL DEFAULT 0,
+  next_review_date DATE NOT NULL,
+  last_reviewed_at DATETIME DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_srs_reviews_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_srs_reviews_flashcard FOREIGN KEY (flashcard_id) REFERENCES Flashcards(id) ON DELETE CASCADE,
+  CONSTRAINT uq_srs_reviews_user_flashcard UNIQUE (user_id, flashcard_id),
+  INDEX idx_srs_reviews_user_due (user_id, next_review_date),
+  INDEX idx_srs_reviews_flashcard_id (flashcard_id)
+);
+
 ALTER TABLE Topics ADD COLUMN IF NOT EXISTS slug VARCHAR(120) DEFAULT NULL AFTER course_id;
 ALTER TABLE Flashcards ADD COLUMN IF NOT EXISTS external_id VARCHAR(50) DEFAULT NULL AFTER topic_id;
 ALTER TABLE Flashcards ADD COLUMN IF NOT EXISTS transcription VARCHAR(255) DEFAULT NULL AFTER word;
@@ -578,4 +596,3 @@ INSERT INTO Flashcards (topic_id, external_id, word, transcription, meaning, wor
 SELECT t.id, 'w058', 'petition', '/pəˈtɪʃən/', 'bản kiến nghị', 'noun', 'Attendees signed a petition to extend the workshop series.', 'Người tham dự đã ký vào một bản kiến nghị để kéo dài chuỗi hội thảo.'
 FROM Topics t
 WHERE t.slug = 'toeic-marketing';
-

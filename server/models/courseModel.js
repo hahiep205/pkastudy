@@ -42,6 +42,7 @@ async function getTopicsByCourseId(courseId) {
   const [rows] = await pool.query(
     `SELECT
       t.id,
+      t.slug,
       t.course_id AS courseId,
       t.title,
       t.description,
@@ -54,6 +55,7 @@ async function getTopicsByCourseId(courseId) {
     WHERE t.course_id = ?
     GROUP BY
       t.id,
+      t.slug,
       t.course_id,
       t.title,
       t.description,

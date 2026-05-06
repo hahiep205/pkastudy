@@ -115,7 +115,7 @@ export function resolveSessionQueueResult(queue = [], wordId, isMastered, sessio
 }
 
 function getChoiceText(word) {
-    return word.mean?.trim() || word.word?.trim() || 'Chua co nghia';
+    return word.mean?.trim() || word.word?.trim() || 'Ch?a c? ngh?a';
 }
 
 function getUniqueDistractors(currentWord, words, count = 3) {

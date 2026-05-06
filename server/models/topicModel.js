@@ -23,6 +23,7 @@ async function getTopicBySlug(slug) {
 async function getFlashcardsByTopicId(topicId) {
   const [rows] = await pool.query(
     `SELECT
+      f.id AS flashcardId,
       COALESCE(f.external_id, CAST(f.id AS CHAR)) AS id,
       f.word,
       f.transcription,

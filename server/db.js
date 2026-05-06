@@ -15,7 +15,10 @@ const defaultConfig = {
 };
 
 const pool = process.env.DB_URL
-  ? mysql.createPool(process.env.DB_URL)
+  ? mysql.createPool({
+    uri: process.env.DB_URL,
+    multipleStatements: true,
+  })
   : mysql.createPool(defaultConfig);
 
 module.exports = pool;

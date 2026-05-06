@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ConfirmActionModal from '../../components/common/ConfirmActionModal';
 import { coursesData } from '../../data/coursesData';
@@ -16,7 +16,7 @@ import Match from '../../components/Match';
 import { recordFlashcardSessionProgress } from '../../utils/dashboardProgress';
 import { getSpeechLang } from '../../utils/studyModes';
 import { addToSrs, removeFromSrs, reviewItem } from '../../utils/srsStorage';
-import { TOEIC_BASIC_LESSONS_1_TO_50 } from '../../data/toeicBasicLessons';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
 const SVG_ICONS = {
     VOICE_SM: (
@@ -83,6 +83,9 @@ export default function TopicWords() {
     const [activeMode, setActiveMode] = useState(null);
     const [studyWordIds, setStudyWordIds] = useState(null);
     const [isLearnInfoOpen, setLearnInfoOpen] = useState(false);
+    const [builtInWords, setBuiltInWords] = useState([]);
+    const [builtInStatus, setBuiltInStatus] = useState('idle');
+    const [builtInError, setBuiltInError] = useState('');
 
     const courseId = rawCourseId || 'custom';
     const isCustom = courseId === 'custom';
@@ -91,6 +94,7 @@ export default function TopicWords() {
     let topicTitle = '';
     let topicLang = 'en';
     let words = [];
+    let builtInTopicWords = [];
 
     if (isCustom) {
         courseTitle = 'Tài liệu của bạn';
@@ -103,16 +107,59 @@ export default function TopicWords() {
         const course = coursesData[courseId];
         if (!course) return <div>Topic không tồn tại</div>;
         courseTitle = course.title;
-        const topicList = courseId === 'toeic-basic'
-            ? TOEIC_BASIC_LESSONS_1_TO_50
-            : course.topics;
+        const topicList = course.topics || [];
 
         const topic = topicList.find((item) => item.id === topicId);
         if (!topic) return <div>Chủ đề không tồn tại</div>;
         topicTitle = topic.title;
         topicLang = course.lang || 'en';
-        words = topic.words;
+        builtInTopicWords = Array.isArray(topic.words) ? topic.words : [];
+        words = builtInStatus === 'success' && builtInWords.length > 0 ? builtInWords : builtInTopicWords;
     }
+
+    useEffect(() => {
+        if (isCustom) {
+            setBuiltInWords([]);
+            setBuiltInStatus('idle');
+            setBuiltInError('');
+            return undefined;
+        }
+
+        const controller = new AbortController();
+
+        async function loadFlashcards() {
+            setBuiltInStatus('loading');
+            setBuiltInError('');
+
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/api/topics/${encodeURIComponent(topicId)}/flashcards`,
+                    { signal: controller.signal }
+                );
+                const payload = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(payload.error || 'Khong the tai danh sach tu vung.');
+                }
+
+                const apiWords = Array.isArray(payload.data) ? payload.data : [];
+                setBuiltInWords(apiWords);
+                setBuiltInStatus('success');
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    return;
+                }
+
+                setBuiltInWords([]);
+                setBuiltInStatus('error');
+                setBuiltInError(error.message || 'Khong the tai du lieu.');
+            }
+        }
+
+        loadFlashcards();
+
+        return () => controller.abort();
+    }, [isCustom, topicId]);
 
     const backUrl = isCustom ? '/dashboard/courses?tab=custom' : `/dashboard/courses/${courseId}`;
 
@@ -152,6 +199,14 @@ export default function TopicWords() {
     }, [words, studyWordIds]);
 
     const handleModeClick = (modeName) => {
+        if (!isCustom && builtInStatus === 'loading' && !words.length) {
+            return;
+        }
+
+        if (!words.length) {
+            return;
+        }
+
         setStudyWordIds(null); // Reset word filter on new mode
         if (IMMERSIVE_MODES.has(modeName)) {
             setActiveMode(modeName);
@@ -302,6 +357,16 @@ export default function TopicWords() {
 
                     <section className="cv-vocab-section">
                         <h3 className="cv-section-title" id="cv-vocab-title">Danh sách từ vựng</h3>
+                        {!isCustom && builtInStatus === 'loading' && (
+                            <div style={{ padding: '18px 0', color: 'var(--gray-text)' }}>
+                                Dang tai du lieu tu vung...
+                            </div>
+                        )}
+                        {!isCustom && builtInStatus === 'error' && (
+                            <div style={{ padding: '18px 0', color: 'var(--red)' }}>
+                                {builtInError}. Dang dung du lieu co san trong ung dung.
+                            </div>
+                        )}
                         <div className="cv-word-table">
                             <div className="cv-word-table-head">
                                 <span>Từ vựng</span>

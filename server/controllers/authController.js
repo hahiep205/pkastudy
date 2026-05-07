@@ -1,11 +1,15 @@
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { OAuth2Client } = require('google-auth-library');
 const {
   getUserByEmail,
   createUser,
+  createUserFromGoogle,
   createProgressRecordForUser,
 } = require('../models/userModel');
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const registerSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -92,7 +96,58 @@ async function login(req, res, next) {
   }
 }
 
+async function verifyGoogleIdToken(idToken) {
+  const ticket = await googleClient.verifyIdToken({
+    idToken,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+  return ticket.getPayload();
+}
+
+async function loginWithGoogle(req, res, next) {
+  try {
+    const { idToken } = req.body;
+    if (!idToken) {
+      return res.status(400).json({ error: 'Missing Google ID token' });
+    }
+
+    const payload = await verifyGoogleIdToken(idToken);
+    if (!payload || !payload.email) {
+      return res.status(400).json({ error: 'Invalid Google token payload' });
+    }
+
+    const email = payload.email;
+    const name = payload.name || payload.email;
+    let user = await getUserByEmail(email);
+
+    if (!user) {
+      user = await createUserFromGoogle({ email, name });
+      await createProgressRecordForUser(user.id);
+    }
+
+    const token = jwt.sign(
+      { id: user.id },
+      process.env.JWT_SECRET || 'default_jwt_secret',
+      { expiresIn: '1h' }
+    );
+
+    res.json({
+      data: {
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        },
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   register,
   login,
+  loginWithGoogle,
 };

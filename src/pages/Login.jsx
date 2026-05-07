@@ -1,65 +1,178 @@
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
-import '../assets/css/login-styles.css';
-
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
+import '../assets/css/login-styles.css';
 
 export default function Login() {
     const { login } = useAuth();
     const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleGoogleLogin = async () => {
+    const handleEmailLogin = async () => {
+        setErrorMessage('');
+
+        if (!email.trim() || !password.trim()) {
+            setErrorMessage('Vui lòng nhập đầy đủ email và mật khẩu.');
+            return;
+        }
+
+        setLoading(true);
         try {
-            const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.error || 'Đăng nhập thất bại.');
+            }
             login({
-                name: user.displayName || user.email,
-                email: user.email,
-                uid: user.uid,
+                name: result.data.user.name,
+                email: result.data.user.email,
+                token: result.data.token,
             });
             navigate('/dashboard');
         } catch (error) {
-            if (error.code === 'auth/popup-closed-by-user') {
-                alert('Bạn đã đóng popup đăng nhập Google.');
-                return;
+            setErrorMessage(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        setErrorMessage('');
+        setLoading(true);
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const idToken = await result.user.getIdToken();
+
+            const response = await fetch('/api/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ idToken }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Đăng nhập Google thất bại.');
             }
-            alert(error.message || 'Đăng nhập Google thất bại.');
+            login({
+                name: data.data.user.name,
+                email: data.data.user.email,
+                token: data.data.token,
+            });
+            navigate('/dashboard');
+        } catch (error) {
+            setErrorMessage(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <main className="login-container" style={{ minHeight: 'calc(100vh - 80px)' }}>
-            <div className="login-card">
-                <div className="login-header">
-                    <h1>login to pkastudy</h1>
-                    <p>Chào mừng bạn quay trở lại với Pkastudy!</p>
-                </div>
-
-                <div className="login-content">
-                    <button type="button" className="btn btn-google" onClick={handleGoogleLogin}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" className="google-icon">
-                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                        </svg>
-                        <span>Đăng nhập với Google</span>
-                    </button>
-
-                    <div className="login-benefits">
-                        <h3>Lợi ích khi đăng nhập:</h3>
-                        <ul className="benefits-list">
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Học ngoại ngữ hoàn toàn miễn phí!</span></li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Lưu tiến trình học tập của bạn sau mỗi lần truy cập.</span></li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Truy cập vào tất cả khóa học hiện có trên pkastudy.</span></li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Sử dụng trợ lý AI thông minh để hỗ trợ hỏi đáp.</span></li>
-                            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Cá nhân hóa nội dung học tập với list từ vựng mà bạn tự tạo.</span></li>
+        <main className="auth-wrapper">
+            <div className="auth-container">
+                {/* Phần bên trái: Sidebar (Đồng bộ với Register) */}
+                <div className="auth-sidebar">
+                    <div className="auth-sidebar-content">
+                        <div className="brand-logo-large">Pка</div>
+                        <h2 className="sidebar-title">Mừng bạn<br/>Quay trở lại!</h2>
+                        <p className="sidebar-subtitle">Tiếp tục hành trình chinh phục ngôn ngữ cùng Pkastudy.</p>
+                        
+                        <ul className="modern-benefits-list">
+                            <li><span className="b-icon">✓</span> Đồng bộ tiến trình học</li>
+                            <li><span className="b-icon">✓</span> Mở khóa bài học mới</li>
+                            <li><span className="b-icon">✓</span> Chat cùng trợ lý AI</li>
                         </ul>
                     </div>
+                </div>
 
-                    <div className="login-footer-text">
-                        <p>Bằng việc đăng nhập, bạn đồng ý với tất cả <a href="#" className="text-link">Điều khoản dịch vụ</a> và <a href="#" className="text-link">Chính sách bảo mật</a> của chúng tôi.</p>
+                {/* Phần bên phải: Form đăng nhập */}
+                <div className="auth-main">
+                    <div className="auth-form-header">
+                        <h1>Đăng nhập</h1>
+                        <p>Nhập thông tin tài khoản của bạn để tiếp tục.</p>
+                    </div>
+
+                    <form className="modern-form" onSubmit={(e) => e.preventDefault()}>
+                        <div className="form-floating">
+                            <input 
+                                type="email" 
+                                id="login-email" 
+                                value={email} 
+                                onChange={(e) => setEmail(e.target.value)} 
+                                placeholder=" " 
+                                required 
+                            />
+                            <label htmlFor="login-email">Email của bạn</label>
+                        </div>
+
+                        <div className="form-floating">
+                            <input 
+                                type="password" 
+                                id="login-password" 
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)} 
+                                placeholder=" " 
+                                required 
+                            />
+                            <label htmlFor="login-password">Mật khẩu</label>
+                        </div>
+
+                        {errorMessage && <div className="alert-box error">{errorMessage}</div>}
+
+                        <div className="form-options">
+                            <label className="checkbox-container">
+                                <input type="checkbox" />
+                                <span className="checkmark"></span>
+                                Ghi nhớ đăng nhập
+                            </label>
+                            <a href="#" className="text-link-small">Quên mật khẩu?</a>
+                        </div>
+
+                        <button 
+                            type="button" 
+                            className="btn-modern-primary btn-lg btn-block" 
+                            onClick={handleEmailLogin} 
+                            disabled={loading}
+                        >
+                            {loading ? <span className="spinner"></span> : 'Đăng nhập ngay'}
+                        </button>
+
+                        <div className="auth-divider">
+                            <span>hoặc</span>
+                        </div>
+
+                        <button 
+                            type="button" 
+                            className="btn-google btn-lg btn-block" 
+                            onClick={handleGoogleLogin} 
+                            disabled={loading}
+                        >
+                            <svg width="18" height="18" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            Đăng nhập với Google
+                        </button>
+                    </form>
+
+                    <div className="auth-form-footer">
+                        <p>Chưa có tài khoản? <Link to="/register" className="text-link-bold">Đăng ký miễn phí</Link></p>
+                        <p className="legal-text">
+                            Pkastudy - Nền tảng học ngoại ngữ ứng dụng AI thông minh.
+                        </p>
                     </div>
                 </div>
             </div>

@@ -247,6 +247,34 @@ a {
 }
 
 /* ==========================================================================
+   6.5. AUTH DIVIDER
+   ========================================================================== */
+.auth-divider {
+    position: relative;
+    text-align: center;
+    margin: 24px 0;
+    color: var(--gray-light);
+    font-size: 14px;
+}
+
+.auth-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.auth-divider span {
+    background: var(--bg-primary);
+    padding: 0 16px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ==========================================================================
    7. LOGIN BENEFITS
    ========================================================================== */
 .login-benefits {

@@ -10,11 +10,15 @@ const defaultConfig = {
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  multipleStatements: true,
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
 };
 
 const pool = process.env.DB_URL
-  ? mysql.createPool(process.env.DB_URL)
+  ? mysql.createPool({
+    uri: process.env.DB_URL,
+    multipleStatements: true,
+  })
   : mysql.createPool(defaultConfig);
 
 module.exports = pool;

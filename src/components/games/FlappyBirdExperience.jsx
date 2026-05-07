@@ -33,7 +33,7 @@ const RESUME_SLOW_FALL_MS = 900;
 const RESUME_SLOW_FALL_GRAVITY_MULTIPLIER = 0.58;
 const RESUME_SLOW_FALL_MAX_VELOCITY = 110;
 const RESUME_PIPE_SHIELD_MS = 3000;
-const FLAPPY_SETUP_LANGS = ['en', 'ko'];
+const FLAPPY_SETUP_LANGS = ['en'];
 const GAME_ID = 'flappy-bird';
 const BIRD_OPTIONS = [
     { id: 'yellow', label: 'Vàng', image: birdYellowImage, gameImage: birdYellowImage },
@@ -463,7 +463,7 @@ function GameOverModal({ isOpen, score, hearts, answered, correct, wrong, reason
                 </div>
                 <div className="cv-modal-footer cv-modal-footer-split flappy-result-actions">
                     <button type="button" className="btn btn-secondary" onClick={onBackSetup}>
-                        Đổi ngôn ngữ
+                        Chọn lại
                     </button>
                     <button type="button" className="btn btn-primary" onClick={onReplay}>
                         Chơi lại
@@ -958,9 +958,9 @@ export default function FlappyBirdExperience({ onBackGallery }) {
             <section className="flappy-setup-shell">
                 <div className="flappy-setup-panel flappy-empty-panel">
                     <h2>Không thể bắt đầu lượt chơi</h2>
-                    <p>Bộ từ đã thuộc hiện tại không còn khả dụng. Hãy chọn lại ngôn ngữ rồi bắt đầu lại.</p>
+                    <p>Bộ từ đã thuộc hiện tại không còn khả dụng. Hãy chọn lại bộ từ rồi bắt đầu lại.</p>
                     <button type="button" className="btn btn-secondary" onClick={handleBackToSetup}>
-                        Quay lại chọn ngôn ngữ
+                        Quay lại chọn bộ từ
                     </button>
                 </div>
             </section>
@@ -980,7 +980,7 @@ export default function FlappyBirdExperience({ onBackGallery }) {
                 </div>
                 <div className="flappy-topbar-actions">
                     <button type="button" className="btn btn-secondary btn-small" onClick={handleBackToSetup}>
-                        Đổi ngôn ngữ
+                        Chọn lại
                     </button>
                     <button type="button" className="btn btn-secondary btn-small" onClick={handleBackToGallery}>
                         Game khác

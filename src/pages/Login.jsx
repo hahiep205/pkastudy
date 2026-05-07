@@ -1,81 +1,31 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import '../assets/css/login-styles.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+import { signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
 
 export default function Login() {
     const { login } = useAuth();
     const navigate = useNavigate();
-    const [googleReady, setGoogleReady] = useState(false);
 
-    useEffect(() => {
-        const initializeGoogle = () => {
-            if (window.google?.accounts?.id && GOOGLE_CLIENT_ID) {
-                window.google.accounts.id.initialize({
-                    client_id: GOOGLE_CLIENT_ID,
-                    callback: handleCredentialResponse,
-                });
-                setGoogleReady(true);
-                return true;
-            }
-            return false;
-        };
-
-        if (!initializeGoogle()) {
-            const intervalId = setInterval(() => {
-                if (initializeGoogle()) {
-                    clearInterval(intervalId);
-                }
-            }, 100);
-            return () => clearInterval(intervalId);
-        }
-    }, []);
-
-    const handleCredentialResponse = async (response) => {
-        if (!response?.credential) {
-            return;
-        }
-
+    const handleGoogleLogin = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/auth/google`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ idToken: response.credential }),
-            });
-
-            const data = await res.json();
-            if (!res.ok) {
-                throw new Error(data.error || 'Đăng nhập Google thất bại');
-            }
-
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
             login({
-                name: data.data.user.name,
-                email: data.data.user.email,
-                token: data.data.token,
+                name: user.displayName || user.email,
+                email: user.email,
+                uid: user.uid,
             });
             navigate('/dashboard');
         } catch (error) {
-            alert(error.message);
+            if (error.code === 'auth/popup-closed-by-user') {
+                alert('Bạn đã đóng popup đăng nhập Google.');
+                return;
+            }
+            alert(error.message || 'Đăng nhập Google thất bại.');
         }
-    };
-
-    const handleGoogleLogin = () => {
-        if (!GOOGLE_CLIENT_ID) {
-            alert('Vui lòng cấu hình VITE_GOOGLE_CLIENT_ID trong môi trường và khởi động lại ứng dụng.');
-            return;
-        }
-
-        if (!googleReady) {
-            alert('Google authentication đang khởi tạo, vui lòng thử lại trong giây lát.');
-            return;
-        }
-
-        window.google.accounts.id.prompt();
     };
 
     return (

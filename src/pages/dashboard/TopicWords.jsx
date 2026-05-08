@@ -22,8 +22,7 @@ import {
   mapReviewRatingToQualityScore,
   submitSrsReviewBatch,
 } from '../../utils/srsApi';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+import { buildApiUrl } from '../../utils/apiClient';
 
 const SVG_ICONS = {
   VOICE: (
@@ -122,7 +121,7 @@ export default function TopicWords() {
 
       try {
         const response = await fetch(
-          `${API_BASE_URL}/api/topics/${encodeURIComponent(topicId)}/flashcards`,
+          buildApiUrl(`api/topics/${encodeURIComponent(topicId)}/flashcards`),
           { signal: controller.signal }
         );
         const payload = await response.json().catch(() => ({}));

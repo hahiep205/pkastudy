@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
+import { buildApiUrl } from '../utils/apiClient';
 import '../assets/css/login-styles.css';
 
 export default function Login() {
@@ -12,6 +13,16 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const parseJsonResponse = async (response) => {
+        const text = await response.text();
+        if (!text) return null;
+        try {
+            return JSON.parse(text);
+        } catch (err) {
+            return null;
+        }
+    };
 
     const handleEmailLogin = async () => {
         setErrorMessage('');
@@ -23,16 +34,19 @@ export default function Login() {
 
         setLoading(true);
         try {
-            const response = await fetch('/api/auth/login', {
+            const response = await fetch(buildApiUrl('api/auth/login'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email, password }),
             });
-            const result = await response.json();
+            const result = await parseJsonResponse(response);
             if (!response.ok) {
-                throw new Error(result.error || 'Đăng nhập thất bại.');
+                throw new Error(result?.error || 'Đăng nhập thất bại.');
+            }
+            if (!result?.data?.user || !result?.data?.token) {
+                throw new Error('Phản hồi đăng nhập không hợp lệ.');
             }
             login({
                 name: result.data.user.name,
@@ -54,16 +68,19 @@ export default function Login() {
             const result = await signInWithPopup(auth, googleProvider);
             const idToken = await result.user.getIdToken();
 
-            const response = await fetch('/api/auth/google', {
+            const response = await fetch(buildApiUrl('api/auth/google'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ idToken }),
             });
-            const data = await response.json();
+            const data = await parseJsonResponse(response);
             if (!response.ok) {
-                throw new Error(data.error || 'Đăng nhập Google thất bại.');
+                throw new Error(data?.error || 'Đăng nhập Google thất bại.');
+            }
+            if (!data?.data?.user || !data?.data?.token) {
+                throw new Error('Phản hồi đăng nhập Google không hợp lệ.');
             }
             login({
                 name: data.data.user.name,

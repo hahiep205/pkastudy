@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+import { buildApiUrl } from './apiClient';
 
 const QUALITY_SCORE_MAP = {
   forgot: 0,
@@ -46,7 +46,7 @@ async function parseJsonResponse(response, fallbackMessage) {
 }
 
 export async function fetchDueReviews() {
-  const response = await fetch(`${API_BASE_URL}/api/srs/due`, {
+  const response = await fetch(buildApiUrl('api/srs/due'), {
     headers: buildAuthHeaders(),
   });
   const payload = await parseJsonResponse(response, 'Không thể tải danh sách ôn tập.');
@@ -54,7 +54,7 @@ export async function fetchDueReviews() {
 }
 
 export async function submitSrsReviewBatch(reviewItems) {
-  const response = await fetch(`${API_BASE_URL}/api/srs/review`, {
+  const response = await fetch(buildApiUrl('api/srs/review'), {
     method: 'POST',
     headers: buildAuthHeaders(),
     body: JSON.stringify(reviewItems),

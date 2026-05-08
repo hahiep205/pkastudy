@@ -1,6 +1,4 @@
 export default function StudyCompletionPanel({
-    summary,
-    metrics = [],
     title = 'Chọn lại danh sách từ đã thuộc',
     words,
     selectedWordIds,

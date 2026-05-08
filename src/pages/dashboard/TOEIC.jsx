@@ -203,7 +203,9 @@ function FullTestMode({ onBack }) {
           setTimeLeft(parsed.timeLeft);
         }
       }
-    } catch (e) {}
+    } catch {
+      // ignore invalid saved state
+    }
   }, []);
 
   // Save state periodically and on change

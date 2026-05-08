@@ -135,7 +135,6 @@ export default function Listening({
     const currentQuestion = isQueueMode ? questionsByWordId[activeQueue[0]] : questions[currentIndex];
     const currentAttempt = currentQuestion ? (attemptsByWordId[currentQuestion.wordId] || getEmptyAttempt()) : getEmptyAttempt();
     const answeredCount = Object.values(attemptsByWordId).filter((attempt) => attempt.isChecked).length;
-    const reviewedCount = Object.values(sessionStatsByWordId).reduce((sum, stats) => sum + stats.seenCount, 0);
     const correctCount = isQueueMode
         ? totalQuestions - activeQueue.length
         : Object.values(attemptsByWordId).filter((attempt) => attempt.isCorrect).length;

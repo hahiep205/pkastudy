@@ -1,21 +1,18 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/useAuth';
+import { Link } from 'react-router-dom';
 import '../assets/css/login-styles.css';
 
 export default function Register() {
-    const { login } = useAuth();
-    const navigate = useNavigate();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
-    const [codeSent, setCodeSent] = useState(false);
-    const [sendCodeMessage, setSendCodeMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [sendingCode, setSendingCode] = useState(false);
-    const [registering, setRegistering] = useState(false);
+    const [codeSent] = useState(false);
+    const [sendCodeMessage] = useState('');
+    const [errorMessage] = useState('');
+    const [sendingCode] = useState(false);
+    const [registering] = useState(false);
 
     // --- Giữ nguyên các hàm handle của bạn (không thay đổi logic) ---
     const handleSendVerificationCode = async () => { /* logic cũ */ };

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { buildFlashcardDeck, buildWordsMap, getSpeechLang } from '../utils/studyModes';
+import { useEffect, useRef, useState } from 'react';
+import { buildFlashcardDeck, getSpeechLang } from '../utils/studyModes';
 import { xpFlashcardView, xpTopicComplete } from '../utils/xpSystem';
 
 const LANGUAGE_LABELS = {
@@ -29,6 +29,8 @@ const SPEAKER_ICON = (
         <path d="M18 6a8.5 8.5 0 0 1 0 12" />
     </svg>
 );
+
+const EXIT_CLICK_SELECTOR = '.topbar, .sidebar, .mobile-nav, .sidebar-overlay';
 
 const FLASHCARD_GRADIENTS = [
     { front: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', back: 'linear-gradient(135deg, #2dd4bf 0%, #3b82f6 100%)' },
@@ -65,8 +67,6 @@ export default function Flashcard({
     const [hasFlippedOnce, setHasFlippedOnce] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
     const sessionLockedRef = useRef(false);
-
-    const wordsById = useMemo(() => buildWordsMap(words), [words]);
 
     useEffect(() => {
         const nextSessionWords = buildFlashcardDeck(words);

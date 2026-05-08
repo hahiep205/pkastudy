@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ConfirmActionModal from '../../components/common/ConfirmActionModal';
 import { coursesData } from '../../data/coursesData';
@@ -89,32 +89,22 @@ export default function TopicWords() {
   const isCustom = courseId === 'custom';
   const useServerSrs = hasServerSrsAccess();
 
-  let courseTitle = '';
-  let topicTitle = '';
-  let topicLang = 'en';
-  let words = [];
-  let builtInTopicWords = [];
+  const course = isCustom ? null : coursesData[courseId];
+  const topic = isCustom
+    ? customCourses.find((item) => item.id === topicId)
+    : (course?.topics || []).find((item) => item.id === topicId);
 
-  if (isCustom) {
-    courseTitle = 'Tài liệu của bạn';
-    const topic = customCourses.find((item) => item.id === topicId);
-    if (!topic) return <div>Chủ đề không tồn tại.</div>;
-    topicTitle = topic.title;
-    topicLang = topic.lang || 'en';
-    words = topic.words;
-  } else {
-    const course = coursesData[courseId];
-    if (!course) return <div>Topic không tồn tại.</div>;
+  const courseTitle = isCustom ? 'Tài liệu của bạn' : course?.title || '';
+  const topicTitle = topic?.title || '';
+  const topicLang = isCustom ? topic?.lang || 'en' : course?.lang || 'en';
+  const builtInTopicWords = !isCustom && topic ? (Array.isArray(topic.words) ? topic.words : []) : [];
+  const words = isCustom
+    ? topic?.words || []
+    : (builtInStatus === 'success' && builtInWords.length > 0 ? builtInWords : builtInTopicWords);
 
-    courseTitle = course.title;
-    const topic = (course.topics || []).find((item) => item.id === topicId);
-    if (!topic) return <div>Chủ đề không tồn tại.</div>;
-
-    topicTitle = topic.title;
-    topicLang = course.lang || 'en';
-    builtInTopicWords = Array.isArray(topic.words) ? topic.words : [];
-    words = builtInStatus === 'success' && builtInWords.length > 0 ? builtInWords : builtInTopicWords;
-  }
+  const topicError = isCustom
+    ? (!topic ? 'Chủ đề không tồn tại.' : '')
+    : (!course ? 'Topic không tồn tại.' : (!topic ? 'Chủ đề không tồn tại.' : ''));
 
   useEffect(() => {
     if (isCustom) {
@@ -157,6 +147,10 @@ export default function TopicWords() {
 
   const backUrl = isCustom ? '/dashboard/courses?tab=custom' : `/dashboard/courses/${courseId}`;
 
+  if (topicError) {
+    return <div>{topicError}</div>;
+  }
+
   const speakWord = (text, language) => {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
@@ -166,10 +160,9 @@ export default function TopicWords() {
     window.speechSynthesis.speak(utterance);
   };
 
-  const activeWords = useMemo(() => {
-    if (!studyWordIds) return words;
-    return words.filter((word) => studyWordIds.includes(getWordKey(word)));
-  }, [studyWordIds, words]);
+const activeWords = !studyWordIds
+      ? words
+      : words.filter((word) => studyWordIds.includes(getWordKey(word)));
 
   const syncServerReviews = async (items) => {
     if (!useServerSrs || items.length === 0) return;

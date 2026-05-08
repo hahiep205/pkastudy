@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     buildQuizQuestions,
     getSpeechLang,
@@ -77,14 +77,6 @@ export default function Quiz({
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, []);
-
-    const questionsByWordId = useMemo(
-        () => questions.reduce((map, question) => {
-            map[question.wordId] = question;
-            return map;
-        }, {}),
-        [questions],
-    );
 
     const totalQuestions = questions.length;
     const currentQuestion = questions[currentIndex];

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUnseenLevelUp, markLevelUpSeen, getLevelInfo, getXpData } from '../utils/xpSystem';
+import { getUnseenLevelUp, markLevelUpSeen } from '../utils/xpSystem';
 import { checkStreak } from '../utils/streakSystem';
 import { getDueCount } from '../utils/srsStorage';
 
@@ -36,14 +36,16 @@ function injectKeyframes() {
 
 /* ── Confetti particles ── */
 function Confetti() {
-  const colors = ['#fbbf24','#3b82f6','#ef4444','#22c55e','#8b5cf6','#f97316'];
-  const particles = Array.from({length:20}, (_,i) => ({
-    id: i,
-    left: Math.random() * 100,
-    delay: Math.random() * 0.5,
-    color: colors[i % colors.length],
-    size: 6 + Math.random() * 6,
-  }));
+  const particles = useMemo(() => {
+    const colors = ['#fbbf24','#3b82f6','#ef4444','#22c55e','#8b5cf6','#f97316'];
+    return Array.from({length:20}, (_,i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 0.5,
+      color: colors[i % colors.length],
+      size: 6 + Math.random() * 6,
+    }));
+  }, []);
   return (
     <div style={{position:'absolute',inset:0,overflow:'hidden',pointerEvents:'none'}}>
       {particles.map(p => (

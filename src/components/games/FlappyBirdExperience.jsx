@@ -479,7 +479,7 @@ function GameOverModal({ isOpen, score, hearts, answered, correct, wrong, reason
     );
 }
 
-function SetupPanel({ langOptions, selectedLang, onPickLang, selectedBird, onPickBird, onStart, onBackGallery }) {
+function SetupPanel({ langOptions, selectedLang, onPickLang, selectedBird, onPickBird, onStart }) {
     return (
         <section className="flappy-setup-shell">
             <div className="flappy-setup-panel">

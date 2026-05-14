@@ -2,13 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import birdBrownImage from '../../assets/images/bird-brown.svg';
 import birdPinkImage from '../../assets/images/bird-pink.svg';
 import birdYellowImage from '../../assets/images/bird-yellow.svg';
-import { coursesData } from '../../data/coursesData';
 import { useAuth } from '../../contexts/useAuth';
-import { useCourseProgress } from '../../hooks/useCourseProgress';
-import { useCustomCourses } from '../../hooks/useCustomCourses';
 import { getDashboardUserKey } from '../../utils/dashboardProgress';
 import { playCorrectSound, playIncorrectSound } from '../../utils/feedbackAudio';
-import { languageLabels } from '../../utils/language';
 import { getSpeechLang } from '../../utils/studyModes';
 import { recordGamePlay } from '../../utils/userStats';
 
@@ -33,7 +29,6 @@ const RESUME_SLOW_FALL_MS = 900;
 const RESUME_SLOW_FALL_GRAVITY_MULTIPLIER = 0.58;
 const RESUME_SLOW_FALL_MAX_VELOCITY = 110;
 const RESUME_PIPE_SHIELD_MS = 3000;
-const FLAPPY_SETUP_LANGS = ['en'];
 const GAME_ID = 'flappy-bird';
 const BIRD_OPTIONS = [
     { id: 'yellow', label: 'Vàng', image: birdYellowImage, gameImage: birdYellowImage },
@@ -43,7 +38,7 @@ const BIRD_OPTIONS = [
 
 const GAME_CARD = {
     id: GAME_ID,
-    title: 'Flappy Bird Quiz',
+    title: 'Flappy Bird',
     eyebrow: 'Arcade học từ vựng',
     description: 'Vượt ống nước, nhận câu hỏi bất ngờ ở giữa khe và giữ 5 trái tim sống sót lâu nhất có thể.',
 };
@@ -537,16 +532,10 @@ function SetupPanel({ langOptions, selectedLang, onPickLang, selectedBird, onPic
     );
 }
 
-export default function FlappyBirdExperience({ onBackGallery }) {
+export default function FlappyBirdExperience({ topic, selectedBird = 'yellow', onBackGallery, onBackToPicker }) {
     const { user } = useAuth();
-    const { customCourses } = useCustomCourses();
-    const { remembered } = useCourseProgress();
-    const [phase, setPhase] = useState('setup');
-    const [selectedLang, setSelectedLang] = useState('');
-    const [selectedBird, setSelectedBird] = useState('yellow');
-    const [isRequirementModalOpen, setIsRequirementModalOpen] = useState(false);
-    const [requirementMessage, setRequirementMessage] = useState('');
-    const [activeTopic, setActiveTopic] = useState(null);
+    const [phase, setPhase] = useState('playing');
+    const [activeTopic, setActiveTopic] = useState(topic || null);
     const [worldSnapshot, setWorldSnapshot] = useState(() => snapshotWorld(buildInitialWorld()));
     const [activeChallenge, setActiveChallenge] = useState(null);
     const [isChallengeArmed, setIsChallengeArmed] = useState(false);
@@ -563,38 +552,6 @@ export default function FlappyBirdExperience({ onBackGallery }) {
     const pipeShieldUntilRef = useRef(0);
     const [isPipeShieldActive, setIsPipeShieldActive] = useState(false);
 
-    const topicOptions = useMemo(() => flattenTopics(customCourses), [customCourses]);
-    const rememberedWordsByLang = useMemo(
-        () => buildRememberedWordsByLang(topicOptions, remembered),
-        [topicOptions, remembered],
-    );
-    const langOptions = useMemo(() => {
-        return FLAPPY_SETUP_LANGS
-            .map((code) => ({ code, count: (rememberedWordsByLang.get(code) || []).length }))
-            .sort((first, second) => first.code.localeCompare(second.code));
-    }, [rememberedWordsByLang]);
-
-    useEffect(() => {
-        if (!langOptions.length) {
-            setSelectedLang('');
-            return;
-        }
-
-        setSelectedLang((current) => (
-            langOptions.some((option) => option.code === current) ? current : langOptions[0].code
-        ));
-    }, [langOptions]);
-
-    const selectedWords = useMemo(
-        () => rememberedWordsByLang.get(selectedLang) || [],
-        [rememberedWordsByLang, selectedLang],
-    );
-    const selectedSummary = selectedWords.length ? {
-        lang: selectedLang,
-        title: `${languageLabels[selectedLang] || selectedLang?.toUpperCase() || ''}`.trim(),
-        sourceLabel: '',
-        words: selectedWords,
-    } : null;
     const selectedBirdOption = BIRD_OPTIONS.find((bird) => bird.id === selectedBird) || BIRD_OPTIONS[0];
     const selectedBirdImage = selectedBirdOption.gameImage || selectedBirdOption.image || birdYellowImage;
     const selectedBirdImageClassName = selectedBirdOption.gameClassName || '';
@@ -619,33 +576,32 @@ export default function FlappyBirdExperience({ onBackGallery }) {
         setTimeLeft(QUESTION_TIME);
     };
 
+    useEffect(() => {
+        setActiveTopic(topic || null);
+        resetRun();
+        setPhase('playing');
+    }, [topic]);
+
     const handleBackToSetup = () => {
         window.speechSynthesis?.cancel();
         resetRun();
-        setActiveTopic(null);
-        setPhase('setup');
+        setActiveTopic(topic || null);
+        setPhase('playing');
+        onBackToPicker?.();
     };
 
     const handleBackToGallery = () => {
         window.speechSynthesis?.cancel();
         resetRun();
-        setActiveTopic(null);
-        setPhase('setup');
+        setActiveTopic(topic || null);
+        setPhase('playing');
         onBackGallery?.();
     };
 
     const handleStart = () => {
-        if (!selectedLang) return;
+        if (!topic?.words?.length) return;
 
-        if (!selectedSummary || selectedSummary.words.length < MIN_PLAYABLE_WORDS) {
-            const currentCount = selectedSummary?.words.length || 0;
-            const langLabel = languageLabels[selectedLang] || selectedLang?.toUpperCase() || 'Ngôn ngữ này';
-            setRequirementMessage(`Ngôn ngữ ${langLabel} mà bạn chọn hiện mới có ${currentCount} từ được đánh dấu đã thuộc. Bạn cần tối thiểu ${MIN_PLAYABLE_WORDS} từ đã thuộc để có thể bắt đầu ôn tập.`);
-            setIsRequirementModalOpen(true);
-            return;
-        }
-
-        setActiveTopic(selectedSummary);
+        setActiveTopic(topic);
         resetRun();
         recordGamePlay(getDashboardUserKey(user));
         setPhase('playing');
@@ -931,28 +887,6 @@ export default function FlappyBirdExperience({ onBackGallery }) {
         }
     };
 
-    if (phase === 'setup') {
-        return (
-            <>
-                <SetupPanel
-                    langOptions={langOptions}
-                    selectedLang={selectedLang}
-                    onPickLang={setSelectedLang}
-                    selectedBird={selectedBird}
-                    onPickBird={setSelectedBird}
-                    onStart={handleStart}
-                    onBackGallery={onBackGallery}
-                />
-                <RequirementModal
-                    isOpen={isRequirementModalOpen}
-                    title="Chưa thuộc đủ số từ vựng tối thiểu"
-                    message={requirementMessage}
-                    onClose={() => setIsRequirementModalOpen(false)}
-                />
-            </>
-        );
-    }
-
     if (!activeTopic) {
         return (
             <section className="flappy-setup-shell">
@@ -974,7 +908,7 @@ export default function FlappyBirdExperience({ onBackGallery }) {
             <div className="flappy-game-topbar">
                 <div className="flappy-game-context">
                     <div className="flappy-game-context-copy">
-                        <span className="flappy-game-kicker">Flappy Bird Quiz</span>
+                        <span className="flappy-game-kicker">Flappy Bird</span>
                         <strong>{activeTopic.title}</strong>
                     </div>
                 </div>
@@ -1124,4 +1058,4 @@ export default function FlappyBirdExperience({ onBackGallery }) {
     );
 }
 
-export { GAME_CARD, GAME_ID };
+export { BIRD_OPTIONS, GAME_CARD, GAME_ID };

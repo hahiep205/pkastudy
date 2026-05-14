@@ -5,6 +5,7 @@ import Sidebar from '../components/landingPage/Sidebar';
 import Topbar from '../components/landingPage/Topbar';
 import NotificationManager from '../components/NotificationManager';
 import '../assets/css/dashboard/index.css';
+import '../assets/css/dashboard/review.css';
 import '../assets/css/custom-courses.css';
 import '../assets/css/custom-pages.css';
 import '../assets/css/toeic-review.css';

@@ -466,6 +466,10 @@
 
 
 @media (max-width: 900px) {
+    .topbar-xp {
+        display: none !important;
+    }
+
     .dashboard-chat-container {
         bottom: 90px;
         right: 16px;
@@ -527,6 +531,10 @@
     .dashboard-chat-footer {
         padding: 12px 16px;
         gap: 8px;
+    }
+
+    .topbar-xp {
+        display: none !important;
     }
 }
 

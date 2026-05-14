@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import flappyLogo from '../../assets/images/logo-flappybird.png';
-import FlappyBirdExperience, { GAME_CARD, GAME_ID } from '../../components/games/FlappyBirdExperience';
+import FlappyBirdExperience, { BIRD_OPTIONS, GAME_CARD, GAME_ID } from '../../components/games/FlappyBirdExperience';
 import Quiz from '../../components/Quiz';
 import Typing from '../../components/Typing';
 import Listening from '../../components/Listening';
@@ -202,7 +202,7 @@ function TopicPicker({ dueReviewWords, gameInfo, onSelect, onBack }) {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div style={{ textAlign: 'left' }}>
                       <span className="game-picker-card-title">{topic.title}</span>
-                      <span className="game-picker-card-source">{topic.source}</span>
+                      <span className="game-picker-card-source"> ({topic.source})</span>
                     </div>
                     {isMultiMode ? (
                       <div
@@ -251,8 +251,59 @@ function TopicPicker({ dueReviewWords, gameInfo, onSelect, onBack }) {
   );
 }
 
+function FlappyBirdPicker({ selectedBird, onPickBird, onContinue, onBack }) {
+  return (
+    <section className="flappy-setup-shell">
+      <div className="flappy-setup-panel">
+        <div className="flappy-setup-header">
+          <div>
+            <div className="flappy-setup-eyebrow">Bắt đầu lượt chơi</div>
+            <div className="flappy-setup-title-row">
+              <h2>{GAME_CARD.title}</h2>
+            </div>
+            <p>{GAME_CARD.description}</p>
+          </div>
+          <button type="button" className="btn btn-secondary btn-small" onClick={onBack}>
+            Quay lại
+          </button>
+        </div>
+
+        <div className="flappy-selected-topic-panel">
+          <div className="flappy-selected-topic-copy">
+            <span className="flappy-selected-topic-label">Chọn Bird</span>
+            <strong>Chọn nhân vật bạn muốn dùng cho lượt chơi này.</strong>
+            <p>Sau khi chọn chim, bạn sẽ tiếp tục đến bước chọn chủ đề để chơi.</p>
+          </div>
+          <div className="flappy-bird-picker-grid">
+            {BIRD_OPTIONS.map((bird) => (
+              <button
+                key={bird.id}
+                type="button"
+                className={`flappy-bird-option${selectedBird === bird.id ? ' is-active' : ''}`}
+                onClick={() => onPickBird(bird.id)}
+              >
+                <img className="flappy-bird-option-image" src={bird.image} alt={`Bird ${bird.label}`} />
+                <span>{bird.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flappy-setup-footer" style={{ paddingBottom: '36px' }}>
+          <button type="button" className="btn btn-primary" onClick={onContinue}>
+            Tiếp tục chọn chủ đề
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Games() {
   const [activeGameId, setActiveGameId] = useState(null);
+  const [activeFunGamePhase, setActiveFunGamePhase] = useState('hub');
+  const [selectedFlappyBird, setSelectedFlappyBird] = useState(BIRD_OPTIONS[0]?.id || 'yellow');
+  const [selectedFlappyTopic, setSelectedFlappyTopic] = useState(null);
   const [vocabGame, setVocabGame] = useState(null);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [phase, setPhase] = useState('hub');
@@ -339,6 +390,12 @@ export default function Games() {
     setPhase('picker');
   };
 
+  const handleFlappyGameClick = () => {
+    setActiveGameId(GAME_ID);
+    setActiveFunGamePhase('bird');
+    setSelectedFlappyTopic(null);
+  };
+
   const handleTopicSelect = (topic) => {
     setSelectedTopic(topic);
     setPhase('playing');
@@ -364,61 +421,116 @@ export default function Games() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const flappyPickerInfo = useMemo(
+    () => ({
+      icon: '🐦',
+      name: GAME_CARD.title,
+      desc: 'Chọn topic để bắt đầu Flappy Bird với bird bạn vừa chọn',
+    }),
+    []
+  );
+
   const studyModeProps = selectedTopic
     ? {
-        topicLang: selectedTopic.lang,
-        words: activeWords,
-        allTopicWords: selectedTopic.words,
-        initialLearnedWordIds: activeWords.filter((word) => remembered[word.id]).map((word) => word.id),
-        onExit: handleExitGame,
-        onBackToTopic: handleBackToPicker,
-        learnUntilMastered: false,
-        onSaveLearnedWords: async (correctWordIds, wrongWordIds = []) => {
-          const correctSet = new Set(correctWordIds);
-          const wrongSet = new Set(wrongWordIds);
-          const serverBatch = [];
+      topicLang: selectedTopic.lang,
+      words: activeWords,
+      allTopicWords: selectedTopic.words,
+      initialLearnedWordIds: activeWords.filter((word) => remembered[word.id]).map((word) => word.id),
+      onExit: handleExitGame,
+      onBackToTopic: handleBackToPicker,
+      learnUntilMastered: false,
+      onSaveLearnedWords: async (correctWordIds, wrongWordIds = []) => {
+        const correctSet = new Set(correctWordIds);
+        const wrongSet = new Set(wrongWordIds);
+        const serverBatch = [];
 
-          activeWords.forEach((word) => {
-            if (hasServerFlashcardId(word)) {
-              if (correctSet.has(word.id)) {
-                serverBatch.push({ flashcard_id: word.flashcardId, quality: mapReviewRatingToQualityScore('good') });
-              } else if (wrongSet.has(word.id)) {
-                serverBatch.push({ flashcard_id: word.flashcardId, quality: mapReviewRatingToQualityScore('forgot') });
-              }
-              return;
-            }
-
+        activeWords.forEach((word) => {
+          if (hasServerFlashcardId(word)) {
             if (correctSet.has(word.id)) {
-              if (!selectedTopic.isSrs) addToSrs(word, selectedTopic.id, 'game');
-              reviewLocalItem(word.id, 'good');
+              serverBatch.push({ flashcard_id: word.flashcardId, quality: mapReviewRatingToQualityScore('good') });
             } else if (wrongSet.has(word.id)) {
-              if (!selectedTopic.isSrs) addToSrs(word, selectedTopic.id, 'game');
-              reviewLocalItem(word.id, 'forgot');
+              serverBatch.push({ flashcard_id: word.flashcardId, quality: mapReviewRatingToQualityScore('forgot') });
             }
-          });
-
-          if (serverBatch.length > 0) {
-            try {
-              await submitSrsReviewBatch(serverBatch);
-            } catch (error) {
-              console.error('Failed to submit game review batch.', error);
-            }
+            return;
           }
 
-          replaceRememberedInTopic(activeWords.map((word) => word.id), correctWordIds);
-        },
-        onStartQuiz: () => {
-          setVocabGame(VOCAB_GAMES.find((game) => game.id === 'quiz') || vocabGame);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        },
-        onStudyWrongWords: handleStudyWrongWords,
-      }
+          if (correctSet.has(word.id)) {
+            if (!selectedTopic.isSrs) addToSrs(word, selectedTopic.id, 'game');
+            reviewLocalItem(word.id, 'good');
+          } else if (wrongSet.has(word.id)) {
+            if (!selectedTopic.isSrs) addToSrs(word, selectedTopic.id, 'game');
+            reviewLocalItem(word.id, 'forgot');
+          }
+        });
+
+        if (serverBatch.length > 0) {
+          try {
+            await submitSrsReviewBatch(serverBatch);
+          } catch (error) {
+            console.error('Failed to submit game review batch.', error);
+          }
+        }
+
+        replaceRememberedInTopic(activeWords.map((word) => word.id), correctWordIds);
+      },
+      onStartQuiz: () => {
+        setVocabGame(VOCAB_GAMES.find((game) => game.id === 'quiz') || vocabGame);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+      onStudyWrongWords: handleStudyWrongWords,
+    }
     : null;
 
-  if (activeGameId === GAME_ID) {
+  if (activeGameId === GAME_ID && activeFunGamePhase === 'playing' && selectedFlappyTopic) {
     return (
       <main ref={pageRef} className="dash-main games-page is-game-active" id="page-games">
-        <FlappyBirdExperience onBackGallery={() => setActiveGameId(null)} />
+        <FlappyBirdExperience
+          topic={selectedFlappyTopic}
+          selectedBird={selectedFlappyBird}
+          onBackToPicker={() => setActiveFunGamePhase('picker')}
+          onBackGallery={() => {
+            setActiveGameId(null);
+            setActiveFunGamePhase('hub');
+            setSelectedFlappyTopic(null);
+          }}
+        />
+      </main>
+    );
+  }
+
+  if (activeGameId === GAME_ID && activeFunGamePhase === 'picker') {
+    return (
+      <main ref={pageRef} className="dash-main games-page" id="page-games">
+        <TopicPicker
+          dueReviewWords={dueReviewWords}
+          gameInfo={flappyPickerInfo}
+          onSelect={(topic) => {
+            setSelectedFlappyTopic(topic);
+            setActiveFunGamePhase('playing');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onBack={() => {
+            setActiveFunGamePhase('bird');
+            setSelectedFlappyTopic(null);
+          }}
+        />
+      </main>
+    );
+  }
+
+  if (activeGameId === GAME_ID && activeFunGamePhase === 'bird') {
+    return (
+      <main ref={pageRef} className="dash-main games-page" id="page-games">
+        <FlappyBirdPicker
+          selectedBird={selectedFlappyBird}
+          onPickBird={setSelectedFlappyBird}
+          onContinue={() => setActiveFunGamePhase('picker')}
+          onBack={() => {
+            setActiveGameId(null);
+            setActiveFunGamePhase('hub');
+            setSelectedFlappyTopic(null);
+          }}
+        />
       </main>
     );
   }
@@ -489,7 +601,7 @@ export default function Games() {
           <button
             type="button"
             className="game-card-image-button"
-            onClick={() => setActiveGameId(GAME_ID)}
+            onClick={handleFlappyGameClick}
             aria-label={GAME_CARD.title}
             id="game-card-flappy"
           >

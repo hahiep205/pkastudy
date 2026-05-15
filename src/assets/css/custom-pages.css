@@ -2214,6 +2214,76 @@ body.app-dark-mode .stats2-board.stats2-board-streak {
     border-color: rgba(245, 158, 11, .2);
 }
 
+body.app-dark-mode .stats2-pill {
+    background: linear-gradient(180deg, #2a364c, #243047);
+    border-color: rgba(148, 163, 184, .18);
+    box-shadow: 0 16px 34px rgba(2, 6, 23, .24);
+}
+
+body.app-dark-mode .stats2-pill-label {
+    color: #9fb2c8;
+}
+
+body.app-dark-mode .stats2-pill-value {
+    color: #eff6ff;
+}
+
+body.app-dark-mode .stats2-pill-orange .stats2-pill-icon {
+    background: rgba(245, 158, 11, .18);
+}
+
+body.app-dark-mode .stats2-pill-blue .stats2-pill-icon {
+    background: rgba(56, 189, 248, .18);
+}
+
+body.app-dark-mode .stats2-pill-green .stats2-pill-icon {
+    background: rgba(88, 204, 2, .18);
+}
+
+body.app-dark-mode .stats2-pill-purple .stats2-pill-icon {
+    background: rgba(139, 92, 246, .2);
+}
+
+body.app-dark-mode .stats2-board.stats2-board-overview {
+    background: linear-gradient(180deg, #293850, #243047);
+    border-color: rgba(56, 189, 248, .18);
+}
+
+body.app-dark-mode .stats2-board.stats2-board-overview .stats2-board-header {
+    background: linear-gradient(180deg, rgba(56, 189, 248, .12), rgba(255, 255, 255, 0));
+    border-bottom-color: rgba(56, 189, 248, .14);
+}
+
+body.app-dark-mode .stats2-board.stats2-board-blue {
+    background: linear-gradient(180deg, #293850, #243047);
+    border-color: rgba(56, 189, 248, .18);
+}
+
+body.app-dark-mode .stats2-board.stats2-board-blue .stats2-board-header {
+    background: linear-gradient(180deg, rgba(56, 189, 248, .12), rgba(255, 255, 255, 0));
+    border-bottom-color: rgba(56, 189, 248, .14);
+}
+
+body.app-dark-mode .stats2-board.stats2-board-green {
+    background: linear-gradient(180deg, #253d39, #243047);
+    border-color: rgba(88, 204, 2, .18);
+}
+
+body.app-dark-mode .stats2-board.stats2-board-green .stats2-board-header {
+    background: linear-gradient(180deg, rgba(88, 204, 2, .12), rgba(255, 255, 255, 0));
+    border-bottom-color: rgba(88, 204, 2, .14);
+}
+
+body.app-dark-mode .stats2-board.stats2-board-orange {
+    background: linear-gradient(180deg, #3a342a, #243047);
+    border-color: rgba(245, 158, 11, .18);
+}
+
+body.app-dark-mode .stats2-board.stats2-board-orange .stats2-board-header {
+    background: linear-gradient(180deg, rgba(245, 158, 11, .12), rgba(255, 255, 255, 0));
+    border-bottom-color: rgba(245, 158, 11, .14);
+}
+
 body.app-dark-mode .stats2-board.stats2-board-exp {
     background: linear-gradient(180deg, #25384a, #243047);
     border-color: rgba(56, 189, 248, .2);
@@ -2236,18 +2306,38 @@ body.app-dark-mode .stats2-board.stats2-board-games .stats2-board-header {
     background: linear-gradient(180deg, rgba(34, 197, 94, .12), rgba(255, 255, 255, 0));
 }
 
+body.app-dark-mode .stats2-board-copy h2 {
+    color: #eff6ff;
+}
+
+body.app-dark-mode .stats2-board-copy p {
+    color: #9fb2c8;
+}
+
+body.app-dark-mode .stats2-pct-badge {
+    background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+    color: #eff6ff;
+    box-shadow: 0 4px 0 #0b7fc2;
+}
+
+body.app-dark-mode .stats2-overall-bar,
+body.app-dark-mode .stats2-course-bar {
+    background: rgba(148, 163, 184, .14);
+}
+
 body.app-dark-mode .stats2-history-item {
+    background: linear-gradient(180deg, rgba(37, 48, 70, .92), rgba(33, 43, 63, .98));
     border-color: rgba(148, 163, 184, .16);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, .02);
 }
 
 body.app-dark-mode .stats2-history-item strong {
-    color: #5a616a;
+    color: #e5eefb;
 }
 
 body.app-dark-mode .stats2-history-item small,
 body.app-dark-mode .stats2-history-values span {
-    color: #828488;
+    color: #9fb2c8;
 }
 
 body.app-dark-mode .stats2-list-rank {
@@ -2492,11 +2582,11 @@ body.app-dark-mode .settings2-role-card small {
     box-shadow: 0 5px 0 var(--blue-shadow);
 }
 
-.settings2-btn-secondary {
+.btn.settings2-btn.settings2-btn-secondary {
     background: #fff;
-    color: #ef4444;
-    border: 2px solid rgba(239, 68, 68, .18);
-    box-shadow: 0 5px 0 rgba(239, 68, 68, .12);
+    color: var(--blue);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 4px 0 var(--border-color);
 }
 
 .settings2-modal-backdrop {
@@ -3916,10 +4006,13 @@ body.app-dark-mode .settings2-role-card small {
 
 body.app-dark-mode .games-hero,
 body.app-dark-mode .game-card,
+body.app-dark-mode .game-card-image-button,
 body.app-dark-mode .flappy-setup-panel,
 body.app-dark-mode .flappy-empty-panel,
 body.app-dark-mode .flappy-game-topbar,
 body.app-dark-mode .flappy-board,
+body.app-dark-mode .flappy-lang-card,
+body.app-dark-mode .flappy-topic-card,
 body.app-dark-mode .flappy-score-pill,
 body.app-dark-mode .flappy-hearts-wrap,
 body.app-dark-mode .flappy-choice-card,
@@ -3953,6 +4046,8 @@ body.app-dark-mode .games-hero p,
 body.app-dark-mode .game-card-copy p,
 body.app-dark-mode .flappy-empty-panel p,
 body.app-dark-mode .flappy-setup-header p,
+body.app-dark-mode .flappy-lang-card small,
+body.app-dark-mode .flappy-topic-meta,
 body.app-dark-mode .flappy-topic-card p,
 body.app-dark-mode .flappy-selected-topic-copy p,
 body.app-dark-mode .flappy-game-context-meta span,
@@ -3966,6 +4061,33 @@ body.app-dark-mode .flappy-bird-option.is-active {
     background: rgba(51, 65, 85, .92);
     border-color: rgba(251, 191, 36, .45);
     box-shadow: 0 16px 30px rgba(15, 23, 42, .34);
+}
+
+body.app-dark-mode .games-eyebrow,
+body.app-dark-mode .flappy-setup-eyebrow {
+    color: #7dd3fc;
+}
+
+body.app-dark-mode .game-card-image-button:hover,
+body.app-dark-mode .flappy-lang-card:hover,
+body.app-dark-mode .flappy-topic-card:hover {
+    box-shadow: 0 20px 40px rgba(2, 6, 23, .34);
+}
+
+body.app-dark-mode .flappy-lang-card.is-active,
+body.app-dark-mode .flappy-topic-card.is-active {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, .18);
+}
+
+body.app-dark-mode .flappy-topic-badge.is-custom {
+    background: rgba(88, 204, 2, .18);
+    color: #bef264;
+}
+
+body.app-dark-mode .flappy-topic-badge.is-built-in {
+    background: rgba(56, 189, 248, .18);
+    color: #bae6fd;
 }
 
 body.app-dark-mode .flappy-challenge-marker {

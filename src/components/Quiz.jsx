@@ -253,7 +253,7 @@ export default function Quiz({
                                                 disabled={!!currentAnswer}
                                             >
                                                 <span className="quiz-choice-key">{index + 1}</span>
-                                                <span className="quiz-choice-copy" style={{ fontSize: '16px' }}>{choice.text}</span>
+                                                <span className="quiz-choice-copy">{choice.text}</span>
                                             </button>
                                         );
                                     })}
@@ -272,27 +272,26 @@ export default function Quiz({
                         </div>
                     </div>
 
-                    <div className="quiz-actions" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between' }}>
-                        <button type="button" className="btn btn-primary flashcard-action-btn" style={{ maxWidth: '140px' }} onClick={handlePrevious} disabled={currentIndex === 0}>
+                    <div className="quiz-actions quiz-actions-nav">
+                        <button type="button" className="btn btn-primary flashcard-action-btn flashcard-action-btn-compact" onClick={handlePrevious} disabled={currentIndex === 0}>
                             <span className="flashcard-nav-icon">{ARROW_LEFT_ICON}</span>
                             <span>TRƯỚC</span>
                         </button>
                         <button
                             type="button"
-                            className="btn btn-primary flashcard-action-btn flashcard-action-btn-icon"
-                            style={{ maxWidth: '140px' }}
+                            className="btn btn-primary flashcard-action-btn flashcard-action-btn-icon flashcard-action-btn-compact"
                             onClick={speakCurrentWord}
                             aria-label="Nghe phát âm"
                         >
                             {SPEAKER_ICON} Nghe
                         </button>
                         {isLastQuestion ? (
-                            <button type="button" className="btn btn-primary flashcard-action-btn" style={{ maxWidth: '140px' }} onClick={handleComplete} disabled={!currentAnswer}>
+                            <button type="button" className="btn btn-primary flashcard-action-btn flashcard-action-btn-compact" onClick={handleComplete} disabled={!currentAnswer}>
                                 <span>Kết quả</span>
                                 <span className="flashcard-nav-icon">{ARROW_RIGHT_ICON}</span>
                             </button>
                         ) : (
-                            <button type="button" className="btn btn-primary flashcard-action-btn" style={{ maxWidth: '140px' }} onClick={handleNext} disabled={!currentAnswer}>
+                            <button type="button" className="btn btn-primary flashcard-action-btn flashcard-action-btn-compact" onClick={handleNext} disabled={!currentAnswer}>
                                 <span>Tiếp</span>
                                 <span className="flashcard-nav-icon">{ARROW_RIGHT_ICON}</span>
                             </button>
@@ -306,26 +305,26 @@ export default function Quiz({
                         <h2>Tuyệt vời!</h2>
                         <p>Bạn đã hoàn thành bài luyện tập Quiz.</p>
                         
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '24px' }}>
-                            <div className="flashcard-xp-reward" style={{ margin: 0 }}>
+                        <div className="flashcard-completion-metrics">
+                            <div className="flashcard-xp-reward flashcard-xp-reward-inline">
                                 <span>+{(correctCount * 10) + 30} XP</span>
                             </div>
-                            <div className="flashcard-progress" style={{ margin: 0, padding: '10px 24px' }}>
-                                <span style={{ fontSize: '0.8rem' }}>Điểm số</span>
-                                <strong style={{ fontSize: '1.4rem' }}>{correctCount}/{totalQuestions} ({accuracy}%)</strong>
+                            <div className="flashcard-progress flashcard-completion-score">
+                                <span className="flashcard-completion-score-label">Điểm số</span>
+                                <strong className="flashcard-completion-score-value">{correctCount}/{totalQuestions} ({accuracy}%)</strong>
                             </div>
                         </div>
 
-                        <div style={{ textAlign: 'left', background: '#f8fafc', padding: '16px', borderRadius: '12px', marginBottom: '24px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                <span style={{ color: '#64748b', fontWeight: 600 }}>Thống kê:</span>
+                        <div className="flashcard-completion-stats">
+                            <div className="flashcard-completion-stats-head">
+                                <span className="flashcard-completion-stats-title">Thống kê:</span>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span><span style={{ color: '#10b981', fontWeight: 800 }}>✓</span> Trả lời đúng:</span>
+                            <div className="flashcard-completion-stat-row">
+                                <span><span className="flashcard-completion-stat-icon is-correct">✓</span> Trả lời đúng:</span>
                                 <strong>{correctCount} câu</strong>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
-                                <span><span style={{ color: '#ef4444', fontWeight: 800 }}>✗</span> Trả lời sai:</span>
+                            <div className="flashcard-completion-stat-row">
+                                <span><span className="flashcard-completion-stat-icon is-wrong">✗</span> Trả lời sai:</span>
                                 <strong>{totalQuestions - correctCount} câu</strong>
                             </div>
                         </div>

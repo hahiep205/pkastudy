@@ -133,9 +133,66 @@ body.app-dark-mode .btn-secondary:hover {
     background: #2b3850;
 }
 
+body.app-dark-mode .welcome-actions .btn-secondary {
+    background: linear-gradient(180deg, #2a3850, #243047);
+    color: #f8fbff;
+    border-color: rgba(148, 163, 184, .28);
+    box-shadow: 0 4px 0 rgba(15, 23, 42, .92);
+}
+
+body.app-dark-mode .welcome-actions .btn-secondary:hover {
+    background: linear-gradient(180deg, #33445f, #2a3850);
+}
+
+body.app-dark-mode .chart-tab.active {
+    background: #243047;
+    color: #e2e8f0;
+    box-shadow: inset 0 0 0 1px rgba(148, 163, 184, .18), 0 1px 4px rgba(2, 6, 23, .28);
+}
+
 body.app-dark-mode .course-dash-top {
-    filter: brightness(.68) saturate(.9);
+    filter: none;
     border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+
+body.app-dark-mode .course-dash-top-english {
+    background: linear-gradient(135deg, #1f3a5b, #2b527c);
+}
+
+body.app-dark-mode .course-dash-top-custom {
+    background: linear-gradient(135deg, #3b2854, #5a3b7c);
+}
+
+body.app-dark-mode .course-dash-top-english .course-flag {
+    color: #dbeafe;
+}
+
+body.app-dark-mode .course-dash-top-custom .course-flag {
+    color: #f3e8ff;
+}
+
+body.app-dark-mode .welcome-focus-card-level {
+    background: linear-gradient(135deg, rgba(139, 92, 246, .18), rgba(59, 130, 246, .16));
+    border-color: rgba(139, 92, 246, .32);
+}
+
+body.app-dark-mode .welcome-focus-card-alert {
+    background: linear-gradient(135deg, rgba(127, 29, 29, .42), rgba(69, 10, 10, .28));
+    border-color: rgba(248, 113, 113, .32);
+}
+
+body.app-dark-mode .welcome-focus-card-srs {
+    background: linear-gradient(135deg, rgba(120, 53, 15, .38), rgba(92, 39, 12, .24));
+    border-color: rgba(251, 191, 36, .28);
+}
+
+body.app-dark-mode .welcome-focus-heading-alert,
+body.app-dark-mode .welcome-focus-link-alert {
+    color: #fca5a5;
+}
+
+body.app-dark-mode .welcome-focus-heading-srs {
+    color: #fcd34d;
 }
 
 body.app-dark-mode .lang-tabs {
@@ -170,7 +227,7 @@ body.app-dark-mode .mobile-nav-item.active {
 }
 
 body.app-dark-mode .course-flag {
-    color: #445264;
+    color: #dbeafe;
 }
 
 ul {

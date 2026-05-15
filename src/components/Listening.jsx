@@ -481,7 +481,7 @@ export default function Listening({
                         </div>
                     </div>
 
-                    <div className="listening-actions" style={{ marginBottom: '24px' }}>
+                    <div className="listening-actions listening-actions-nav">
                         <button type="button" className="btn btn-primary flashcard-action-btn" onClick={handlePrevious} disabled={currentIndex === 0 || isQueueMode}>
                             <span className="flashcard-nav-icon">{ARROW_LEFT_ICON}</span>
                             <span>TRƯỚC</span>

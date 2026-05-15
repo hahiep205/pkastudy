@@ -137,25 +137,25 @@ function TopicPicker({ dueReviewWords, gameInfo, onSelect, onBack }) {
 
   return (
     <div className="game-topic-picker">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <button className="game-picker-back-btn" onClick={onBack} style={{ margin: 0 }}>
+      <div className="game-picker-topbar">
+        <button className="game-picker-back-btn" onClick={onBack}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
             <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z" />
           </svg>
           Quay lại
         </button>
 
-        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'var(--surface-color)', padding: '6px 12px', borderRadius: '20px', border: '1px solid var(--border-color)' }}>
+        <label className="game-picker-multi-toggle">
           <input
             type="checkbox"
+            className="game-picker-multi-checkbox"
             checked={isMultiMode}
             onChange={(event) => {
               setIsMultiMode(event.target.checked);
               if (!event.target.checked) setSelectedTopicIds(new Set());
             }}
-            style={{ cursor: 'pointer' }}
           />
-          <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Chế độ trộn chủ đề</span>
+          <span className="game-picker-multi-label">Chế độ trộn chủ đề</span>
         </label>
       </div>
 
@@ -197,28 +197,14 @@ function TopicPicker({ dueReviewWords, gameInfo, onSelect, onBack }) {
                     else onSelect(topic);
                   }}
                   id={`game-picker-${topic.id}`}
-                  style={isSelected ? { borderColor: 'var(--primary-color)', backgroundColor: 'rgba(99, 102, 241, 0.05)' } : {}}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div style={{ textAlign: 'left' }}>
+                  <div className="game-picker-card-head">
+                    <div className="game-picker-card-copy">
                       <span className="game-picker-card-title">{topic.title}</span>
                       <span className="game-picker-card-source"> ({topic.source})</span>
                     </div>
                     {isMultiMode ? (
-                      <div
-                        style={{
-                          width: '20px',
-                          height: '20px',
-                          borderRadius: '4px',
-                          border: `2px solid ${isSelected ? 'var(--primary-color)' : 'var(--border-color)'}`,
-                          background: isSelected ? 'var(--primary-color)' : 'transparent',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                          fontSize: '12px',
-                        }}
-                      >
+                      <div className={`game-picker-check${isSelected ? ' is-selected' : ''}`}>
                         {isSelected ? '✓' : null}
                       </div>
                     ) : null}
@@ -230,11 +216,10 @@ function TopicPicker({ dueReviewWords, gameInfo, onSelect, onBack }) {
           </div>
 
           {isMultiMode && selectedTopicIds.size > 0 ? (
-            <div style={{ position: 'fixed', bottom: '24px', left: '0', right: '0', display: 'flex', justifyContent: 'center', zIndex: 100 }}>
+            <div className="game-picker-mixed-cta-wrap">
               <button
-                className="btn btn-primary"
+                className="btn btn-primary game-picker-mixed-cta"
                 onClick={handleStartMixed}
-                style={{ padding: '14px 32px', fontSize: '1.1rem', borderRadius: '100px', boxShadow: '0 10px 25px -5px var(--primary-color)' }}
               >
                 🔀 Bắt đầu với {selectedTopicIds.size} chủ đề (
                 {Array.from(selectedTopicIds).reduce((sum, topicId) => {

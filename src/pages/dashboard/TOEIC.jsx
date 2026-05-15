@@ -441,15 +441,6 @@ function FullTestMode({ onBack }) {
     setPhase("result");
   };
 
-  const resumeSavedSession = () => {
-    if (!savedSession) return;
-    setSelectedVariantId(savedSession.variantId || "fulltest-a");
-    setPhase("running");
-    setQi(savedSession.qi || 0);
-    setAnswers(savedSession.answers || {});
-    setTimeLeft(savedSession.timeLeft || 120 * 60);
-  };
-
   const getFullTestInstruction = (q) => {
     const basePartId = getBasePartId(q.partId);
     if (basePartId === "part1") return "Quan sát hình và chọn câu mô tả đúng nhất.";
@@ -494,13 +485,6 @@ function FullTestMode({ onBack }) {
           <h2>Thi thử TOEIC</h2>
           <p>{allQs.length} câu hỏi · 120 phút · Mô phỏng bài thi TOEIC theo chuẩn ETS</p>
         </div>
-        {savedSession && (
-          <div style={{ marginBottom: "16px", textAlign: "center" }}>
-            <button className="toeic-start-btn" onClick={resumeSavedSession}>
-              Tiáº¿p tá»¥c bĂ i Ä‘ang lĂ m
-            </button>
-          </div>
-        )}
         <div className="toeic-test-cards">
           {FULL_TEST_VARIANTS.map((variant) => (
             <div key={variant.id} className={`toeic-test-card${selectedVariantId === variant.id ? " toeic-test-card-full" : ""}`}>
@@ -573,7 +557,7 @@ function FullTestMode({ onBack }) {
             </div>
           )}
           {q.skill === "Listening" && q.audioText && (
-            <div className="toeic-audio-row" style={{ marginBottom: "16px" }}>
+            <div className="toeic-audio-row toeic-audio-row-spaced">
               <button className="toeic-audio-btn" onClick={() => speakToeicText(q.audioText || "")}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M2 16H5.889L11.183 20.332C11.273 20.405 11.385 20.445 11.5 20.445C11.776 20.445 12 20.221 12 19.945V4.055C12 3.94 11.96 3.828 11.887 3.739C11.713 3.525 11.399 3.493 11.185 3.668L5.889 8H2C1.448 8 1 8.448 1 9V15C1 15.552 1.448 16 2 16ZM23 12C23 15.292 21.554 18.246 19.262 20.262L17.845 18.844C19.776 17.194 21 14.74 21 12C21 9.26 19.776 6.806 17.845 5.156L19.262 3.738C21.554 5.754 23 8.708 23 12Z" /></svg>
                 Phát audio
@@ -627,7 +611,7 @@ function FullTestMode({ onBack }) {
         </div></div>
         <h2>{pct >= 80 ? "Excellent" : pct >= 60 ? "Good job" : "Keep practicing"}</h2>
         <p>Listening: {score.listening} · Reading: {score.reading} · Tổng: {score.total}/990</p>
-        <p style={{ fontSize: "13px", color: "var(--text-secondary)" }}>{totalCorrect}/{allQs.length} câu đúng ({pct}%) · Thời gian: {formatTime(120 * 60 - timeLeft)}</p>
+        <p className="toeic-result-meta">{totalCorrect}/{allQs.length} câu đúng ({pct}%) · Thời gian: {formatTime(120 * 60 - timeLeft)}</p>
       </div>
 
       <div className="toeic-result-stats">

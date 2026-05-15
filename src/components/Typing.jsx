@@ -482,7 +482,7 @@ export default function Typing({
                         </div>
                     </div>
 
-                    <div className="typing-actions" style={{ marginBottom: '24px' }}>
+                    <div className="typing-actions typing-actions-nav">
                         <button type="button" className="btn btn-primary flashcard-action-btn" onClick={handlePrevious} disabled={currentIndex === 0 || isQueueMode}>
                             <span className="flashcard-nav-icon">{ARROW_LEFT_ICON}</span>
                             <span>TRƯỚC</span>

@@ -116,6 +116,54 @@ img {
     gap: 8px;
 }
 
+.nav-right,
+.nav-mobile-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.theme-switch-btn {
+    flex: 0 0 auto;
+    aspect-ratio: 1 / 1;
+    justify-content: center;
+}
+
+.theme-switch-btn-desktop {
+    min-width: 38px !important;
+    max-width: 38px !important;
+    width: 38px !important;
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+}
+
+.theme-switch-btn-mobile {
+    display: none;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    width: 36px !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    border: 2px solid var(--border-color);
+    background: #fff;
+    box-shadow: 0 4px 0 var(--border-color);
+    color: var(--blue);
+    cursor: pointer;
+}
+
+.theme-switch-btn-menu {
+    justify-content: center;
+}
+
+.theme-switch-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
 .nav-link {
     font-size: 13px;
     font-weight: 700;
@@ -1383,8 +1431,24 @@ img {
 
 /* Responsive - Hiện hamburger button trên mobile */
 @media (max-width: 900px) {
+    .nav-mobile-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
     .mobile-menu-toggle {
         display: flex;
+    }
+
+    .theme-switch-btn-mobile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .theme-switch-btn-desktop {
+        display: none;
     }
 
     .nav-right {
@@ -1455,6 +1519,67 @@ body.app-dark-mode .content-card {
 
 body.app-dark-mode .navbar {
     background: rgba(26, 34, 51, .96);
+}
+
+body.app-dark-mode .navbar {
+    background: rgba(9, 14, 24, .82);
+    border-bottom-color: rgba(148, 163, 184, .16);
+    box-shadow: 0 8px 24px rgba(2, 6, 23, .24);
+    backdrop-filter: blur(10px);
+}
+
+body.app-dark-mode .hero {
+    background: linear-gradient(180deg, rgba(28, 176, 246, 0.12) 0%, #0f172a 100%);
+    border-bottom-color: rgba(148, 163, 184, .16);
+}
+
+body.app-dark-mode .footer {
+    background: #0b1220;
+    border-top-color: rgba(148, 163, 184, .16);
+}
+
+body.app-dark-mode .map-wrapper {
+    border-color: rgba(148, 163, 184, .16);
+    box-shadow: 0 10px 26px rgba(2, 6, 23, .2);
+}
+
+body.app-dark-mode .mobile-menu-overlay {
+    background: rgba(2, 6, 23, 0.62);
+}
+
+body.app-dark-mode .mobile-menu {
+    background: #0f172a;
+    box-shadow: -10px 0 32px rgba(2, 6, 23, 0.34);
+}
+
+body.app-dark-mode .mobile-menu-header,
+body.app-dark-mode .mobile-menu-actions {
+    border-color: rgba(148, 163, 184, .16);
+}
+
+body.app-dark-mode .theme-switch-btn-mobile,
+body.app-dark-mode .theme-switch-btn-desktop,
+body.app-dark-mode .theme-switch-btn-menu {
+    background: rgba(15, 23, 42, .72);
+    border-color: rgba(148, 163, 184, .18);
+    box-shadow: 0 4px 0 rgba(15, 23, 42, .9);
+    color: #7dd3fc;
+}
+
+body.app-dark-mode .theme-switch-btn-mobile:hover,
+body.app-dark-mode .theme-switch-btn-desktop:hover,
+body.app-dark-mode .theme-switch-btn-menu:hover {
+    background: rgba(24, 34, 53, .96);
+}
+
+body.app-dark-mode .btn-secondary {
+    background: rgba(15, 23, 42, .72);
+    border-color: rgba(148, 163, 184, .18);
+    box-shadow: 0 4px 0 rgba(15, 23, 42, .9);
+}
+
+body.app-dark-mode .btn-secondary:hover {
+    background: rgba(24, 34, 53, .96);
 }
 
 body.app-dark-mode .nav-link,

@@ -383,6 +383,7 @@ const activeWords = !studyWordIds
           </section>
 
           <div className="cv-stats-bar">
+            <h3 className="cv-section-title cv-stats-title" id="cv-vocab-title">Danh sách từ vựng</h3>
             <span className="cv-stat">
               <span className="cv-stat-dot dot-total"></span>
               Tổng: <strong id="cv-total">{words.length}</strong> từ
@@ -390,17 +391,9 @@ const activeWords = !studyWordIds
           </div>
 
           <section className="cv-vocab-section">
-            <h3 className="cv-section-title" id="cv-vocab-title">Danh sách từ vựng</h3>
-
             {!isCustom && builtInStatus === 'loading' ? (
               <div style={{ padding: '18px 0', color: 'var(--gray-text)' }}>
                 Đang tải dữ liệu từ vựng...
-              </div>
-            ) : null}
-
-            {!isCustom && builtInStatus === 'error' ? (
-              <div style={{ padding: '18px 0', color: 'var(--red)' }}>
-                {builtInError}. Đang dùng dữ liệu có sẵn trong ứng dụng.
               </div>
             ) : null}
 

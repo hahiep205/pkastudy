@@ -136,6 +136,7 @@ function ReviewSession({ dueItems, onFinish, useServerSrs }) {
   const [nextLabel, setNextLabel] = useState('');
   const [results, setResults] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const item = dueItems[index];
   const correctCount = results.filter((entry) => entry.quality === 'good' || entry.quality === 'easy').length;
@@ -144,6 +145,7 @@ function ReviewSession({ dueItems, onFinish, useServerSrs }) {
     if (ratedQuality || isSubmitting) return;
 
     setIsSubmitting(true);
+    setSubmitError('');
     try {
       let label;
 
@@ -164,6 +166,9 @@ function ReviewSession({ dueItems, onFinish, useServerSrs }) {
       setRatedQuality(quality);
       setNextLabel(label);
       setResults((prev) => [...prev, { wordId: item.wordId, quality }]);
+    } catch (error) {
+      console.error('Failed to submit SRS review.', error);
+      setSubmitError(error?.message || 'Không thể lưu kết quả ôn tập. Vui lòng thử lại.');
     } finally {
       setIsSubmitting(false);
     }
@@ -198,6 +203,15 @@ function ReviewSession({ dueItems, onFinish, useServerSrs }) {
       />
 
       {flipped && !ratedQuality ? <RatingButtons item={item} onRate={handleRate} useServerSrs={useServerSrs} /> : null}
+
+      {submitError ? (
+        <div className="review-answer-feedback feedback-miss" role="alert">
+          <p>
+            <strong>Không thể lưu kết quả ôn tập.</strong>{' '}
+            {submitError}
+          </p>
+        </div>
+      ) : null}
 
       {ratedQuality ? (
         <FeedbackBanner
@@ -337,6 +351,9 @@ export default function Review() {
   const totalCount = useMemo(() => (
     useServerSrs ? dueItems.length : getLocalTotalSrsCount()
   ), [dueItems.length, useServerSrs, sessionKey]);
+  const totalCountLabel = useMemo(() => (
+    useServerSrs ? 'Thẻ trong phiên này' : 'Tổng số thẻ'
+  ), [useServerSrs]);
 
   const loadData = useCallback(async () => {
     setStatus('loading');
@@ -389,7 +406,7 @@ export default function Review() {
           </div>
           <div className="review-hero-stat">
             <strong>{totalCount}</strong>
-            <span>Tổng số thẻ</span>
+            <span>{totalCountLabel}</span>
           </div>
         </div>
       </section>

@@ -271,28 +271,28 @@ export default function Overview() {
                         </div>
 
                         {/* Level Card */}
-                        <div className="welcome-focus-card" style={{ background: 'linear-gradient(135deg,rgba(139,92,246,0.08),rgba(59,130,246,0.08))', border: '1.5px solid rgba(139,92,246,0.2)' }}>
+                        <div className="welcome-focus-card welcome-focus-card-level">
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                                 <span style={{ fontSize: '1.5rem' }}>{levelInfo.badge}</span>
                                 <div>
-                                    <strong style={{ fontSize: 15 }}>Level {levelInfo.level} — {levelInfo.title}</strong>
-                                    <div style={{ fontSize: 12, color: 'var(--gray-light)' }}>{levelInfo.totalXp} XP tổng cộng</div>
+                                    <strong className="welcome-focus-heading">Level {levelInfo.level} — {levelInfo.title}</strong>
+                                    <div className="welcome-focus-meta">{levelInfo.totalXp} XP tổng cộng</div>
                                 </div>
                             </div>
-                            <div style={{ height: 6, borderRadius: 3, background: 'rgba(139,92,246,0.15)', overflow: 'hidden' }}>
-                                <div style={{ width: `${Math.round(levelInfo.progress * 100)}%`, height: '100%', borderRadius: 3, background: 'linear-gradient(90deg,#8b5cf6,#3b82f6)', transition: 'width .5s ease' }} />
+                            <div className="welcome-focus-progress">
+                                <div className="welcome-focus-progress-fill" style={{ width: `${Math.round(levelInfo.progress * 100)}%` }} />
                             </div>
-                            {levelInfo.nextLevel && <span style={{ fontSize: 11, color: 'var(--gray-light)', marginTop: 4, display: 'block' }}>Còn {levelInfo.xpForNext - levelInfo.xpInLevel} XP đến Level {levelInfo.nextLevel.level}</span>}
+                            {levelInfo.nextLevel && <span className="welcome-focus-note">Còn {levelInfo.xpForNext - levelInfo.xpInLevel} XP đến Level {levelInfo.nextLevel.level}</span>}
                         </div>
 
                         {/* Decay Warning */}
                         {decayCount > 0 && (
-                            <div className="welcome-focus-card" style={{ background: 'rgba(239,68,68,0.08)', border: '1.5px solid rgba(239,68,68,0.25)' }}>
+                            <div className="welcome-focus-card welcome-focus-card-alert">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                     <span style={{ fontSize: '1.3rem' }}>⚠️</span>
                                     <div>
-                                        <strong style={{ color: '#b91c1c' }}>Báo động đỏ!</strong>
-                                        <p style={{ margin: 0, fontSize: 13, color: 'var(--gray-light)' }}>Có <strong>{decayCount}</strong> từ vựng đang phai mờ khỏi ký ức vì bị bỏ quên. <Link to="/dashboard/games" style={{ color: '#b91c1c', textDecoration: 'underline', fontWeight: 600 }}>Cứu ngay!</Link></p>
+                                        <strong className="welcome-focus-heading welcome-focus-heading-alert">Báo động đỏ!</strong>
+                                        <p className="welcome-focus-copy">Có <strong>{decayCount}</strong> từ vựng đang phai mờ khỏi ký ức vì bị bỏ quên. <Link to="/dashboard/games" className="welcome-focus-link welcome-focus-link-alert">Cứu ngay!</Link></p>
                                     </div>
                                 </div>
                             </div>
@@ -300,12 +300,12 @@ export default function Overview() {
 
                         {/* SRS Reminder */}
                         {srsCount > 0 && decayCount === 0 && (
-                            <div className="welcome-focus-card" style={{ background: 'rgba(245,158,11,0.08)', border: '1.5px solid rgba(245,158,11,0.25)' }}>
+                            <div className="welcome-focus-card welcome-focus-card-srs">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                     <span style={{ fontSize: '1.3rem' }}>📋</span>
                                     <div>
-                                        <strong style={{ color: '#b45309' }}>Ôn tập SRS</strong>
-                                        <p style={{ margin: 0, fontSize: 13, color: 'var(--gray-light)' }}>Bạn có <strong>{srsCount}</strong> từ cần ôn tập hôm nay</p>
+                                        <strong className="welcome-focus-heading welcome-focus-heading-srs">Ôn tập SRS</strong>
+                                        <p className="welcome-focus-copy">Bạn có <strong>{srsCount}</strong> từ cần ôn tập hôm nay</p>
                                     </div>
                                 </div>
                             </div>
@@ -408,11 +408,9 @@ export default function Overview() {
 
                         const pct = total > 0 ? Math.round((done / total) * 100) : 0;
                         const langName = course.lang === 'en' ? 'Tiếng Anh' : 'Ngoại ngữ';
-                        const bannerGradient = 'linear-gradient(135deg,#eef2ff,#e0e7ff)';
-
                         return (
                             <div key={course.id} className="course-dash-card reveal" data-course-id={course.id}>
-                                <div className="course-dash-top" style={{ background: bannerGradient }}>
+                                <div className="course-dash-top course-dash-top-english">
                                     <span className="course-flag">{langName}</span>
                                 </div>
                                 <div className="course-dash-body">
@@ -455,7 +453,7 @@ export default function Overview() {
                     })}
 
                     <div className="course-dash-card reveal" style={{ transitionDelay: '160ms' }}>
-                        <div className="course-dash-top" style={{ background: 'linear-gradient(135deg,#fdf4ff,#ede9fe)' }}>
+                        <div className="course-dash-top course-dash-top-custom">
                             <span className="course-flag">Cá nhân</span>
                         </div>
                         <div className="course-dash-body">

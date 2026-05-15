@@ -215,7 +215,7 @@ export default function Flashcard({
                                         <span className="flashcard-wordtype flashcard-wordtype-front">{currentWord.wordtype || 'VOCABULARY'}</span>
                                         <span className="flashcard-transcription">{currentWord.transcription || '/dang-cap-nhat/'}</span>
                                     </div>
-                                    <div className="flashcard-face-hint" style={{ margin: '10px 0 0' }}>Nhấn space hoặc click để lật lại</div>
+                                    <div className="flashcard-face-hint flashcard-face-hint-spaced">Nhấn space hoặc click để lật lại</div>
                                 </div>
 
                                 <div className="flashcard-face flashcard-face-back" style={{ background: currentTheme.back }}>
@@ -257,8 +257,8 @@ export default function Flashcard({
                         </div>
                     </div>
 
-                    <div className="flashcard-actions" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
-                        <button type="button" className="btn btn-primary flashcard-action-btn" style={{ maxWidth: '180px' }} onClick={handlePrevious} disabled={currentIndex === 0}>
+                    <div className="flashcard-actions flashcard-actions-nav">
+                        <button type="button" className="btn btn-primary flashcard-action-btn flashcard-action-btn-compact" onClick={handlePrevious} disabled={currentIndex === 0}>
                             <span className="flashcard-nav-icon">{ARROW_LEFT_ICON}</span>
                             <span>TRƯỚC</span>
                         </button>
@@ -267,12 +267,12 @@ export default function Flashcard({
                         )}
 
                         {isLastCard ? (
-                            <button type="button" className={`btn btn-primary flashcard-action-btn${!hasFlippedOnce ? ' flashcard-btn-locked' : ''}`} style={{ maxWidth: '180px' }} onClick={handleComplete} disabled={!hasFlippedOnce}>
+                            <button type="button" className={`btn btn-primary flashcard-action-btn flashcard-action-btn-compact${!hasFlippedOnce ? ' flashcard-btn-locked' : ''}`} onClick={handleComplete} disabled={!hasFlippedOnce}>
                                 <span>Hoàn thành</span>
                                 <span className="flashcard-nav-icon">{ARROW_RIGHT_ICON}</span>
                             </button>
                         ) : (
-                            <button type="button" className={`btn btn-primary flashcard-action-btn${!hasFlippedOnce ? ' flashcard-btn-locked' : ''}`} style={{ maxWidth: '180px' }} onClick={handleNext} disabled={!hasFlippedOnce}>
+                            <button type="button" className={`btn btn-primary flashcard-action-btn flashcard-action-btn-compact${!hasFlippedOnce ? ' flashcard-btn-locked' : ''}`} onClick={handleNext} disabled={!hasFlippedOnce}>
                                 <span>TIẾP</span>
                                 <span className="flashcard-nav-icon">{ARROW_RIGHT_ICON}</span>
                             </button>
@@ -288,7 +288,7 @@ export default function Flashcard({
                         <div className="flashcard-xp-reward">
                             <span>+50 XP</span>
                         </div>
-                        <p style={{ marginTop: '1rem', color: '#64748b', fontSize: '0.9rem' }}>
+                        <p className="flashcard-completion-note">
                             Các từ vựng trong chủ đề này đã được tự động chuyển vào danh sách ôn tập thông minh (SRS).
                         </p>
                         <div className="flashcard-completion-actions">

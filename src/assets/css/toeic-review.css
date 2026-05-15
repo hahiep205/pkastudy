@@ -199,6 +199,10 @@
   border: 1px solid rgba(59, 130, 246, 0.15);
 }
 
+.toeic-audio-row-spaced {
+  margin-bottom: 16px;
+}
+
 .toeic-audio-btn {
   display: flex;
   align-items: center;
@@ -694,13 +698,13 @@
   width: 100%;
   padding: 12px;
   border-radius: 10px;
-  background: var(--surface, #f1f5f9);
+  background: var(--blue, #3b82f6);
   border: none;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
-  color: var(--text, #111);
+  color: #fff;
 }
 
 .toeic-start-btn-full {
@@ -990,6 +994,11 @@
 .toeic-result-header p {
   color: var(--text-secondary, #666);
   margin: 0;
+}
+
+.toeic-result-meta {
+  font-size: 13px;
+  color: var(--text-secondary, #666);
 }
 
 .toeic-unanswered-note {
@@ -2345,4 +2354,258 @@
   .toeic-part-scores {
     grid-template-columns: 1fr;
   }
+}
+
+body.app-dark-mode .toeic-page {
+  color: #e2e8f0;
+}
+
+body.app-dark-mode .toeic-hero p,
+body.app-dark-mode .toeic-test-hero p,
+body.app-dark-mode .toeic-test-card p,
+body.app-dark-mode .toeic-test-features li,
+body.app-dark-mode .toeic-result-header p,
+body.app-dark-mode .toeic-result-meta,
+body.app-dark-mode .toeic-part-score-detail,
+body.app-dark-mode .toeic-review-q,
+body.app-dark-mode .toeic-review-user,
+body.app-dark-mode .toeic-review-explain,
+body.app-dark-mode .toeic-qcard-counter,
+body.app-dark-mode .toeic-listening-topic-hero p,
+body.app-dark-mode .toeic-visual-copy p,
+body.app-dark-mode .toeic-option-code-only {
+  color: #94a3b8;
+}
+
+body.app-dark-mode .toeic-tab-btn,
+body.app-dark-mode .toeic-part-card,
+body.app-dark-mode .toeic-test-card,
+body.app-dark-mode .toeic-question-card,
+body.app-dark-mode .toeic-nav-cell,
+body.app-dark-mode .toeic-test-question-area,
+body.app-dark-mode .toeic-question-nav,
+body.app-dark-mode .toeic-result,
+body.app-dark-mode .toeic-part-score-card,
+body.app-dark-mode .toeic-review-item,
+body.app-dark-mode .toeic-back-link,
+body.app-dark-mode .toeic-back-btn,
+body.app-dark-mode .toeic-submit-early-btn,
+body.app-dark-mode .toeic-practice-prev {
+  background: #111827;
+  border-color: rgba(148, 163, 184, 0.18);
+  color: #e2e8f0;
+  box-shadow: 0 16px 36px rgba(2, 6, 23, 0.26);
+}
+
+body.app-dark-mode .toeic-tab-btn:hover,
+body.app-dark-mode .toeic-part-card:hover,
+body.app-dark-mode .toeic-test-card:hover,
+body.app-dark-mode .toeic-nav-cell:hover,
+body.app-dark-mode .toeic-back-link:hover,
+body.app-dark-mode .toeic-back-btn:hover,
+body.app-dark-mode .toeic-submit-early-btn:hover,
+body.app-dark-mode .toeic-practice-prev:hover {
+  background: #172033;
+  border-color: rgba(96, 165, 250, 0.34);
+}
+
+body.app-dark-mode .toeic-tab-btn.active,
+body.app-dark-mode .toeic-start-btn,
+body.app-dark-mode .toeic-start-btn-full,
+body.app-dark-mode .toeic-practice-next,
+body.app-dark-mode .toeic-next-btn,
+body.app-dark-mode .toeic-nav-next,
+body.app-dark-mode .toeic-nav-submit,
+body.app-dark-mode .toeic-test-badge,
+body.app-dark-mode .toeic-retry-btn {
+  color: #eff6ff;
+  box-shadow: 0 12px 28px rgba(30, 64, 175, 0.26);
+}
+
+body.app-dark-mode .toeic-listening-topic-hero,
+body.app-dark-mode .toeic-test-hero,
+body.app-dark-mode .toeic-result-header {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(14, 165, 233, 0.1));
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  border-radius: 20px;
+  padding: 22px;
+}
+
+body.app-dark-mode .toeic-test-hero,
+body.app-dark-mode .toeic-result-header {
+  text-align: center;
+}
+
+body.app-dark-mode .toeic-listening-topic-hero h2,
+body.app-dark-mode .toeic-test-hero h2,
+body.app-dark-mode .toeic-test-card h3,
+body.app-dark-mode .toeic-result-header h2,
+body.app-dark-mode .toeic-result-stats h3,
+body.app-dark-mode .toeic-result-review h3,
+body.app-dark-mode .toeic-part-card-body strong,
+body.app-dark-mode .toeic-part-score-name,
+body.app-dark-mode .toeic-visual-copy strong,
+body.app-dark-mode .toeic-qcard-stem,
+body.app-dark-mode .toeic-test-q-text,
+body.app-dark-mode .toeic-review-ans,
+body.app-dark-mode .toeic-qcard-part {
+  color: #f8fafc;
+}
+
+body.app-dark-mode .toeic-part-card-count,
+body.app-dark-mode .toeic-part-card-desc,
+body.app-dark-mode .toeic-test-progress,
+body.app-dark-mode .toeic-review-part {
+  color: #cbd5e1;
+}
+
+body.app-dark-mode .toeic-visual-card {
+  background: linear-gradient(135deg, #182235, #111827);
+  border-color: rgba(96, 165, 250, 0.18);
+}
+
+body.app-dark-mode .toeic-audio-row {
+  background: rgba(37, 99, 235, 0.12);
+  border-color: rgba(96, 165, 250, 0.22);
+}
+
+body.app-dark-mode .toeic-script-btn {
+  background: #182235;
+  border-color: rgba(148, 163, 184, 0.18);
+  color: #7dd3fc;
+  box-shadow: 0 4px 0 rgba(15, 23, 42, 0.9);
+}
+
+body.app-dark-mode .toeic-script-btn:hover {
+  background: #22304a;
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+body.app-dark-mode .toeic-script-text,
+body.app-dark-mode .toeic-script-option-line,
+body.app-dark-mode .toeic-reading-passage {
+  background: #182235;
+  border-color: rgba(148, 163, 184, 0.16);
+  color: #e2e8f0;
+}
+
+body.app-dark-mode .toeic-script-option-line {
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+body.app-dark-mode .toeic-option {
+  background: #182235;
+  border-color: rgba(148, 163, 184, 0.16);
+  color: #e2e8f0;
+}
+
+body.app-dark-mode .toeic-option:hover:not(.correct):not(.wrong) {
+  background: rgba(37, 99, 235, 0.18);
+  border-color: rgba(96, 165, 250, 0.34);
+}
+
+body.app-dark-mode .toeic-option.selected {
+  background: rgba(30, 64, 175, 0.28);
+  border-color: rgba(96, 165, 250, 0.42);
+}
+
+body.app-dark-mode .toeic-option.correct {
+  background: rgba(21, 128, 61, 0.28);
+  border-color: rgba(74, 222, 128, 0.32);
+  color: #bbf7d0;
+}
+
+body.app-dark-mode .toeic-option.wrong {
+  background: rgba(127, 29, 29, 0.3);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #fecaca;
+}
+
+body.app-dark-mode .toeic-option-letter {
+  background: #0f172a;
+  color: #cbd5e1;
+}
+
+body.app-dark-mode .toeic-feedback.feedback-correct {
+  background: rgba(20, 83, 45, 0.34);
+  border-color: rgba(74, 222, 128, 0.28);
+  color: #bbf7d0;
+}
+
+body.app-dark-mode .toeic-feedback.feedback-wrong {
+  background: rgba(127, 29, 29, 0.3);
+  border-color: rgba(248, 113, 113, 0.26);
+  color: #fecaca;
+}
+
+body.app-dark-mode .toeic-photo-blank-input {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: rgba(96, 165, 250, 0.42);
+}
+
+body.app-dark-mode .toeic-photo-blank-input::placeholder {
+  color: #64748b;
+}
+
+body.app-dark-mode .toeic-nav-cell.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+body.app-dark-mode .toeic-nav-cell.answered {
+  background: rgba(21, 128, 61, 0.24);
+  border-color: rgba(74, 222, 128, 0.24);
+  color: #bbf7d0;
+}
+
+body.app-dark-mode .toeic-timer-bar,
+body.app-dark-mode .toeic-part-score-bar {
+  background: #243047;
+}
+
+body.app-dark-mode .toeic-answered-count {
+  background: rgba(21, 128, 61, 0.24);
+  color: #bbf7d0;
+}
+
+body.app-dark-mode .toeic-timeout-badge {
+  background: rgba(127, 29, 29, 0.3);
+  color: #fecaca;
+  border-color: rgba(248, 113, 113, 0.26);
+}
+
+body.app-dark-mode .toeic-review-item.review-correct {
+  border-color: rgba(74, 222, 128, 0.26);
+  background: rgba(20, 83, 45, 0.22);
+}
+
+body.app-dark-mode .toeic-review-item.review-wrong {
+  border-color: rgba(248, 113, 113, 0.26);
+  background: rgba(127, 29, 29, 0.22);
+}
+
+body.app-dark-mode .toeic-review-item.review-unanswered {
+  border-color: rgba(250, 204, 21, 0.24);
+  background: rgba(120, 53, 15, 0.16);
+}
+
+body.app-dark-mode .toeic-review-badge.badge-ok {
+  background: rgba(21, 128, 61, 0.24);
+  color: #bbf7d0;
+}
+
+body.app-dark-mode .toeic-review-badge.badge-err {
+  background: rgba(127, 29, 29, 0.3);
+  color: #fecaca;
+}
+
+body.app-dark-mode .toeic-review-badge.badge-unanswered {
+  background: rgba(120, 53, 15, 0.22);
+  color: #fde68a;
+}
+
+body.app-dark-mode .toeic-test-part-label {
+  color: #7dd3fc;
 }

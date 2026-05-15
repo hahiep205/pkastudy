@@ -321,6 +321,14 @@
     box-shadow: 0 10px 24px rgba(15, 23, 42, .04);
 }
 
+#page-review .review-card:focus-visible,
+#page-review .rating-btn:focus-visible,
+#page-review .review-next-btn:focus-visible,
+#page-review .review-result-actions .btn:focus-visible {
+    outline: 3px solid rgba(28, 176, 246, .32);
+    outline-offset: 4px;
+}
+
 #page-review .rating-btn:hover {
     box-shadow: var(--shadow-hover);
 }
@@ -462,6 +470,7 @@
     padding: 18px 20px;
     border-radius: 18px;
     background: var(--review-surface-alt);
+    border: 1px solid rgba(15, 23, 42, .06);
 }
 
 #page-review .review-result-stat strong {
@@ -479,6 +488,7 @@
     min-width: 98px;
     background: var(--review-surface-alt);
     border-radius: 16px;
+    border: 1px solid rgba(15, 23, 42, .06);
 }
 
 #page-review .review-result-words {
@@ -495,6 +505,7 @@
     padding: 14px 16px;
     border-radius: 16px;
     background: var(--review-surface-alt);
+    border: 1px solid rgba(15, 23, 42, .06);
 }
 
 #page-review .review-result-word.ok {
@@ -625,6 +636,11 @@ body.app-dark-mode #page-review .review-hero {
         linear-gradient(135deg, #243047 0%, #1f2a3d 100%);
 }
 
+body.app-dark-mode #page-review .review-hero-stat {
+    background: linear-gradient(180deg, rgba(36, 48, 71, .98) 0%, rgba(32, 43, 63, .98) 100%);
+    border-color: rgba(125, 211, 252, .14);
+}
+
 body.app-dark-mode #page-review .review-hero-stat,
 body.app-dark-mode #page-review .review-sm2-card,
 body.app-dark-mode #page-review .review-sm2-step,
@@ -648,6 +664,68 @@ body.app-dark-mode #page-review .review-card-back {
     background:
         radial-gradient(circle at top right, rgba(88, 204, 2, .14), transparent 34%),
         linear-gradient(180deg, #243047 0%, #1e293b 100%);
+}
+
+body.app-dark-mode #page-review .review-progress-bar {
+    background: #182131;
+}
+
+body.app-dark-mode #page-review .review-eyebrow {
+    background: rgba(88, 204, 2, .18);
+    color: #bef264;
+}
+
+body.app-dark-mode #page-review .review-card-type {
+    background: rgba(88, 204, 2, .18);
+    color: #bef264;
+}
+
+body.app-dark-mode #page-review .rating-btn {
+    box-shadow: 0 10px 24px rgba(2, 6, 23, .18);
+}
+
+body.app-dark-mode #page-review .rating-btn:hover {
+    box-shadow: 0 16px 30px rgba(2, 6, 23, .28);
+}
+
+body.app-dark-mode #page-review .rating-next {
+    background: rgba(226, 232, 240, .10);
+}
+
+body.app-dark-mode #page-review .feedback-ok {
+    background: rgba(22, 163, 74, .18);
+    border-color: rgba(74, 222, 128, .28);
+    color: #bbf7d0;
+}
+
+body.app-dark-mode #page-review .feedback-miss {
+    background: rgba(185, 28, 28, .18);
+    border-color: rgba(248, 113, 113, .28);
+    color: #fecaca;
+}
+
+body.app-dark-mode #page-review .review-live-stats>span,
+body.app-dark-mode #page-review .review-result-stat,
+body.app-dark-mode #page-review .breakdown-item,
+body.app-dark-mode #page-review .review-result-word {
+    border-color: rgba(148, 163, 184, .16);
+}
+
+body.app-dark-mode #page-review .review-stat-ok {
+    color: #86efac;
+}
+
+body.app-dark-mode #page-review .review-stat-miss {
+    color: #fca5a5;
+}
+
+body.app-dark-mode #page-review .review-stat-remaining {
+    color: #cbd5e1;
+}
+
+body.app-dark-mode #page-review .review-result-word-quality {
+    background: rgba(226, 232, 240, .08);
+    color: #f8fafc;
 }
 
 body.app-dark-mode #page-review .review-next-btn {

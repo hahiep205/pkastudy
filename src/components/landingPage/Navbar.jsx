@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo2 from '../../assets/images/logo2.png';
+import { applyTheme, getSavedTheme, THEME_EVENT } from '../../utils/theme';
 
 export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [theme, setTheme] = useState(() => getSavedTheme());
 
     // Xử lý đóng/mở menu và các hiệu ứng đi kèm
     useEffect(() => {
@@ -26,7 +28,18 @@ export default function Navbar() {
         };
     }, [isMobileMenuOpen]);
 
+    useEffect(() => {
+        const handleThemeChange = (event) => {
+            setTheme(event.detail?.theme === 'dark' ? 'dark' : 'light');
+        };
+
+        window.addEventListener(THEME_EVENT, handleThemeChange);
+        return () => window.removeEventListener(THEME_EVENT, handleThemeChange);
+    }, []);
+
     const closeMenu = () => setIsMobileMenuOpen(false);
+    const isDarkMode = theme === 'dark';
+    const toggleTheme = () => setTheme(applyTheme(isDarkMode ? 'light' : 'dark'));
 
     return (
         <nav className="navbar">
@@ -34,15 +47,28 @@ export default function Navbar() {
                 <Link to="/"><img src={logo2} style={{ width: '179px', height: 'auto' }} alt="pkastudy Logo" className="nav-logo" /></Link>
             </div>
 
+            <div className="nav-mobile-controls">
+                <button
+                    type="button"
+                    className={`theme-switch-btn theme-switch-btn-mobile${isDarkMode ? ' is-dark' : ''}`}
+                    onClick={toggleTheme}
+                    aria-label={isDarkMode ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
+                    title={isDarkMode ? 'Chế độ sáng' : 'Chế độ tối'}
+                >
+                    <span className="theme-switch-icon" aria-hidden="true">{isDarkMode ? '☀' : '☾'}</span>
+                </button>
+
             <button
                 className={`mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''}`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label="Menu"
+                type="button"
             >
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
+            </div>
 
             <div
                 className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}
@@ -68,6 +94,13 @@ export default function Navbar() {
                 </nav>
 
                 <div className="mobile-menu-actions">
+                    <button
+                        type="button"
+                        className={`btn btn-secondary btn-mobile-menu theme-switch-btn theme-switch-btn-menu${isDarkMode ? ' is-dark' : ''}`}
+                        onClick={toggleTheme}
+                    >
+                        {isDarkMode ? '☀ Chế độ sáng' : '☾ Chế độ tối'}
+                    </button>
                     <Link to="/login" onClick={closeMenu}><button className="btn btn-secondary btn-mobile-menu">Đăng nhập</button></Link>
                     <Link to="/register" onClick={closeMenu}><button className="btn btn-primary btn-mobile-menu">Đăng ký</button></Link>
                 </div>
@@ -81,6 +114,15 @@ export default function Navbar() {
             </div>
 
             <div className="nav-right">
+                <button
+                    type="button"
+                    className={`btn btn-nav btn-secondary theme-switch-btn theme-switch-btn-desktop${isDarkMode ? ' is-dark' : ''}`}
+                    onClick={toggleTheme}
+                    aria-label={isDarkMode ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
+                    title={isDarkMode ? 'Chế độ sáng' : 'Chế độ tối'}
+                >
+                    <span className="theme-switch-icon" aria-hidden="true">{isDarkMode ? '☀' : '☾'}</span>
+                </button>
                 <Link to="/login"><button className="btn btn-nav btn-secondary" style={{ maxHeight: '38px', width: 'auto' }}>Đăng nhập</button></Link>
                 <Link to="/register"><button className="btn btn-nav btn-primary" style={{ maxHeight: '38px', width: 'auto' }}>Đăng ký</button></Link>
             </div>

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { TOEIC_PARTS, convertToToeicScore } from "../../data/toeicData";
 import { TOEIC_LISTENING_PRACTICE_MODES } from "../../data/toeicListeningPracticeData";
 import { TOEIC_READING_PRACTICE_MODES } from "../../data/toeicReadingPracticeData";
+import listeningTestCatalog from "../../data/toeicListeningTests.generated.json";
 import { xpToeicFullTest, xpToeicPartComplete } from "../../utils/xpSystem";
 
 function formatTime(s) {
@@ -83,6 +84,39 @@ const FULL_TEST_VARIANTS = [
   },
 ];
 
+const LISTENING_TEST_SECTION_DURATIONS = {
+  "lt1-part1": 14 * 60,
+  "lt1-part2": 18 * 60,
+  "lt1-part3": 13 * 60,
+  "lt2-part1": 14 * 60,
+  "lt2-part2": 18 * 60,
+  "lt2-part3": 13 * 60,
+};
+
+const LISTENING_TEST_SETS = [
+  ...listeningTestCatalog.tests.map((test) => ({
+    ...test,
+    name: test.id === "listening-test-1" ? "Đề Listening 1" : test.id === "listening-test-2" ? "Đề Listening 2" : test.name,
+    desc: test.id === "listening-test-1"
+      ? "Đề Listening TOEIC 1."
+      : test.id === "listening-test-2"
+        ? "Đề Listening TOEIC 2."
+        : test.desc,
+    sections: (test.sections || []).map((section) => ({
+      ...section,
+      desc:
+        test.id === "listening-test-1" || test.id === "listening-test-2"
+          ? section.id.endsWith("part1")
+            ? "31 câu đầu tiên, gồm TOEIC Part 1 và Part 2."
+            : section.id.endsWith("part2")
+              ? "39 câu hỏi hội thoại, từ câu 32 đến 70."
+              : "30 câu hỏi bài nói, từ câu 71 đến 100."
+          : section.desc,
+      durationSeconds: LISTENING_TEST_SECTION_DURATIONS[section.id] || Math.max(section.questionCount * 25, 10 * 60),
+    })),
+  })),
+];
+
 function ModeGrid({ modes, onSelect }) {
   return (
     <div className="toeic-parts-grid">
@@ -124,6 +158,370 @@ function TopicGrid({ mode, onSelect, onBack, backLabel }) {
             <span className="toeic-part-card-arrow">→</span>
           </button>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function ListeningTestGrid({ tests, onSelect }) {
+  return (
+    <div className="toeic-practice-layout">
+      <div className="toeic-listening-test-hero">
+        <div className="toeic-listening-test-hero-copy">
+          <h2>Listening Test</h2>
+          <p>Chọn đề listening để vào giao diện thi thử, nghe audio thật và luyện theo đúng nhịp làm bài.</p>
+        </div>
+      </div>
+      <div className="toeic-parts-grid">
+        {tests.map((test) => (
+          <button key={test.id} className="toeic-part-card" onClick={() => onSelect(test)}>
+            <span className="toeic-part-card-icon">
+              {test.id === "listening-test-1" ? "A1" : test.id === "listening-test-2" ? "B1-" : "Đề"}
+            </span>
+            <div className="toeic-part-card-body">
+              <strong>{test.name}</strong>
+              <span className="toeic-part-card-desc">{test.desc}</span>
+              <span className="toeic-part-card-count">
+                {test.id === "listening-test-1"
+                  ? "Target 350+"
+                  : test.id === "listening-test-2"
+                    ? "Target 450+"
+                    : `${(test.sections || []).length} phần`}
+              </span>
+            </div>
+            <span className="toeic-part-card-arrow">→</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ListeningTestParts({ test, onBack, onSelectPart }) {
+  return (
+    <div className="toeic-practice-layout">
+      <button className="toeic-back-link" onClick={onBack}>← Quay lại chọn đề listening</button>
+      <div className="toeic-listening-test-hero">
+        <div className="toeic-listening-test-hero-copy">
+          <div>
+            <h2>{test.name}</h2>
+            <p>Chọn part để vào giao diện làm bài.</p>
+          </div>
+        </div>
+      </div>
+      <div className="toeic-listening-test-parts">
+        {(test.sections || []).map((part) => (
+          <button key={part.id} className="toeic-listening-test-part-card" onClick={() => onSelectPart(part)}>
+            <span className="toeic-listening-test-part-label">{part.label}</span>
+            <strong>{part.title}</strong>
+            <span className="toeic-part-card-desc">{part.desc || "Mở đề thi"}</span>
+            <span className="toeic-part-card-count">{part.questionCount || 0} câu hỏi</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ListeningTestPlaceholder({ test, part, onBack }) {
+  return (
+    <div className="toeic-practice-layout">
+      <button className="toeic-back-link" onClick={onBack}>← Quay lại chọn part</button>
+      <div className="review-empty-card toeic-listening-test-empty">
+        <div className="review-empty-icon">LT</div>
+        <h2>{test.name} · {part.label}</h2>
+        <p>{part.title} chưa có dữ liệu hoàn chỉnh. Khung này đã sẵn sàng để nối tiếp bộ đề thật ở bước sau.</p>
+      </div>
+    </div>
+  );
+}
+
+function getListeningTestPrompt(prompt) {
+  if (!prompt) return "";
+  return String(prompt)
+    .replace(/\s+/g, " ")
+    .replace(/^.*spoken only one time\.\s*/i, "")
+    .replace(/^.*answer sheet\.\s*/i, "")
+    .replace(/^\d+\.\s*/, "")
+    .trim();
+}
+
+function getListeningCorrectIndex(question) {
+  if (!question?.correctKey || !Array.isArray(question.options)) return -1;
+  return question.options.findIndex((option) => option.key === question.correctKey);
+}
+
+function ListeningTestSession({ test, section, onBack }) {
+  const questions = section.questions || [];
+  const gradableQuestions = questions.filter((question) => getListeningCorrectIndex(question) !== -1);
+  const gradableCount = gradableQuestions.length;
+  const hasAnswerKey = gradableCount > 0;
+  const hasFullAnswerKey = gradableCount === questions.length;
+  const durationSeconds = section.durationSeconds || Math.max(questions.length * 25, 10 * 60);
+  const [phase, setPhase] = useState("running");
+  const [qi, setQi] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [timeLeft, setTimeLeft] = useState(durationSeconds);
+  const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+  const timerRef = useRef(null);
+  const q = questions[qi];
+  const currentAudioUrl = q?.audioUrl || section.audioUrl;
+  const isMixedAudioSection = questions.some((question) => question.audioUrl && question.audioUrl !== section.audioUrl);
+
+  useEffect(() => {
+    setPhase("running");
+    setQi(0);
+    setAnswers({});
+    setTimeLeft(durationSeconds);
+    setShowSubmitConfirm(false);
+    clearInterval(timerRef.current);
+    return () => clearInterval(timerRef.current);
+  }, [section.id, durationSeconds]);
+
+  useEffect(() => {
+    if (phase !== "running") return undefined;
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          setPhase("result");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [phase]);
+
+  const submit = () => {
+    clearInterval(timerRef.current);
+    setPhase("result");
+    setShowSubmitConfirm(false);
+  };
+
+  const requestSubmit = () => {
+    setShowSubmitConfirm(true);
+  };
+
+  if (!q) {
+    return <ListeningTestPlaceholder test={test} part={section} onBack={onBack} />;
+  }
+
+  if (phase === "running") {
+    const answered = Object.keys(answers).length;
+    const isUrgent = timeLeft < 60;
+    const prompt = getListeningTestPrompt(q.prompt);
+    return (
+      <div className="toeic-test-running">
+        <div className="toeic-test-topbar">
+          <div className="toeic-test-info">
+            <span className="toeic-test-badge">Listening Test</span>
+            <span className="toeic-test-badge">{test.name}</span>
+            <span className="toeic-test-badge">{section.label}</span>
+            <span className="toeic-test-progress">Câu {qi + 1} / {questions.length}</span>
+            <span className="toeic-answered-count">{answered} đã trả lời</span>
+          </div>
+          <div className={`toeic-timer${isUrgent ? " urgent" : ""}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10Zm1-10V7h-2v7h6v-2h-4Z" /></svg>
+            {formatTime(timeLeft)}
+          </div>
+          <button className="toeic-submit-early-btn" onClick={requestSubmit}>Nộp bài</button>
+        </div>
+        <div className="toeic-timer-bar"><div className="toeic-timer-fill" style={{ width: `${(timeLeft / durationSeconds) * 100}%`, background: isUrgent ? "var(--red,#ef4444)" : "var(--blue,#3b82f6)" }} /></div>
+        <div className="toeic-question-nav"><div className="toeic-nav-grid">
+          {questions.map((question, index) => (
+            <button key={question.id} className={`toeic-nav-cell${index === qi ? " active" : ""}${answers[question.id] !== undefined ? " answered" : ""}`} onClick={() => setQi(index)}>{question.displayNumber}</button>
+          ))}
+        </div></div>
+        <div className="toeic-test-question-area">
+          <div className="toeic-test-part-label">{q.toeicPart}{q.groupIndex ? ` · Nhóm ${q.groupIndex}` : ""}</div>
+          {q.imageUrl && <div className="toeic-q-image"><img src={q.imageUrl} alt={`Question ${q.displayNumber}`} /></div>}
+          <div className="toeic-audio-shell">
+            <div className="toeic-audio-row toeic-audio-row-spaced">
+              <span className="toeic-audio-meta">
+                {isMixedAudioSection
+                  ? q?.toeicPart === "PART 1"
+                    ? "Đang dùng audio Part 1 cho nhóm câu 1-6."
+                    : "Đang dùng audio Part 2 cho nhóm câu 7-31."
+                  : "Audio của part này được dùng chung cho toàn bộ câu hỏi trong phần."}
+              </span>
+            </div>
+            <audio key={currentAudioUrl} className="toeic-audio-player" controls preload="none" src={currentAudioUrl}>
+              Trinh duyet nay khong ho tro audio.
+            </audio>
+          </div>
+          {q.instruction && <div className="toeic-test-q-text">{q.instruction}</div>}
+          {prompt && <div className="toeic-test-q-text"><strong>{prompt}</strong></div>}
+          <div className="toeic-options-grid">
+            {q.options.map((opt, index) => (
+              <button key={opt.key} className={`toeic-option${answers[q.id] === index ? " selected" : ""}`} onClick={() => setAnswers((prev) => ({ ...prev, [q.id]: index }))}>
+                <span className="toeic-option-letter">{opt.key}</span>{opt.text}
+              </button>
+            ))}
+          </div>
+          <div className="toeic-test-nav">
+            <button disabled={qi === 0} onClick={() => setQi(qi - 1)} className="toeic-nav-btn">← Trước</button>
+            {qi < questions.length - 1
+              ? <button onClick={() => setQi(qi + 1)} className="toeic-nav-btn toeic-nav-next">Tiếp theo →</button>
+              : <button onClick={requestSubmit} className="toeic-nav-btn toeic-nav-submit">Nộp bài ✓</button>}
+          </div>
+        </div>
+        {showSubmitConfirm && (
+          <div className="toeic-confirm-overlay" role="presentation" onClick={() => setShowSubmitConfirm(false)}>
+            <div
+              className="toeic-confirm-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="toeic-submit-confirm-title"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <h3 id="toeic-submit-confirm-title">Xác nhận nộp bài</h3>
+              <p>
+                Bạn đã trả lời {answered}/{questions.length} câu.
+                {answered < questions.length ? ` Vẫn còn ${questions.length - answered} câu chưa chọn.` : ""}
+              </p>
+              <div className="toeic-confirm-actions">
+                <button className="toeic-nav-btn" onClick={() => setShowSubmitConfirm(false)}>Làm tiếp</button>
+                <button className="toeic-nav-btn toeic-nav-next" onClick={submit}>Xác nhận nộp</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  const answeredCount = Object.keys(answers).length;
+  const unansweredCount = questions.length - answeredCount;
+  const spentTime = durationSeconds - timeLeft;
+  const correctCount = hasAnswerKey
+    ? gradableQuestions.filter((question) => answers[question.id] === getListeningCorrectIndex(question)).length
+    : 0;
+  const wrongCount = hasAnswerKey
+    ? gradableQuestions.filter((question) => {
+      const selectedIndex = answers[question.id];
+      const correctIndex = getListeningCorrectIndex(question);
+      return selectedIndex !== undefined && selectedIndex !== correctIndex;
+    }).length
+    : 0;
+  const scorePercent = hasAnswerKey
+    ? Math.round((correctCount / gradableCount) * 100)
+    : Math.round((answeredCount / questions.length) * 100);
+  const resultTitle = hasAnswerKey
+    ? scorePercent >= 80
+      ? "Làm rất tốt"
+      : scorePercent >= 60
+        ? "Tiếp tục phát huy"
+        : "Tiếp tục luyện thêm"
+    : answeredCount === questions.length
+      ? "Hoàn thành part"
+      : "Đã lưu bài làm";
+
+  return (
+    <div className="toeic-result">
+      <div className="toeic-result-header">
+        {timeLeft === 0 && <div className="toeic-timeout-badge">Hết giờ - bài đã được nộp tự động</div>}
+        <div className="toeic-result-score-circle"><div className="toeic-score-inner">
+          <span className="toeic-score-num">{hasAnswerKey ? `${correctCount}/${gradableCount}` : `${answeredCount}/${questions.length}`}</span>
+          <span className="toeic-score-label">{hasAnswerKey ? "câu đúng" : "đã chọn"}</span>
+        </div></div>
+        <h2>{resultTitle}</h2>
+      </div>
+
+      <div className="toeic-result-stats">
+        <h3>Tổng quan bài làm</h3>
+        <div className="toeic-part-scores">
+          {hasAnswerKey && (
+            <div className="toeic-part-score-card">
+              <div className="toeic-part-score-header"><span className="toeic-part-score-name">Câu đúng</span><span className="toeic-part-score-pct">{scorePercent}%</span></div>
+              <div className="toeic-part-score-bar"><div className="toeic-part-score-fill" style={{ width: `${scorePercent}%` }} /></div>
+              <span className="toeic-part-score-detail">{correctCount} đúng · {wrongCount} sai · {gradableCount} câu chấm được</span>
+            </div>
+          )}
+          <div className="toeic-part-score-card">
+            <div className="toeic-part-score-header"><span className="toeic-part-score-name">Đã trả lời</span><span className="toeic-part-score-pct">{Math.round((answeredCount / questions.length) * 100)}%</span></div>
+            <div className="toeic-part-score-bar"><div className="toeic-part-score-fill" style={{ width: `${(answeredCount / questions.length) * 100}%` }} /></div>
+            <span className="toeic-part-score-detail">{answeredCount}/{questions.length} câu</span>
+          </div>
+        </div>
+      </div>
+
+      {!hasAnswerKey && (
+        <div className="toeic-feedback feedback-wrong toeic-listening-review-note">
+          <strong>Đề này chưa có đáp án đúng trong file nguồn</strong>
+          <p>Mình đã hoàn thiện full flow làm bài cho Đề Listening 1. Khi bổ sung answer key, màn hình này sẽ tự động mở thêm chấm điểm và review đúng-sai.</p>
+        </div>
+      )}
+      {hasAnswerKey && !hasFullAnswerKey && (
+        <div className="toeic-feedback feedback-wrong toeic-listening-review-note">
+          <strong>Phần này mới chấm được một phần</strong>
+          <p>Hiện có đáp án cho {gradableCount}/{questions.length} câu. Các câu còn lại trong nguồn `Đề Listening 2` vẫn thiếu transcript hoặc đáp án để chấm chắc chắn.</p>
+        </div>
+      )}
+
+      <div className="toeic-result-review">
+        <h3>{hasAnswerKey ? "Xem lại đáp án" : "Xem lại bài làm"}</h3>
+        {questions.map((question, index) => {
+          const selectedIndex = answers[question.id];
+          const selectedOption = selectedIndex !== undefined ? question.options[selectedIndex] : null;
+          const correctIndex = getListeningCorrectIndex(question);
+          const correctOption = correctIndex !== -1 ? question.options[correctIndex] : null;
+          const isGradable = correctIndex !== -1;
+          const isCorrect = isGradable && selectedIndex === correctIndex;
+          const previousQuestion = questions[index - 1];
+          const showTranscriptBlock = Boolean(question.transcript) && (!previousQuestion || previousQuestion.transcript !== question.transcript);
+          const reviewPrompt = getListeningTestPrompt(question.prompt);
+          return (
+            <div
+              key={question.id}
+              className={`toeic-review-item ${
+                isGradable
+                  ? isCorrect
+                    ? "review-correct"
+                    : selectedOption
+                      ? "review-wrong"
+                      : "review-unanswered"
+                  : selectedOption
+                    ? "review-correct"
+                    : "review-unanswered"
+              }`}
+            >
+              <div className="toeic-review-top">
+                <span className="toeic-review-num">Câu {question.displayNumber}</span>
+                <span className="toeic-review-part">{question.toeicPart}</span>
+                <span className={`toeic-review-badge ${
+                  isGradable
+                    ? isCorrect
+                      ? "badge-ok"
+                      : selectedOption
+                        ? "badge-err"
+                        : "badge-unanswered"
+                    : selectedOption
+                      ? "badge-ok"
+                      : "badge-unanswered"
+                }`}>
+                  {isGradable ? (isCorrect ? "✓ Đúng" : selectedOption ? "✗ Sai" : "○ Bỏ trống") : "Chưa chấm"}
+                </span>
+              </div>
+              {question.imageUrl && <div className="toeic-q-image"><img src={question.imageUrl} alt={`Review ${question.displayNumber}`} /></div>}
+              {showTranscriptBlock && <div className="toeic-reading-passage">{question.transcript}</div>}
+              {reviewPrompt && <p className="toeic-review-q"><strong>{reviewPrompt}</strong></p>}
+              {isGradable && correctOption && (
+                <p className="toeic-review-ans">Đáp án đúng: <strong>{correctOption.key}. {correctOption.text}</strong></p>
+              )}
+              {selectedOption ? (
+                <p className="toeic-review-user">Bạn chọn: {selectedOption.key}. {selectedOption.text}</p>
+              ) : (
+                <p className="toeic-review-user">Bạn chưa chọn đáp án cho câu này.</p>
+              )}
+              {!isGradable && <p className="toeic-review-user">Câu này hiện chưa có dữ liệu đáp án để chấm.</p>}
+            </div>
+          );
+        })}
+      </div>
+      <div className="toeic-result-actions">
+        <button className="toeic-retry-btn" onClick={() => { setPhase("running"); setAnswers({}); setQi(0); setTimeLeft(durationSeconds); }}>Làm lại</button>
+        <button className="toeic-back-btn" onClick={onBack}>← Quay lại chọn part</button>
       </div>
     </div>
   );
@@ -661,11 +1059,13 @@ function FullTestMode({ onBack }) {
 }
 
 export default function TOEIC() {
-  const [tab, setTab] = useState("listening");
+  const [tab, setTab] = useState("listening-test");
   const [activeListeningMode, setActiveListeningMode] = useState(null);
   const [activeListeningTopic, setActiveListeningTopic] = useState(null);
   const [activeReadingMode, setActiveReadingMode] = useState(null);
   const [activeReadingTopic, setActiveReadingTopic] = useState(null);
+  const [activeListeningTest, setActiveListeningTest] = useState(null);
+  const [activeListeningTestPart, setActiveListeningTestPart] = useState(null);
 
   const handleTabChange = (nextTab) => {
     setTab(nextTab);
@@ -676,6 +1076,10 @@ export default function TOEIC() {
     if (nextTab !== "reading") {
       setActiveReadingMode(null);
       setActiveReadingTopic(null);
+    }
+    if (nextTab !== "listening-test") {
+      setActiveListeningTest(null);
+      setActiveListeningTestPart(null);
     }
   };
 
@@ -712,6 +1116,7 @@ export default function TOEIC() {
           <p>Chọn kỹ năng và dạng bài để luyện tập. Listening và Reading hiện được chia theo đúng từng part để bám sát cấu trúc đề TOEIC hơn.</p>
         </div>
         <div className="toeic-tab-switch">
+          <button className={`toeic-tab-btn${tab === "listening-test" ? " active" : ""}`} onClick={() => handleTabChange("listening-test")}>Listening Test</button>
           <button className={`toeic-tab-btn${tab === "listening" ? " active" : ""}`} onClick={() => handleTabChange("listening")}>🎧 Listening</button>
           <button className={`toeic-tab-btn${tab === "reading" ? " active" : ""}`} onClick={() => handleTabChange("reading")}>📖 Reading</button>
           <button className={`toeic-tab-btn${tab === "fulltest" ? " active" : ""}`} onClick={() => handleTabChange("fulltest")}>📋 Full Test</button>
@@ -732,6 +1137,35 @@ export default function TOEIC() {
             />
           ) : (
             <ModeGrid modes={TOEIC_LISTENING_PRACTICE_MODES} onSelect={setActiveListeningMode} />
+          )
+        ) : tab === "listening-test" ? (
+          activeListeningTest ? (
+            activeListeningTestPart ? (
+              (activeListeningTestPart.questions || []).length > 0 ? (
+                <ListeningTestSession
+                  test={activeListeningTest}
+                  section={activeListeningTestPart}
+                  onBack={() => setActiveListeningTestPart(null)}
+                />
+              ) : (
+                <ListeningTestPlaceholder
+                  test={activeListeningTest}
+                  part={activeListeningTestPart}
+                  onBack={() => setActiveListeningTestPart(null)}
+                />
+              )
+            ) : (
+              <ListeningTestParts
+                test={activeListeningTest}
+                onSelectPart={setActiveListeningTestPart}
+                onBack={() => {
+                  setActiveListeningTest(null);
+                  setActiveListeningTestPart(null);
+                }}
+              />
+            )
+          ) : (
+            <ListeningTestGrid tests={LISTENING_TEST_SETS} onSelect={setActiveListeningTest} />
           )
         ) : activeReadingMode ? (
           <TopicGrid

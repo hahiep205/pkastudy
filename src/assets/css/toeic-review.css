@@ -140,6 +140,128 @@
   animation: slideUp 0.6s ease-out;
 }
 
+.toeic-listening-test-parts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.toeic-listening-test-part-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 20px;
+  border-radius: 18px;
+  border: 1.5px solid var(--border, #e5e7eb);
+  background: var(--card-bg, #fff);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  color: var(--text, #111);
+  text-align: left;
+}
+
+.toeic-listening-test-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding: 28px;
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.2), transparent 36%),
+    linear-gradient(135deg, #eff6ff 0%, #f8fbff 52%, #f0f9ff 100%);
+  border: 1px solid rgba(59, 130, 246, 0.14);
+  box-shadow: 0 18px 40px rgba(59, 130, 246, 0.1);
+}
+
+.toeic-listening-test-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -60px -90px auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.16), transparent 68%);
+  pointer-events: none;
+}
+
+.toeic-listening-test-hero-copy,
+.toeic-listening-test-hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.toeic-listening-test-hero h2 {
+  margin: 0 0 10px;
+  font-size: clamp(1.75rem, 2.6vw, 2.2rem);
+  line-height: 1.08;
+  color: #0f172a;
+}
+
+.toeic-listening-test-hero p {
+  margin: 0;
+  max-width: 620px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #475569;
+}
+
+.toeic-listening-test-part-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--blue, #3b82f6);
+  background: rgba(59, 130, 246, 0.04);
+  box-shadow: 0 10px 22px rgba(59, 130, 246, 0.12);
+}
+
+.toeic-listening-test-part-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--blue, #3b82f6);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.toeic-listening-test-empty {
+  padding: 56px 32px;
+}
+
+.toeic-listening-live-card {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.toeic-listening-test-note {
+  margin: 0 0 16px;
+  color: var(--text-secondary, #666);
+}
+
+.toeic-audio-shell {
+  margin-bottom: 18px;
+}
+
+.toeic-audio-meta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue, #3b82f6);
+}
+
+.toeic-audio-player {
+  width: 100%;
+  display: block;
+}
+
+.toeic-listening-review-note {
+  margin-bottom: 20px;
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -201,6 +323,7 @@
 
 .toeic-audio-row-spaced {
   margin-bottom: 16px;
+  margin-top: 16px;
 }
 
 .toeic-audio-btn {
@@ -763,6 +886,14 @@
   font-weight: 600;
 }
 
+@media (max-width: 768px) {
+
+  .toeic-test-progress,
+  .toeic-answered-count {
+    display: none;
+  }
+}
+
 .toeic-timer {
   display: flex;
   align-items: center;
@@ -793,19 +924,62 @@
 .toeic-submit-early-btn {
   padding: 8px 16px;
   border-radius: 8px;
-  border: 1.5px solid var(--border, #e5e7eb);
-  background: var(--card-bg, #fff);
+  border: 2px solid var(--border-color, var(--border, #e5e7eb));
+  background: #fff;
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  color: var(--text, #111);
+  color: var(--blue, #3b82f6);
+  box-shadow: 0 4px 0 var(--border-color, var(--border, #e5e7eb));
   transition: all 0.2s;
 }
 
 .toeic-submit-early-btn:hover {
-  border-color: #ef4444;
-  background: rgba(239, 68, 68, 0.04);
-  color: #ef4444;
+  background: #fff;
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.toeic-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.toeic-confirm-modal {
+  width: min(100%, 420px);
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--card-bg, #fff);
+  border: 1.5px solid var(--border, #e5e7eb);
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.18);
+}
+
+.toeic-confirm-modal h3 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text, #111);
+}
+
+.toeic-confirm-modal p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary, #64748b);
+}
+
+.toeic-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .toeic-timer-bar {
@@ -903,15 +1077,17 @@
   border-radius: 10px;
   font-weight: 600;
   font-size: 14px;
-  border: 1.5px solid var(--border, #e5e7eb);
-  background: var(--card-bg, #fff);
+  border: 2px solid var(--border-color, var(--border, #e5e7eb));
+  background: #fff;
   cursor: pointer;
-  color: var(--text, #111);
+  color: var(--blue, #3b82f6);
+  box-shadow: 0 4px 0 var(--border-color, var(--border, #e5e7eb));
   transition: all 0.2s;
 }
 
 .toeic-nav-btn:hover:not(:disabled) {
-  opacity: 0.85;
+  background: #fff;
+  opacity: 0.92;
   transform: translateY(-1px);
 }
 
@@ -920,17 +1096,27 @@
   cursor: not-allowed;
 }
 
-.toeic-nav-next,
-.toeic-nav-submit {
+.toeic-nav-next {
   background: var(--blue, #3b82f6);
   color: #fff;
   border-color: var(--blue, #3b82f6);
+  box-shadow: 0 4px 0 #2563eb;
 }
 
-.toeic-nav-next:hover,
-.toeic-nav-submit:hover {
+.toeic-nav-next:hover:not(:disabled) {
   background: #2563eb;
   border-color: #2563eb;
+}
+
+.toeic-nav-submit {
+  background: #fff;
+  color: var(--blue, #3b82f6);
+  border-color: var(--border-color, var(--border, #e5e7eb));
+}
+
+.toeic-nav-submit:hover:not(:disabled) {
+  background: #fff;
+  border-color: var(--border-color, var(--border, #e5e7eb));
 }
 
 /* Test Result */
@@ -1155,13 +1341,28 @@
 .toeic-review-ans {
   font-size: 13px;
   color: #166534;
-  margin: 0 0 4px;
+  margin: 8px 0px;
+}
+
+.toeic-q-image {
+  margin: 8px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.toeic-q-image img {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  max-height: 550px;
+  margin: 0 auto;
+  object-fit: contain;
 }
 
 .toeic-review-user {
   font-size: 13px;
   color: #991b1b;
-  margin: 0 0 4px;
+  margin: 8px 0px;
 }
 
 .toeic-review-explain {
@@ -1175,22 +1376,28 @@
 
 .toeic-retry-btn {
   width: 100%;
-  padding: 14px;
-  border-radius: 12px;
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: 14px;
   background: var(--blue, #3b82f6);
   color: #fff;
   font-weight: 700;
-  font-size: 15px;
-  border: none;
+  font-size: 16px;
+  border: 2px solid var(--border-color, var(--blue, #3b82f6));
   cursor: pointer;
   margin-bottom: 32px;
-  transition: all 0.2s;
+  box-shadow: 0 5px 0 var(--blue-shadow, #2563eb);
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
 .toeic-retry-btn:hover {
-  background: #2563eb;
+  filter: brightness(1.06);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.toeic-retry-btn:active {
+  transform: translateY(3px);
+  box-shadow: none;
 }
 
 /* Part Grid */
@@ -1222,7 +1429,19 @@
 }
 
 .toeic-part-card-icon {
-  font-size: 2rem;
+  width: 58px;
+  min-width: 58px;
+  height: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  border: 2px solid rgba(59, 130, 246, 0.22);
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--blue, #3b82f6);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
   flex-shrink: 0;
 }
 
@@ -2343,16 +2562,61 @@
   }
 
   .toeic-test-topbar {
-    flex-direction: column;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 10px;
   }
 
   .toeic-test-info {
     width: 100%;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .toeic-test-badge {
+    min-height: 42px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .toeic-timer,
+  .toeic-submit-early-btn {
+    flex: 1 1 calc(50% - 5px);
+    min-height: 48px;
+    box-sizing: border-box;
+  }
+
+  .toeic-timer {
+    justify-content: center;
+    padding: 0 14px;
+    border-radius: 12px;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1.5px solid rgba(59, 130, 246, 0.16);
+  }
+
+  .toeic-submit-early-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .toeic-part-scores {
     grid-template-columns: 1fr;
+  }
+
+  .toeic-listening-test-hero {
+    grid-template-columns: 1fr;
+    padding: 22px 18px;
+    gap: 16px;
+    border-radius: 24px;
+  }
+
+  .toeic-listening-test-hero p {
+    font-size: 14px;
   }
 }
 
@@ -2389,7 +2653,6 @@ body.app-dark-mode .toeic-part-score-card,
 body.app-dark-mode .toeic-review-item,
 body.app-dark-mode .toeic-back-link,
 body.app-dark-mode .toeic-back-btn,
-body.app-dark-mode .toeic-submit-early-btn,
 body.app-dark-mode .toeic-practice-prev {
   background: #111827;
   border-color: rgba(148, 163, 184, 0.18);
@@ -2403,7 +2666,6 @@ body.app-dark-mode .toeic-test-card:hover,
 body.app-dark-mode .toeic-nav-cell:hover,
 body.app-dark-mode .toeic-back-link:hover,
 body.app-dark-mode .toeic-back-btn:hover,
-body.app-dark-mode .toeic-submit-early-btn:hover,
 body.app-dark-mode .toeic-practice-prev:hover {
   background: #172033;
   border-color: rgba(96, 165, 250, 0.34);
@@ -2420,6 +2682,34 @@ body.app-dark-mode .toeic-test-badge,
 body.app-dark-mode .toeic-retry-btn {
   color: #eff6ff;
   box-shadow: 0 12px 28px rgba(30, 64, 175, 0.26);
+}
+
+body.app-dark-mode .toeic-submit-early-btn,
+body.app-dark-mode .toeic-nav-btn,
+body.app-dark-mode .toeic-nav-submit {
+  background: #243047;
+  color: #dbeafe;
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 4px 0 rgba(21, 29, 43, 0.9);
+}
+
+body.app-dark-mode .toeic-submit-early-btn:hover,
+body.app-dark-mode .toeic-nav-btn:hover:not(:disabled),
+body.app-dark-mode .toeic-nav-submit:hover {
+  background: #2b3850;
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+body.app-dark-mode .toeic-nav-next {
+  background: #2563eb;
+  color: #eff6ff;
+  border-color: #2563eb;
+  box-shadow: 0 4px 0 #1d4ed8;
+}
+
+body.app-dark-mode .toeic-nav-next:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 body.app-dark-mode .toeic-listening-topic-hero,

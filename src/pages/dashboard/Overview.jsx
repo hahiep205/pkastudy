@@ -86,6 +86,28 @@ export default function Overview() {
 
     const completedTasks = tasksView.filter((task) => task.isDone).length;
     const todayTaskPct = tasksView.length ? Math.round((completedTasks / tasksView.length) * 100) : 0;
+    const currentChartSnapshot = useMemo(() => ({
+        date: dashboardProgress.currentDate,
+        dailyXp: dashboardProgress.dailyXp,
+        learnedWords: Array.isArray(dashboardProgress.learnedWordEventIdsToday)
+            ? dashboardProgress.learnedWordEventIdsToday.length
+            : (Array.isArray(dashboardProgress.learnedWordIdsToday) ? dashboardProgress.learnedWordIdsToday.length : 0),
+        rememberedTotal: grandDone,
+        totalXp: dashboardProgress.totalXp,
+        streak: dashboardProgress.streak,
+        tasksCompleted: completedTasks,
+        taskTarget: tasksView.length,
+    }), [
+        dashboardProgress.currentDate,
+        dashboardProgress.dailyXp,
+        dashboardProgress.learnedWordEventIdsToday,
+        dashboardProgress.learnedWordIdsToday,
+        dashboardProgress.totalXp,
+        dashboardProgress.streak,
+        grandDone,
+        completedTasks,
+        tasksView.length,
+    ]);
 
     const targetStats = useMemo(() => ({
         streak: dashboardProgress.streak,
@@ -94,8 +116,8 @@ export default function Overview() {
     }), [dashboardProgress.streak, dashboardProgress.totalXp, grandDone]);
 
     const activeChartData = useMemo(
-        () => buildActivityChartData(userKey, chartPeriod),
-        [userKey, chartPeriod, dashboardProgress, grandDone],
+        () => buildActivityChartData(userKey, chartPeriod, currentChartSnapshot),
+        [userKey, chartPeriod, currentChartSnapshot],
     );
 
     useEffect(() => {
@@ -334,17 +356,17 @@ export default function Overview() {
 
                     <div className="chart-summary">
                         <div className="chart-summary-card">
-                            <span>{chartPeriod === 'week' ? 'Từ mới 7 ngày' : 'Từ mới 4 tuần'}</span>
+                            <span>{chartPeriod === 'week' ? 'Lượt học mới 7 ngày' : 'Lượt học mới 4 tuần'}</span>
                             <strong>{totalLearn}</strong>
                         </div>
                         <div className="chart-summary-card">
-                            <span>{chartPeriod === 'week' ? 'EXP 7 ngày' : 'EXP 4 tuần'}</span>
+                            <span>{chartPeriod === 'week' ? 'EXP tích lũy 7 ngày' : 'EXP tích lũy 4 tuần'}</span>
                             <strong>{totalReview}</strong>
                         </div>
                     </div>
 
                     <div className="chart-legend">
-                        <span className="legend-dot" style={{ background: 'var(--blue)' }}></span> EXP thực nhận
+                        <span className="legend-dot" style={{ background: 'var(--blue)' }}></span> EXP tích lũy
                         <span className="legend-dot" style={{ background: 'var(--green)', marginLeft: '16px' }}></span> Từ mới đã học
                     </div>
                 </div>

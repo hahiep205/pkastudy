@@ -1,9 +1,12 @@
+import listeningTestCatalog from "./toeicListeningTests.generated.json";
+
 function buildPart1Question(prefix, item, index) {
   return {
     id: `${prefix}-${index + 1}`,
     practiceType: "part1-picture",
     audioText: item.audioText,
-    imageUrl: `/toeic-listening/placeholders/${prefix}-${index + 1}.svg`,
+    audioUrl: item.audioUrl || "",
+    imageUrl: item.imageUrl || `/toeic-listening/placeholders/${prefix}-${index + 1}.svg`,
     imageEmoji: item.imageEmoji,
     imageTitle: item.imageTitle,
     imageDetail: item.imageDetail,
@@ -18,7 +21,8 @@ function buildPart2Question(prefix, item, index) {
     id: `${prefix}-${index + 1}`,
     practiceType: "part2-response",
     audioText: item.audioText,
-    question: item.prompt,
+    audioUrl: item.audioUrl || "",
+    question: item.prompt || item.question || "",
     options: item.options,
     correct: item.correct,
     explanation: item.explanation,
@@ -30,6 +34,8 @@ function buildPart3Question(prefix, item, index) {
     id: `${prefix}-${index + 1}`,
     practiceType: "part3-conversations",
     audioText: item.audioText,
+    audioUrl: item.audioUrl || "",
+    imageUrl: item.imageUrl || "",
     question: item.question,
     options: item.options,
     correct: item.correct,
@@ -42,6 +48,8 @@ function buildPart4Question(prefix, item, index) {
     id: `${prefix}-${index + 1}`,
     practiceType: "part4-talks",
     audioText: item.audioText,
+    audioUrl: item.audioUrl || "",
+    imageUrl: item.imageUrl || "",
     question: item.question,
     options: item.options,
     correct: item.correct,
@@ -65,6 +73,53 @@ function buildTopic(id, title, desc, icon, practiceType, items) {
     practiceType,
     questions: items.map((item, index) => builderMap[practiceType](id, item, index)),
   };
+}
+
+
+function formatPart1AudioText(options = []) {
+  return options.map((option, index) => `(${String.fromCharCode(65 + index)}) ${option}`).join(" ");
+}
+
+function buildListeningTestPart1Topic(testId, id, title, desc, icon) {
+  const test = (listeningTestCatalog.tests || []).find((item) => item.id === testId);
+  const section = (test?.sections || []).find((item) => item.id.endsWith("part1"));
+  const items = (section?.questions || [])
+    .filter((question) => question.toeicPart === "PART 1")
+    .slice(0, 6)
+    .map((question, index) => {
+      const options = (question.options || []).map((option) => option.text);
+      return {
+        audioText: formatPart1AudioText(options),
+        audioUrl: question.audioUrl || section?.audioUrl || "",
+        imageUrl: question.imageUrl || "",
+        imageTitle: `Question ${question.displayNumber || index + 1}`,
+        imageDetail: `Listening Test ${testId === "listening-test-1" ? "Đề 1" : "Đề 2"} · Part 1`,
+        options,
+        correct: (question.options || []).findIndex((option) => option.key === question.correctKey),
+        explanation: question.explanation || "",
+      };
+    });
+
+  return buildTopic(id, title, desc, icon, "part1-picture", items);
+}
+
+function buildListeningTestTopic(testId, toeicPart, sectionSuffix, id, title, desc, icon, practiceType) {
+  const test = (listeningTestCatalog.tests || []).find((item) => item.id === testId);
+  const section = (test?.sections || []).find((item) => item.id.endsWith(sectionSuffix));
+  const items = (section?.questions || [])
+    .filter((question) => question.toeicPart === toeicPart)
+    .map((question) => ({
+      audioText: question.transcript || question.audioText || "",
+      audioUrl: question.audioUrl || section?.audioUrl || "",
+      imageUrl: question.imageUrl || "",
+      prompt: question.prompt || "",
+      question: question.prompt || "",
+      options: (question.options || []).map((option) => option.text),
+      correct: (question.options || []).findIndex((option) => option.key === question.correctKey),
+      explanation: question.explanation || "",
+    }));
+
+  return buildTopic(id, title, desc, icon, practiceType, items);
 }
 
 const part1Office = [
@@ -888,3 +943,39 @@ export const TOEIC_LISTENING_PRACTICE_MODES = [
     ],
   },
 ];
+
+const part1PracticeMode = TOEIC_LISTENING_PRACTICE_MODES.find((mode) => mode.id === "part1-picture");
+
+if (part1PracticeMode) {
+  part1PracticeMode.topics = [
+    buildListeningTestPart1Topic("listening-test-1", "listening-practice-1", "Tài liệu 1", "6 câu đầu của Listening Test Đề 1 Part 1.", "📘"),
+    buildListeningTestPart1Topic("listening-test-2", "listening-practice-2", "Tài liệu 2", "6 câu đầu của Listening Test Đề 2 Part 1.", "📙"),
+  ];
+}
+
+const part2PracticeMode = TOEIC_LISTENING_PRACTICE_MODES.find((mode) => mode.id === "part2-response");
+
+if (part2PracticeMode) {
+  part2PracticeMode.topics = [
+    buildListeningTestTopic("listening-test-1", "PART 2", "part1", "listening-response-1", "Tài liệu 1", "25 câu của Listening Test Đề 1 Part 2.", "📘", "part2-response"),
+    buildListeningTestTopic("listening-test-2", "PART 2", "part1", "listening-response-2", "Tài liệu 2", "25 câu của Listening Test Đề 2 Part 2.", "📙", "part2-response"),
+  ];
+}
+
+const part3PracticeMode = TOEIC_LISTENING_PRACTICE_MODES.find((mode) => mode.id === "part3-conversations");
+
+if (part3PracticeMode) {
+  part3PracticeMode.topics = [
+    buildListeningTestTopic("listening-test-1", "PART 3", "part2", "listening-conversations-1", "Tài liệu 1", "39 câu của Listening Test Đề 1 Part 3.", "📘", "part3-conversations"),
+    buildListeningTestTopic("listening-test-2", "PART 3", "part2", "listening-conversations-2", "Tài liệu 2", "39 câu của Listening Test Đề 2 Part 3.", "📙", "part3-conversations"),
+  ];
+}
+
+const part4PracticeMode = TOEIC_LISTENING_PRACTICE_MODES.find((mode) => mode.id === "part4-talks");
+
+if (part4PracticeMode) {
+  part4PracticeMode.topics = [
+    buildListeningTestTopic("listening-test-1", "PART 4", "part3", "listening-talks-1", "Tài liệu 1", "30 câu của Listening Test Đề 1 Part 4.", "📘", "part4-talks"),
+    buildListeningTestTopic("listening-test-2", "PART 4", "part3", "listening-talks-2", "Tài liệu 2", "30 câu của Listening Test Đề 2 Part 4.", "📙", "part4-talks"),
+  ];
+}

@@ -30,7 +30,7 @@ const part4TranscriptPath = path.join(
   "audio-f0bd0885291b.txt",
 );
 
-const PART2_AUDIO_URL = "https://dethitracnghiem.vn/wp-content/uploads/2025/08/LC-TOIEC-de-2-P.2.mp3?_=2";
+const PART2_AUDIO_URL = "https://dethitracnghiem.vn/wp-content/uploads/2025/08/T2-P2.mp3?_=2";
 
 const ANSWER_KEY = {
   1: "B",
@@ -382,11 +382,16 @@ function buildQuestion(rawQuestion, displayNumber, sectionId, pageIndex, overrid
   };
 }
 
-function buildTest2() {
+function buildTest2(existingTest = null) {
   const raw = readJson(rawCombinedPath);
   const part2Data = parsePart2Transcript(readText(part2TranscriptPath));
   const part3Data = parseGroupedTranscript(readText(part3TranscriptPath));
   const part4Data = parseGroupedTranscript(readText(part4TranscriptPath));
+  const existingImageByQuestionId = new Map(
+    (existingTest?.sections || []).flatMap((section) =>
+      (section.questions || []).map((question) => [question.id, question.imageUrl || ""])
+    )
+  );
 
   const page1 = raw.pages[0];
   const page2 = raw.pages[1];
@@ -397,7 +402,9 @@ function buildTest2() {
   const part1Questions = page1.questions.map((question, index) => {
     const displayNumber = index + 1;
     if (displayNumber <= 6) {
+      const questionId = `lt2-part1-q${displayNumber}`;
       return buildQuestion(question, displayNumber, "lt2-part1", 0, {
+        imageUrl: existingImageByQuestionId.get(questionId) ?? question.image_url ?? "",
         transcript: null,
         audioUrl: part1AudioUrl,
       });
@@ -433,22 +440,24 @@ function buildTest2() {
   const part3Questions = page2.questions.map((question, index) => {
     const displayNumber = index + 32;
     const groupStart = 32 + Math.floor((displayNumber - 32) / 3) * 3;
+    const questionId = `lt2-part2-q${displayNumber}`;
     return buildQuestion(question, displayNumber, "lt2-part2", 1, {
       prompt: part3Data.prompts.get(displayNumber) ?? normalizeText(question.prompt),
       transcript: part3Data.transcriptByQuestion.get(displayNumber) ?? null,
       groupIndex: Math.floor((displayNumber - 32) / 3) + 1,
-      imageUrl: imageByGroupStartPart3.get(groupStart) ?? question.image_url ?? "",
+      imageUrl: existingImageByQuestionId.get(questionId) ?? imageByGroupStartPart3.get(groupStart) ?? question.image_url ?? "",
     });
   });
 
   const part4Questions = page3.questions.map((question, index) => {
     const displayNumber = index + 71;
     const groupStart = 71 + Math.floor((displayNumber - 71) / 3) * 3;
+    const questionId = `lt2-part3-q${displayNumber}`;
     return buildQuestion(question, displayNumber, "lt2-part3", 2, {
       prompt: part4Data.prompts.get(displayNumber) ?? normalizeText(question.prompt),
       transcript: part4Data.transcriptByQuestion.get(displayNumber) ?? null,
       groupIndex: Math.floor((displayNumber - 71) / 3) + 1,
-      imageUrl: imageByGroupStartPart4.get(groupStart) ?? question.image_url ?? "",
+      imageUrl: existingImageByQuestionId.get(questionId) ?? imageByGroupStartPart4.get(groupStart) ?? question.image_url ?? "",
     });
   });
 
@@ -495,7 +504,8 @@ function buildTest2() {
 
 function main() {
   const generated = readJson(generatedPath);
-  const test2 = buildTest2();
+  const existingTest2 = generated.tests.find((test) => test.id === "listening-test-2") || null;
+  const test2 = buildTest2(existingTest2);
   generated.tests = generated.tests.map((test) => (test.id === "listening-test-2" ? test2 : test));
   fs.writeFileSync(generatedPath, `${JSON.stringify(generated, null, 2)}\n`, "utf8");
   console.log("Updated listening-test-2 to use direct crawl image/audio URLs.");

@@ -196,10 +196,16 @@ function normalizeReadingQuestionsForFullTest(test) {
 
 const FULL_TEST_VARIANTS = (() => {
   const listeningTest1 = LISTENING_TEST_SETS.find((test) => test.id === "listening-test-1");
+  const listeningTest2 = LISTENING_TEST_SETS.find((test) => test.id === "listening-test-2");
   const readingTest1 = READING_TEST_SETS.find((test) => test.id === "reading-test-1");
+  const readingTest2 = READING_TEST_SETS.find((test) => test.id === "reading-test-2");
   const de1Questions = [
     ...normalizeListeningQuestionsForFullTest(listeningTest1),
     ...normalizeReadingQuestionsForFullTest(readingTest1),
+  ].sort((a, b) => a.displayNumber - b.displayNumber);
+  const de2Questions = [
+    ...normalizeListeningQuestionsForFullTest(listeningTest2),
+    ...normalizeReadingQuestionsForFullTest(readingTest2),
   ].sort((a, b) => a.displayNumber - b.displayNumber);
 
   return [
@@ -208,6 +214,12 @@ const FULL_TEST_VARIANTS = (() => {
       name: "Đề 1",
       desc: "Listening Test Đề 1 + Reading Test Đề 1, ghép thành bài Full Test 120 phút hoàn chỉnh.",
       questions: de1Questions,
+    },
+    {
+      id: "fulltest-b",
+      name: "Đề 2",
+      desc: "Listening Test Đề 2 + Reading Test Đề 2, ghép thành bài Full Test 120 phút hoàn chỉnh.",
+      questions: de2Questions,
     },
   ];
 })();
@@ -440,6 +452,67 @@ function formatReadingPassage(passage) {
   formatted = formatted.replace(/(Sincerely,|Regards,|Best regards,)\s+([^\n]+)/i, "$1\n$2");
 
   return formatted;
+}
+
+function renderReadingPassageBlock(passage) {
+  const formatted = formatReadingPassage(passage);
+  if (!formatted) return null;
+
+  const lines = formatted.split("\n").map((line) => line.trim()).filter(Boolean);
+  const nodes = [];
+  let paragraphBuffer = [];
+  let tableBuffer = [];
+
+  const flushParagraph = () => {
+    if (!paragraphBuffer.length) return;
+    nodes.push(
+      <div key={`p-${nodes.length}`} className="toeic-reading-block">
+        {paragraphBuffer.map((line, index) => {
+          const isLabel = /^(Questions\s+\d+-\d+\s+refer to the following|E-mail|E-mail \d+|Web Page|Web Page \d+|Survey Form|Article|Letter|Receipt|Review|Comments:|Directions:|Return Policy:|Date:|Time:|Event Web page:|Subject:|Attachment:|From:|To:|Dear |Sincerely,|Best regards,|All the best,|Name:|Company name:|E-mail address:|Phone:|Location and date of event:|What events are you interested in\?|Number of participants:|Additional information:|Application deadline:)/i.test(line);
+          const className = isLabel ? "toeic-reading-line label" : "toeic-reading-line";
+          return <div key={index} className={className}>{line}</div>;
+        })}
+      </div>
+    );
+    paragraphBuffer = [];
+  };
+
+  const flushTable = () => {
+    if (!tableBuffer.length) return;
+    const rows = tableBuffer.map((line) => line.split("|").map((cell) => cell.trim()));
+    nodes.push(
+      <div key={`t-${nodes.length}`} className="toeic-reading-table-wrap">
+        <table className="toeic-reading-table">
+          <tbody>
+            {rows.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {row.map((cell, cellIndex) => (
+                  <td key={cellIndex} className={rowIndex === 0 ? "is-head" : ""}>{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+    tableBuffer = [];
+  };
+
+  lines.forEach((line) => {
+    if (line.includes("|")) {
+      flushParagraph();
+      tableBuffer.push(line);
+      return;
+    }
+
+    flushTable();
+    paragraphBuffer.push(line);
+  });
+
+  flushParagraph();
+  flushTable();
+
+  return nodes;
 }
 
 function getListeningCorrectIndex(question) {
@@ -823,7 +896,7 @@ function ReadingTestSession({ test, section, onBack }) {
         </div></div>
         <div className="toeic-test-question-area">
           <div className="toeic-test-part-label">{q.toeicPart}{q.groupIndex ? ` · Nhóm ${q.groupIndex}` : ""}</div>
-          {q.sharedPassage && <div className="toeic-reading-passage">{formatReadingPassage(q.sharedPassage)}</div>}
+          {q.sharedPassage && <div className="toeic-reading-passage">{renderReadingPassageBlock(q.sharedPassage)}</div>}
           {q.imageUrl && <div className="toeic-q-image"><img src={q.imageUrl} alt={`Question ${q.displayNumber}`} /></div>}
           {prompt && <div className="toeic-test-q-text"><strong>{prompt}</strong></div>}
           <div className="toeic-options-grid">
@@ -985,7 +1058,7 @@ function ReadingTestSession({ test, section, onBack }) {
                   {isGradable ? (isCorrect ? "✓ Đúng" : selectedOption ? "✗ Sai" : "○ Bỏ trống") : "Chưa chấm"}
                 </span>
               </div>
-              {showPassageBlock && <div className="toeic-reading-passage">{formatReadingPassage(question.sharedPassage)}</div>}
+              {showPassageBlock && <div className="toeic-reading-passage">{renderReadingPassageBlock(question.sharedPassage)}</div>}
               {showImageBlock && <div className="toeic-q-image"><img src={question.imageUrl} alt={`Review ${question.displayNumber}`} /></div>}
               {reviewPrompt && <p className="toeic-review-q"><strong>{reviewPrompt}</strong></p>}
               {isGradable && correctOption && (
@@ -1028,6 +1101,7 @@ function PracticeSession({ part, onBack, backLabel = "← Quay lại" }) {
   const isPart7 = practiceType === "part7-reading";
   const isListening = isListeningPractice || part.id.startsWith("part1") || part.id.startsWith("part2") || part.id.startsWith("part3") || part.id.startsWith("part4");
   const q = part.questions[qi];
+  const currentAudioUrl = q?.audioUrl || "";
   const xpAwardedRef = useRef(false);
 
   if (!q || !Array.isArray(q.options)) {
@@ -1175,7 +1249,15 @@ function PracticeSession({ part, onBack, backLabel = "← Quay lại" }) {
           <span className="toeic-qcard-counter">{qi + 1} / {part.questions.length}</span>
         </div>
 
-        {isListening && q.audioText && (
+        {isListening && currentAudioUrl && (
+          <div className="toeic-audio-shell">
+            <audio key={currentAudioUrl} className="toeic-audio-player" controls preload="none" src={currentAudioUrl}>
+              Trinh duyet nay khong ho tro audio.
+            </audio>
+          </div>
+        )}
+
+        {isListening && !currentAudioUrl && q.audioText && (
           <div className="toeic-audio-row">
             <button className="toeic-audio-btn" onClick={() => speakToeicText(q.audioText || "")}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M2 16H5.889L11.183 20.332C11.273 20.405 11.385 20.445 11.5 20.445C11.776 20.445 12 20.221 12 19.945V4.055C12 3.94 11.96 3.828 11.887 3.739C11.713 3.525 11.399 3.493 11.185 3.668L5.889 8H2C1.448 8 1 8.448 1 9V15C1 15.552 1.448 16 2 16ZM23 12C23 15.292 21.554 18.246 19.262 20.262L17.845 18.844C19.776 17.194 21 14.74 21 12C21 9.26 19.776 6.806 17.845 5.156L19.262 3.738C21.554 5.754 23 8.708 23 12Z" /></svg>
@@ -1413,7 +1495,7 @@ function FullTestMode({ onBack }) {
           <div className="toeic-test-info">
             <span className="toeic-test-badge">Full Test</span>
             <span className="toeic-test-badge">{selectedVariant.name}</span>
-            <span className="toeic-test-badge toeic-test-progress-badge">Câu {qi + 1} / {allQs.length}</span>
+            <span className="toeic-test-badge toeic-test-progress-badge">Đã làm {answered} / {allQs.length}</span>
             <span className="toeic-answered-count">{answered} đã trả lời</span>
           </div>
           <div className={`toeic-timer${isUrgent ? " urgent" : ""}`}>
@@ -1466,7 +1548,7 @@ function FullTestMode({ onBack }) {
           <div className="toeic-test-q-text">{getFullTestInstruction(q)}</div>
           {getFullTestPassage(q) && !shouldHideListeningTranscriptInFullTest(q) && (
             <div className="toeic-reading-passage">
-              {q.skill === "Reading" ? formatReadingPassage(getFullTestPassage(q)) : getFullTestPassage(q)}
+              {q.skill === "Reading" ? renderReadingPassageBlock(getFullTestPassage(q)) : getFullTestPassage(q)}
             </div>
           )}
           {getFullTestPrompt(q) && <div className="toeic-test-q-text"><strong>{getFullTestPrompt(q)}</strong></div>}
@@ -1697,8 +1779,8 @@ export default function TOEIC() {
             <button className={`toeic-tab-btn${tab === "listening-test" ? " active" : ""}`} onClick={() => handleTabChange("listening-test")}>Listening Test</button>
             <button className={`toeic-tab-btn${tab === "reading-test" ? " active" : ""}`} onClick={() => handleTabChange("reading-test")}>Reading Test</button>
             <button className={`toeic-tab-btn${tab === "fulltest" ? " active" : ""}`} onClick={() => handleTabChange("fulltest")}>Full Test</button>
-            <button className={`toeic-tab-btn${tab === "listening" ? " active" : ""}`} onClick={() => handleTabChange("listening")}>🎧 Listening</button>
-            <button className={`toeic-tab-btn${tab === "reading" ? " active" : ""}`} onClick={() => handleTabChange("reading")}>📖 Reading</button>
+            <button className={`toeic-tab-btn${tab === "listening" ? " active" : ""}`} onClick={() => handleTabChange("listening")}>Listening</button>
+            <button className={`toeic-tab-btn${tab === "reading" ? " active" : ""}`} onClick={() => handleTabChange("reading")}>Reading</button>
           </div>
         </section>
       )}

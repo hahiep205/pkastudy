@@ -2,6 +2,7 @@ const STATS_STORAGE_KEY = 'pka_user_stats_v1';
 const REMEMBERED_STORAGE_KEY = 'pka_remembered';
 const MAX_HISTORY_DAYS = 90;
 const USER_STORAGE_KEY = 'user';
+const XP_STORAGE_KEY = 'pka_xp_system_v1';
 
 function pad(value) {
     return String(value).padStart(2, '0');
@@ -25,6 +26,14 @@ function getStorageMap() {
 
 function saveStorageMap(data) {
     localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(data));
+}
+
+function getXpStorage() {
+    try {
+        return JSON.parse(localStorage.getItem(XP_STORAGE_KEY)) || {};
+    } catch {
+        return {};
+    }
 }
 
 function getCurrentStoredUser() {
@@ -162,6 +171,49 @@ export function readUserStats(userKey = 'guest') {
     return stats;
 }
 
+function mergeCurrentDayStats(stats, currentSnapshot) {
+    if (!currentSnapshot || typeof currentSnapshot !== 'object') return stats;
+
+    const dateKey = typeof currentSnapshot.date === 'string' ? currentSnapshot.date : getTodayKey();
+    const existingDay = getDayStats(stats, dateKey);
+    const mergedDay = {
+        ...existingDay,
+        date: dateKey,
+        dailyXp: Number.isFinite(currentSnapshot.dailyXp) ? currentSnapshot.dailyXp : existingDay.dailyXp,
+        learnedWords: Number.isFinite(currentSnapshot.learnedWords) ? currentSnapshot.learnedWords : existingDay.learnedWords,
+        rememberedTotal: Number.isFinite(currentSnapshot.rememberedTotal) ? currentSnapshot.rememberedTotal : existingDay.rememberedTotal,
+        totalXp: Number.isFinite(currentSnapshot.totalXp) ? currentSnapshot.totalXp : existingDay.totalXp,
+        streak: Number.isFinite(currentSnapshot.streak) ? currentSnapshot.streak : existingDay.streak,
+        tasksCompleted: Number.isFinite(currentSnapshot.tasksCompleted) ? currentSnapshot.tasksCompleted : existingDay.tasksCompleted,
+        taskTarget: Number.isFinite(currentSnapshot.taskTarget) ? currentSnapshot.taskTarget : existingDay.taskTarget,
+        updatedAt: currentSnapshot.updatedAt || existingDay.updatedAt || new Date().toISOString(),
+    };
+
+    return {
+        ...stats,
+        days: {
+            ...stats.days,
+            [dateKey]: mergedDay,
+        },
+        updatedAt: mergedDay.updatedAt,
+    };
+}
+
+function buildXpByDate() {
+    const history = Array.isArray(getXpStorage().history) ? getXpStorage().history : [];
+    const xpByDate = new Map();
+
+    history.forEach((entry) => {
+        if (!entry || !Number.isFinite(entry.amount) || !entry.timestamp) return;
+        const date = new Date(entry.timestamp);
+        if (Number.isNaN(date.getTime())) return;
+        const dateKey = getTodayKey(date);
+        xpByDate.set(dateKey, (xpByDate.get(dateKey) || 0) + entry.amount);
+    });
+
+    return xpByDate;
+}
+
 export function recordGamePlay(userKey = 'guest', count = 1) {
     const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
     const map = getStorageMap();
@@ -252,8 +304,9 @@ export function buildStatsLeaderboard(metric = 'streak', limit = 3, fallbackEntr
         }));
 }
 
-export function buildActivityChartData(userKey = 'guest', period = 'week') {
-    const stats = readUserStats(userKey);
+export function buildActivityChartData(userKey = 'guest', period = 'week', currentSnapshot = null) {
+    const stats = mergeCurrentDayStats(readUserStats(userKey), currentSnapshot);
+    const xpByDate = buildXpByDate();
     const today = new Date();
 
     if (period === 'month') {
@@ -285,7 +338,7 @@ export function buildActivityChartData(userKey = 'guest', period = 'week') {
             getDaysArray(stats).forEach((day) => {
                 const dayDate = new Date(`${day.date}T00:00:00`);
                 if (dayDate >= bucket.start && dayDate <= bucket.end) {
-                    bucketXp += day.dailyXp || 0;
+                    bucketXp += xpByDate.get(day.date) || 0;
                     bucketWords += day.learnedWords || 0;
                 }
             });
@@ -320,7 +373,7 @@ export function buildActivityChartData(userKey = 'guest', period = 'week') {
         const day = getDayStats(stats, dateKey);
 
         labels.push(getWeekdayLabel(dateKey));
-        xp.push(day.dailyXp || 0);
+        xp.push(xpByDate.get(dateKey) || 0);
         words.push(day.learnedWords || 0);
     }
 

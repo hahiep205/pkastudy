@@ -563,7 +563,7 @@ export default function Games() {
           </div>
         </div>
 
-        <div className="games-section-label" id="games-vocab-label">🎮 Luyện từ vựng</div>
+        <div className="games-section-label" id="games-vocab-label">Học từ vựng</div>
         <div className="games-vocab-grid" id="games-vocab-grid">
           {VOCAB_GAMES.map((game) => (
             <button
@@ -581,7 +581,7 @@ export default function Games() {
           ))}
         </div>
 
-        <div className="games-section-label" id="games-fun-label">🕹️ Mini-game vui</div>
+        <div className="games-section-label" id="games-fun-label">Game ôn từ</div>
         <div className="games-grid">
           <button
             type="button"

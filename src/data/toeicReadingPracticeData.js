@@ -1,3 +1,5 @@
+import readingTestCatalog from "./toeicReadingTests.generated.json";
+
 function buildQuestion(prefix, practiceType, item, index) {
   return {
     id: `${prefix}-${index + 1}`,
@@ -5,6 +7,7 @@ function buildQuestion(prefix, practiceType, item, index) {
     passage: item.passage || "",
     text: item.text || "",
     question: item.question || "",
+    imageUrl: item.imageUrl || "",
     options: item.options,
     correct: item.correct,
     explanation: item.explanation,
@@ -20,6 +23,25 @@ function buildTopic(id, title, desc, icon, practiceType, items) {
     practiceType,
     questions: items.map((item, index) => buildQuestion(id, practiceType, item, index)),
   };
+}
+
+
+function buildReadingTestTopic(testId, toeicPart, id, title, desc, icon, practiceType) {
+  const test = (readingTestCatalog.tests || []).find((item) => item.id === testId);
+  const questions = (test?.sections || [])
+    .flatMap((section) => section.questions || [])
+    .filter((question) => question.toeicPart === toeicPart)
+    .map((question) => ({
+      passage: question.sharedPassage || "",
+      text: question.prompt || question.text || "",
+      question: question.prompt || question.question || "",
+      imageUrl: question.imageUrl || "",
+      options: (question.options || []).map((option) => option.text),
+      correct: (question.options || []).findIndex((option) => option.key === question.correctKey),
+      explanation: question.explanation || "",
+    }));
+
+  return buildTopic(id, title, desc, icon, practiceType, questions);
 }
 
 const part5Grammar = [
@@ -132,3 +154,30 @@ export const TOEIC_READING_PRACTICE_MODES = [
     ],
   },
 ];
+
+const part5PracticeMode = TOEIC_READING_PRACTICE_MODES.find((mode) => mode.id === "part5-reading");
+
+if (part5PracticeMode) {
+  part5PracticeMode.topics = [
+    buildReadingTestTopic("reading-test-1", "PART 5", "reading-practice-5-1", "Tài liệu 1", "30 câu của Reading Test Đề 1 Part 5.", "📘", "part5-reading"),
+    buildReadingTestTopic("reading-test-2", "PART 5", "reading-practice-5-2", "Tài liệu 2", "30 câu của Reading Test Đề 2 Part 5.", "📙", "part5-reading"),
+  ];
+}
+
+const part6PracticeMode = TOEIC_READING_PRACTICE_MODES.find((mode) => mode.id === "part6-reading");
+
+if (part6PracticeMode) {
+  part6PracticeMode.topics = [
+    buildReadingTestTopic("reading-test-1", "PART 6", "reading-practice-6-1", "Tài liệu 1", "16 câu của Reading Test Đề 1 Part 6.", "📘", "part6-reading"),
+    buildReadingTestTopic("reading-test-2", "PART 6", "reading-practice-6-2", "Tài liệu 2", "16 câu của Reading Test Đề 2 Part 6.", "📙", "part6-reading"),
+  ];
+}
+
+const part7PracticeMode = TOEIC_READING_PRACTICE_MODES.find((mode) => mode.id === "part7-reading");
+
+if (part7PracticeMode) {
+  part7PracticeMode.topics = [
+    buildReadingTestTopic("reading-test-1", "PART 7", "reading-practice-7-1", "Tài liệu 1", "54 câu của Reading Test Đề 1 Part 7.", "📘", "part7-reading"),
+    buildReadingTestTopic("reading-test-2", "PART 7", "reading-practice-7-2", "Tài liệu 2", "54 câu của Reading Test Đề 2 Part 7.", "📙", "part7-reading"),
+  ];
+}
